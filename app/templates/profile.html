@@ -1,0 +1,110 @@
+{% extends "layout.html" %} {% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}"> {% endblock %} {% block title %}
+<title>Preshot/Profile</title>
+{% endblock %} {% block content %}
+<div class="profile">
+    <div class="profile-box">
+        <!-- profile画面 -->
+        <div class="profile-area">
+            <div class="profile-container">
+                <div class="status">
+                    <p id="your-profile">設定</p>
+                </div>
+                <div class="status mail-address">
+                    <p class="status-text">- メールアドレス
+                        <br><span> {{ data["email"] }}</span></p>
+                </div>
+                <div class="status">
+                    <p class="status-text">- 現在のパスワード - {{ data["password"] }}
+                        <br><span><input placeholder="新しいパスワード" type="text" id="password"></span></p>
+                </div>
+
+                <div class="status">
+                    <p class="status-text">- あなたの名前 - {{ data["name"] }}
+                        <br><span><input placeholder="名前を変更" type="text" id="name"></span></p>
+                </div>
+
+                <div class="status btn-select">
+                    <div class="status-text">- 志望先業界 - {{ data["industry"] }}
+                        <br>
+                        <p class="label" style="color: gray;">業界を変更</p>
+                        <select class="select" id="industry" name="業界" size="1">
+                            <option value="選択してください" selected>選択してください</option>
+                            <option value="商社">商社</option>
+                            <option value="メーカー">メーカー</option>
+                            <option value="小売">小売</option>
+                            <option value="金融">金融</option>
+                            <option value="サービス">サービス</option>
+                            <option value="マスコミ">マスコミ</option>
+                            <option value="IT・通信">IT・通信</option>
+                            <option value="官公庁・公社・団体">官公庁・公社・団体</option>
+                            <option value="その他">その他</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="btn-change"><button class="btn save" 　type="submit" onclick="submit_entry();">変更</button></div>
+                <div class="message">
+                    <p>お問い合わせ/アカウント削除
+                        <a href="mailto:preshot.info@gmail.com">preshot.info@gmail.com</a>
+                    </p>
+                </div>
+            </div>
+
+
+        </div>
+
+
+
+
+    </div>
+</div>
+
+
+{% endblock content %} {% block script %}
+<script>
+    function submit_entry() {
+
+        var password = document.getElementById("password");
+        var name = document.getElementById("name");
+        var industry = document.getElementById("industry");
+
+        var entry = {
+            password: password.value,
+            name: name.value,
+            industry: industry.value
+        }
+        console.log(entry)
+
+        fetch(`${window.origin}/profile`, {
+                method: "POST",
+                credentials: "include",
+                body: JSON.stringify(entry),
+                cache: "no-cache",
+                headers: new Headers({
+                    "content-type": "application/json"
+                })
+            })
+            .then(function(response) {
+
+                if (response.status != 200) {
+                    console.log(`response status was not 200: ${response.status}`);
+                    return;
+                }
+
+                response.json().then(function(data) {
+                    location.reload();
+                    console.log(data)
+                })
+            })
+    }
+</script>
+<script>
+    $('.select').on('change', function() {
+        var $this = $(this)
+        var $option = $this.find('option:selected');
+        $('.label').text($option.text());
+        // onchange後にフォーカスしてるのが嫌な場合
+        $this.blur();
+    });
+</script>
+{% endblock %}

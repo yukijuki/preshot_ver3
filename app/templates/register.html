@@ -1,0 +1,29 @@
+{% extends "layout.html" %} {% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}"> {% endblock %} {% block title %}
+<title>Preshot/Register</title>
+{% endblock %} {% block content %}
+<div class="login">
+
+    <div class="login_top">
+        <div class="login-logo">
+            <img src="{{ url_for('static', filename='preshot_img/preshot_logo01.png') }}" alt="preshot_logo">
+        </div>
+    </div>
+
+    <form class="login_bottom" action="/register" method="post" novalidate>
+        <div class="form">
+
+            <ul class="form-container">
+                <li><input type="email" id="email" name="email" placeholder="e-mail" required></li>
+                <li><input type="password" class="login-password" id="password" name="password" placeholder="password" required></li>
+            </ul>
+
+            <div class="form-container">
+                <button class="btn2" type="submit">新規登録/ログイン</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+{% endblock content %}

@@ -1,0 +1,36 @@
+{% extends "layout.html" %} {% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}"> {% endblock %} {% block title %}
+<title>Preshot/Home</title>
+{% endblock %} {% block content %}
+
+<div class="card-list">
+
+    <!-- Contact Card ~ #01 -->
+    {% if files %} {% for file in files %}
+
+    <div class="card" id={{file.id}}>
+
+        <div class="banner">
+            <!---onlcick to get the link of this emplyee and send it to the API using the Id(link)-->
+            <img class="avatar" src={{file.filename}} width="168.75" height="120">
+        </div>
+        <div class="profile-text">
+            <div class="text-box">
+                <h3>{{ file.name }}</h3>
+                <p>業界：{{ file.industry }}</p>
+                <p>会社：{{ file.firm }}</p>
+            </div>
+            <div id='triangle'></div>
+        </div>
+        <a href="/employee/{{file.id}}"></a>
+    </div>
+
+
+    {% endfor %} {% else %}
+    <h2>No files</h2>
+    {% endif %}
+
+</div>
+
+{% endblock content %}

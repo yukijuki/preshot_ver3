@@ -1,0 +1,260 @@
+{% extends "layout.html" %} {% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css') }}"> {% endblock %} {% block title %}
+<title>Preshot/Upload</title>
+{% endblock %} {% block content %}
+<div class="upload">
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <div class="upload-area">
+            <div class="upload-container">
+
+                <p class="status">名前
+                    <br> <input placeholder="-" name="name" id="name" type="text" required>
+                </p>
+
+                <p class="status">SNSのリンク先(URL)
+                    <br><input placeholder="-" type="url" id="link" name="link" required>
+                </p>
+
+                <div class="status btn-select">学部を選択してください
+                    <p class="label faculty-label">-</p>
+                    <select class="select faculty-select" id="faculty" name="faculty" size="1" required>
+                    <option value="学部を選択してください" selected>学部を選択してください</option>
+                    <option value="環境情報学部" >環境情報学部</option>
+                    <option value="総合政策学部">総合政策学部</option>
+                    <option value="看護医療学部">看護医療学部</option>
+                    <option value="なし">その他</option>
+                    </select>
+                </div>
+
+                <p class="status">内定先を記入してください(正式名)
+                    <br><input placeholder="-" type="firm" id="firm" name="firm" required>
+                </p>
+
+                <div class="status btn-select">業界を選択してください
+                    <p class="label industry-label">-</p>
+                    <select class="select industry-select" id="industry" name="industry" size="1" required>
+                            <option value="業界を選択してください" selected>業界を選択してください</option>
+                            <option value="商社">商社</option>
+                            <option value="メーカー">メーカー</option>
+                            <option value="小売">小売</option>
+                            <option value="金融">金融</option>
+                            <option value="コンサル・シンクタンク">コンサル・シンクタンク</option>
+                            <option value="マスコミ">マスコミ</option>
+                            <option value="IT・通信">Web・IT・通信</option>
+                            <option value="出版">出版</option>
+                            <option value="メディア">メディア</option>
+                            <option value="広告代理店">広告代理店</option>
+                            <option value="建設・不動産">建設・不動産</option>
+                            <option value="インフラ">インフラ</option>
+                            <option value="物流・運送">物流・運送</option>
+                            <option value="衣料・装飾">衣料・装飾</option>
+                            <option value="エネルギー・資源">エネルギー・資源</option>
+                            <option value="飲食">食品・飲食</option>
+                            <option value="金融">エンタメ・ゲーム</option>
+                            <option value="娯楽・旅行・レジャー">娯楽・旅行・レジャー</option>
+                            <option value="官公庁・公社・団体">官公庁・公社・団体</option>
+                            <option value="介護・医療">介護・医療</option>
+                            <option value="教育・人材派遣">教育・人材派遣</option>
+                            <option value="その他">その他</option>
+                    </select>
+                </div>
+
+                <div class="status btn-select">職種を選択してください
+                    <p class="label position-label">-</p>
+                    <select class="select position-select" id="potision" name="position" size="1" required>
+                            <option value="職種を選択してください" selected>職種を選択してください</option>
+                            <option value="総合職・一般職">総合職・一般職</option>
+                            <option value="事務・管理">事務・管理</option>
+                            <option value="企画職">企画職</option>
+                            <option value="開発">開発職</option>
+                            <option value="技術職">技術職</option>
+                            <option value="営業職">営業職</option>
+                            <option value="マーケティング・広報">マーケティング・広報</option>
+                            <option value="販売・接客">販売・接客</option>
+                            <option value="教育・保育">教育・保育</option>
+                            <option value="医療・福祉・看護">医療・福祉・看護</option>
+                            <option value="建築・土木">建築・土木</option>
+                            <option value="研究職">研究職</option>
+                            <option value="その他">その他</option>
+                    </select>
+                </div>
+
+
+                <div class="status btn-select">研究会の領域を選択してください
+                    <p class="label lab-label">-</p>
+                    <select class="select lab-select" id="lab" name="lab" size="1" required>
+                            <option value="研究会の領域を選択してください" selected>研究会の領域を選択してください</option>
+                            <option value="法学">法学</option>
+                            <option value="政治/経済">政治/経済</option>
+                            <option value="経営/商">経営/商</option>
+                            <option value="国際/社会">国際/社会</option>
+                            <option value="文学/言語">文学/言語</option>
+                            <option value="教育">教育</option>
+                            <option value="農/水産">農/水産</option>
+                            <option value="理/工">理/工</option>
+                            <option value="医療/薬">医療/薬</option>
+                            <option value="情報/テクノロジー">情報/テクノロジー</option>
+                            <option value="芸術/音楽">芸術/音楽</option>
+                            <option value="建築/土木">建築/土木</option>
+                            <option value="その他">その他</option>
+                            <option value="なし">なし</option>
+                    </select>
+                </div>
+
+                <div class="status btn-select">サークル・体育会を選択してください
+                    <p class="label club-label">-</p>
+                    <select class="select club-select" id="club" name="club" size="1" required>
+                            <option value="サークル・体育会を選択してください" selected>サークル・体育会を選択してください</option>
+                            <option value="野球/ソフトボール">野球/ソフトボール</option>
+                            <option value="サッカー/フットサル">サッカー/フットサル</option>
+                            <option value="バスケットボール">バスケットボール</option>
+                            <option value="テニス/バトミントン/卓球">テニス/バトミントン/卓球</option>
+                            <option value="アメフト/ラグビー">アメフト/ラグビー</option>
+                            <option value="バレーボール">バレーボール</option>
+                            <option value="ハンドボール/ドッジボール">ハンドボール/ドッジボール</option>
+                            <option value="陸上/体操">陸上/体操</option>
+                            <option value="自転車競技">自転車競技</option>
+                            <option value="ウォータースポーツ">ウォータースポーツ</option>
+                            <option value="スカイスポーツ">スカイスポーツ</option>
+                            <option value="ウィンタースポーツ">ウィンタースポーツ</option>
+                            <option value="武道/格闘技">武道/格闘技</option>
+                            <option value="射的スポーツ">射的スポーツ</option>
+                            <option value="ゴルフ">ゴルフ</option>
+                            <option value="応援/チア">応援/チア</option>
+                            <option value="フライングディスク">フライングディスク</option>
+                            <option value="ボウリング/ビリヤード">ボウリング/ビリヤード</option>
+                            <option value="アニマルスポーツ">アニマルスポーツ</option>
+                            <option value="障害者スポーツ">障害者スポーツ</option>
+                            <option value="音楽/芸術">音楽/芸術</option>
+                            <option value="ダンス">ダンス</option>
+                            <option value="アウトドア">アウトドア</option>
+                            <option value="旅行">旅行</option>
+                            <option value="食/農業">食/農業</option>
+                            <option value="e-sports/ボードゲーム">e-sports/ボードゲーム</option>
+                            <option value="機械/情報">機械/情報</option>
+                            <option value="国際交流/イベント">国際交流/イベント</option>
+                            <option value="ビジネス/政治経済">ビジネス/政治経済</option>
+                            <option value="ドローン">ドローン</option>
+                            <option value="その他">その他</option>
+                            <option value="なし">なし</option>
+                    </select>
+                </div>
+
+                <div class="status img-select">
+                    <p>プロフィール写真を選択してください</p>
+                    <div class="image-upload">選択
+                        <input oninput="filesize(this);" type="file" class="custome-file-input" name="image" id="image" onchange="uv.style.display='inline-block'; uv.value=this.value;" required />
+                        <input type="text" id="uv" class="uploadValue" disabled />
+                    </div>
+                </div>
+
+
+                <button class="btn submit" type="submit">送信</button>
+                <div class="message">
+                    <p>お問い合わせ/アカウントの削除などはこちら
+                        <a href="mailto:preshot.info@gmail.com">preshot.info@gmail.com</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+</div>
+{% endblock content %} {% block script %}
+<script>
+    function filesize(elem) {
+
+        document.cookie = `filesize=${elem.files[0].size}`;
+
+    }
+</script>
+<script>
+    $(function() {
+        $('.faculty-select').on('change', function() {
+            var $this = $(this)
+            var $option = $this.find('option:selected');
+            $('.faculty-label').text($option.text());
+            // onchange後にフォーカスしてるのが嫌な場合
+            $this.blur();
+        });
+        $('.industry-select').on('change', function() {
+            var $this = $(this)
+            var $option = $this.find('option:selected');
+            $('.industry-label').text($option.text());
+            // onchange後にフォーカスしてるのが嫌な場合
+            $this.blur();
+        });
+        $('.position-select').on('change', function() {
+            var $this = $(this)
+            var $option = $this.find('option:selected');
+            $('.position-label').text($option.text());
+            // onchange後にフォーカスしてるのが嫌な場合
+            $this.blur();
+        });
+        $('.lab-select').on('change', function() {
+            var $this = $(this)
+            var $option = $this.find('option:selected');
+            $('.lab-label').text($option.text());
+            // onchange後にフォーカスしてるのが嫌な場合
+            $this.blur();
+        });
+        $('.club-select').on('change', function() {
+            var $this = $(this)
+            var $option = $this.find('option:selected');
+            $('.club-label').text($option.text());
+            // onchange後にフォーカスしてるのが嫌な場合
+            $this.blur();
+        });
+
+    });
+</script>
+<script>
+    function submit_entry() {
+
+        var image = document.getElementById("image");
+        var name = document.getElementById("name");
+        var link = document.getElementById("link");
+        var faculty = document.getElementById("faculty");
+        var firm = document.getElementById("firm");
+        var industry = document.getElementById("industry");
+        var position = document.getElementById("position");
+        var lab = document.getElementById("lab");
+        var club = document.getElementById("club");
+
+        var entry = {
+            image: image.value,
+            name: name.value,
+            link: link.value,
+            faculty: faculty.value,
+            firm: firm.value,
+            industry: industry.value,
+            position: position.value,
+            lab: lab.value,
+            club: club.value,
+        }
+        console.log(entry)
+
+        fetch(`${window.origin}/upload`, {
+                method: "POST",
+                credentials: "include",
+                body: JSON.stringify(entry),
+                cache: "no-cache",
+                headers: new Headers({
+                    "content-type": "application/json"
+                })
+            })
+            .then(function(response) {
+
+                if (response.status != 200) {
+                    console.log(`response status was not 200: ${response.status}`);
+                    return;
+                }
+
+                response.json().then(function(data) {
+                    console.log(data)
+                })
+            })
+    }
+</script>
+{% endblock %}

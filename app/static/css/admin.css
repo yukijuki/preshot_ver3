@@ -1,0 +1,9 @@
+html,
+body {
+    overflow: hidden;
+}
+
+.alert {
+    padding-top: 52px;
+}
+

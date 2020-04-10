@@ -1,0 +1,86 @@
+@media screen and (min-width:768px) and ( max-width:1024px) {
+    header,
+    .tab-nav,
+    .tab {
+        height: 80px;
+    }
+    .fas {
+        font-size: 50px;
+    }
+    .logo img {
+        width: 90%;
+        padding-top: 15px;
+    }
+    #email,
+    .login-password {
+        padding: 0 55px;
+        height: 60px;
+        font-size: 35px;
+        border-bottom: solid 5px #FF8F00;
+    }
+    .form-container {
+        height: auto;
+        margin-bottom: 60px;
+    }
+    .form-container button {
+        height: 60px;
+        font-size: 25px;
+    }
+    .card-list {
+        margin-top: 85px;
+    }
+    .card {
+        margin-bottom: 30px;
+    }
+    .employee-profile {
+        top: 60px;
+    }
+    .banner {
+        height: 225px;
+    }
+    .employee-card p {
+        padding: 20px 0;
+        font-size: 25px;
+    }
+    .contact-button {
+        top: 80%;
+    }
+    .contact-button button {
+        height: 80px;
+        font-size: 33px;
+        width: 700px;
+    }
+}
+
+@media screen and (min-width:1024px) {
+    .card-list {
+        margin-top: 85px;
+    }
+    .card {
+        margin-bottom: 30px;
+    }
+    .login_top {
+        height: 60%;
+    }
+    .login_bottom {
+        height: 40%;
+    }
+    .employee-profile {
+        top: 60px;
+    }
+    .banner {
+        height: 300px;
+    }
+    .employee-card p {
+        padding: 20px 0;
+        font-size: 40px;
+    }
+    .contact-button {
+        top: 80%;
+    }
+    .contact-button button {
+        height: 80px;
+        font-size: 33px;
+        width: 700px;
+    }
+}
