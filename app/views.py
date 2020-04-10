@@ -26,34 +26,62 @@ db = SQLAlchemy(app)
 class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(80), nullable=False, unique=True)
-    name = db.Column(db.String(80), unique=True)
-    industry = db.Column(db.String(80))
     password = db.Column(db.Integer, default=0)
-    signed_up_at = db.Column(db.DateTime())
+    flag = db.Column(db.String(80))
+    posts = db.relationship('Post', backref='student', lazy=True) #one to many relationship
+    is_active = Column(Boolean, unique=False, default=True)
+    created_at = db.Column(db.DateTime())
+    updated_at = db.Column(db.DateTime())
 
-class Employee(db.Model):
+class Mentor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     filename = db.Column(db.String(255), nullable=False, unique=True, default="default.jpg")
-    link = db.Column(db.String(255), nullable=False)
+    university = db.Column(db.String(80), nullable=False)
     faculty = db.Column(db.String(80), nullable=False)
     firm = db.Column(db.String(80), nullable=False)
-    industry = db.Column(db.String(80), nullable=False)
     position = db.Column(db.String(80), nullable=False)
-    lab = db.Column(db.String(80), nullable=False)
-    club = db.Column(db.String(80), nullable=False)
-    ask_clicks = db.Column(db.Integer)
-
-class Ask(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    student_email = db.Column(db.String(80))
-    employee_name = db.Column(db.String(80))
+    graduation = db.Column(db.Integer, default=0, nullable=False)
+    comment = db.Column(db.String(255), nullable=False)
+    is_active = Column(Boolean, unique=False, default=True)
+    schedule = db.relationship('Schedule', backref='mentor', lazy=True) #one to many relationship
     created_at = db.Column(db.DateTime())
+    updated_at = db.Column(db.DateTime())
+
+class Schedule(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    day = db.Column(db.String(80), nullable=False)
+    date = db.Column(db.String(80), nullable=False)
+    place = db.Column(db.String(80), nullable=False)
+    mentor_id = db.Column(db.Integer, db.ForeignKey('mentor.id'), nullable=False)
+    is_active = Column(Boolean, unique=False, default=True)
+    created_at = db.Column(db.DateTime())
+    updated_at = db.Column(db.DateTime())
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(80), nullable=False)
+    text = db.Column(db.String(255), nullable=False)
+    response = db.relationship('Response', backref='post', lazy=True) #one to many relationship
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
+    is_active = Column(Boolean, unique=False, default=True)
+    created_at = db.Column(db.DateTime())
+    updated_at = db.Column(db.DateTime())
+
+class Response(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    mentor_id = db.Column(db.Integer) #gotta change it to one to one relationship
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    is_active = Column(Boolean, unique=False, default=True)
+    created_at = db.Column(db.DateTime())
+    updated_at = db.Column(db.DateTime())
+
 
 # db.drop_all()
 # db.create_all()
 #----------------------------------------------------------------
 #User login
+
 def allowed_image(filename):
     if not "." in filename:
         return False
