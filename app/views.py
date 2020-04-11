@@ -27,9 +27,8 @@ class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(80), nullable=False, unique=True)
     password = db.Column(db.Integer, default=0)
-    flag = db.Column(db.String(80))
     posts = db.relationship('Post', backref='student', lazy=True) #one to many relationship
-    is_active = Column(Boolean, unique=False, default=True)
+    reservations = db.relationship('Reservation', backref='student', lazy=True) #one to many relationship
     created_at = db.Column(db.DateTime())
     updated_at = db.Column(db.DateTime())
 
@@ -43,8 +42,8 @@ class Mentor(db.Model):
     position = db.Column(db.String(80), nullable=False)
     graduation = db.Column(db.Integer, default=0, nullable=False)
     comment = db.Column(db.String(255), nullable=False)
-    is_active = Column(Boolean, unique=False, default=True)
-    schedule = db.relationship('Schedule', backref='mentor', lazy=True) #one to many relationship
+    schedules = db.relationship('Schedule', backref='mentor', lazy=True) #one to many relationship
+    # reservations = db.relationship('Reservation', backref='student', lazy=True) #one to many relationship
     created_at = db.Column(db.DateTime())
     updated_at = db.Column(db.DateTime())
 
@@ -54,7 +53,6 @@ class Schedule(db.Model):
     date = db.Column(db.String(80), nullable=False)
     place = db.Column(db.String(80), nullable=False)
     mentor_id = db.Column(db.Integer, db.ForeignKey('mentor.id'), nullable=False)
-    is_active = Column(Boolean, unique=False, default=True)
     created_at = db.Column(db.DateTime())
     updated_at = db.Column(db.DateTime())
 
@@ -64,21 +62,29 @@ class Post(db.Model):
     text = db.Column(db.String(255), nullable=False)
     response = db.relationship('Response', backref='post', lazy=True) #one to many relationship
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
-    is_active = Column(Boolean, unique=False, default=True)
     created_at = db.Column(db.DateTime())
     updated_at = db.Column(db.DateTime())
 
 class Response(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    mentor_id = db.Column(db.Integer) #gotta change it to one to one relationship
+    mentor_id = db.Column(db.Integer, nullable=False) #gotta change it to one to one relationship
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
-    is_active = Column(Boolean, unique=False, default=True)
     created_at = db.Column(db.DateTime())
     updated_at = db.Column(db.DateTime())
 
+class Reservation(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    # mentor_id = db.Column(db.Integer, db.ForeignKey('mentor.id'), nullable=False)
+    mentor_id = db.Column(db.Integer, nullable=False) #gotta change it to one to one relationship
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
+    day = db.Column(db.String(80), nullable=False)
+    date = db.Column(db.DateTime())
+    place = db.Column(db.String(80), nullable=False)
+    created_at = db.Column(db.DateTime())
+    updated_at = db.Column(db.DateTime())
 
-# db.drop_all()
-# db.create_all()
+#db.drop_all()
+#db.create_all()
 #----------------------------------------------------------------
 #User login
 
@@ -106,7 +112,7 @@ def crop_max_square(pil_img):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("register.html")
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -133,13 +139,13 @@ def register():
             newuser = Student(
             email = data["email"], 
             password = data["password"], 
-            signed_up_at=datetime.datetime.now()
+            created_at=datetime.datetime.now()
             )
             db.session.add(newuser)
             db.session.commit()
             flash("登録しました")
             #"account created"
-            return redirect(url_for('profile'))
+            return redirect(url_for('home'))
         
         else:
             if student.password == data["password"]:
@@ -152,7 +158,7 @@ def register():
                 return redirect(request.url)
     return render_template("register.html")
 
-@app.route("/profile", methods=["Get", "POST"])
+@app.route("/profile", methods=["GET", "DELETE"])
 def profile():
     email = session.get('Email')
     if email is not None:
@@ -163,26 +169,12 @@ def profile():
 
     student = Student.query.filter_by(email=email).first()
 
-    if  request.method == "POST":
-        data = request.get_json()
-
-        if data["password"] == "":
-            data["password"] = student.password
-
-        if data["name"] == '':
-            data["name"] = student.name
-
-        if data["industry"] == '':
-            data["industry"] = student.industry
-
-        student.password = data["password"]
-        student.name = data["name"]
-        student.industry = data["industry"]
+    if  request.method == "DELETE":
+        db.session.delete(student)
         db.session.commit()
         flash("変更されました。")
 
-
-        session["Industry"] = data["industry"]
+        session["Email"] = data[""]
 
         response = make_response(jsonify(data, 200))
         return response
@@ -253,24 +245,6 @@ def employee(id):
 
     return render_template('employee.html', file=employee_data)
 
-
-# @app.route("/ask_click", methods=["GET","POST"])
-# def ask_click():
-#     data = request.get_json()
-#     email = session.get('Email')
-#     print(data["id"])
-
-#     employee = Employee.query.filter_by(name=data["id"]).first()
-#     employee.ask_clicks += 1
-#     asklog = Ask(
-#         student_email=email, 
-#         employee_name=data["id"],
-#         created_at=datetime.datetime.now())
-
-#     db.session.add(asklog)
-#     db.session.commit()
-
-#     return render_template("home.html")
 
 
 @app.route("/upload", methods=["GET", "POST"])
