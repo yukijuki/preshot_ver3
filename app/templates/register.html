@@ -1,20 +1,16 @@
 {% extends "layout.html" %} 
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}"> 
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">  -->
 {% endblock %} 
 {% block title %}
 
 <title>Preshot/Register</title>
-{% endblock %} {% block content %}
+{% endblock %} 
+
+{% block content %}
 
 <div class="login">
-
-    <div class="login_top">
-        <div class="login-logo">
-            <img src="{{ url_for('static', filename='preshot_img/preshot_logo01.png') }}" alt="preshot_logo">
-        </div>
-    </div>
 
     <form class="login_bottom" action="/register" method="post" novalidate>
         <div class="form">

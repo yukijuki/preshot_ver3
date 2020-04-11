@@ -198,10 +198,6 @@ def home():
 
         employees = Employee.query.all()
 
-        #Sort with function
-        # def sort():
-        #     return employees, common
-
         response = []
 
         for employee in employees:

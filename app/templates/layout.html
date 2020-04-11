@@ -8,20 +8,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
     <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
-    <link rel="shortcut icon" type="image/icon" href="{{ url_for('static', filename='preshot_img/preshotlogo.png') }}"> {% block css %}{% endblock %}
-    <!-- title-->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-
+    {% block css %}{% endblock %}
     {% block title %}{% endblock %}
 </head>
 
 <body>
-    <header>
+    <!-- <header>
         <ul class="tab-nav">
             <li class="tab tab-logo">
                 <a href="/"><img src="{{ url_for('static', filename='preshot_img/preshot_logo02.png') }}" alt="preshot_logo"></a>
-            </li>
+            </li>　　　
             <li class="tab left">
                 <a href="/home" class="fas fa-address-card"></a>
             </li>
@@ -33,28 +29,16 @@
             </li>
         </ul>
 
-    </header>
+    </header> -->
 
     {% for message in get_flashed_messages() %}
     <div class="alert">{{ message }}</div>
     {% endfor %}
 
     <div class="container">
-        {% block content %}{% endblock %}
+        {% block content %}
+        {% endblock %}
     </div>
-
-    <!-- Javascript -->
-    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous">
-    </script>
-    {% block script %}{% endblock %}
-
-    <script>
-        $(document).ready(function() {
-            $('.alert').slideDown(500, function() {
-                $(this).delay(1000).slideUp(500);
-            });
-        });
-    </script>
 
 </body>
 
