@@ -140,3 +140,6 @@ cython_debug/
 # IDE integrations
 .vscode/
 .idea/
+
+# MacOS temp files
+.DS_Store
