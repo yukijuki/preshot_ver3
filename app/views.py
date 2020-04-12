@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 import datetime, os, secrets
 from werkzeug.utils import secure_filename
 from PIL import Image
+import uuid 
 
 UPLOAD_FOLDER = '/static/img'
 GET_FOLDER = '/static/img-get'
@@ -25,6 +26,7 @@ db = SQLAlchemy(app)
 
 class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    uid = db.Column(db.String(80), nullable=False, unique=True)
     email = db.Column(db.String(80), nullable=False, unique=True)
     password = db.Column(db.Integer, default=0)
     posts = db.relationship('Post', backref='student', lazy=True) #one to many relationship
@@ -83,10 +85,11 @@ class Reservation(db.Model):
     created_at = db.Column(db.DateTime())
     updated_at = db.Column(db.DateTime())
 
+#----------------------------------------------------------------
 #db.drop_all()
 #db.create_all()
 #----------------------------------------------------------------
-#User login
+#Functions for images
 
 def allowed_image(filename):
     if not "." in filename:
@@ -109,6 +112,8 @@ def crop_center(pil_img, crop_width, crop_height):
 def crop_max_square(pil_img):
     return crop_center(pil_img, min(pil_img.size), min(pil_img.size))
 
+#----------------------------------------------------------------
+#Routes
 
 @app.route("/")
 def index():
@@ -129,28 +134,31 @@ def register():
             "password" = 6,
         }
         """
-        session['Email'] = data["email"]
-        print(session['Email'])
 
         student = Student.query.filter_by(email=data["email"]).first()
 
         if student is None:
 
+            uid = str(uuid.uuid4())
+            session['uid'] = uid
+
             newuser = Student(
             email = data["email"], 
+            uid = uid,
             password = data["password"], 
             created_at=datetime.datetime.now()
             )
             db.session.add(newuser)
             db.session.commit()
             flash("登録しました")
-            #"account created"
-            return redirect(url_for('home'))
+            return redirect(url_for('profile', uid=uid))
         
         else:
             if student.password == data["password"]:
+                session['uid'] = student.uid
+
                 flash("ログインしました")
-                return redirect(url_for('home'))
+                return redirect(url_for('home', uid=student.uid))
 
             else:  
                 #"password is wrong"
@@ -158,88 +166,77 @@ def register():
                 return redirect(request.url)
     return render_template("register.html")
 
-@app.route("/profile", methods=["GET", "DELETE"])
-def profile():
-    email = session.get('Email')
-    if email is not None:
-        print(email)
-    else:
-        flash("ログインしなおしてください。")
+@app.route("/profile/<uid>", methods=["GET", "DELETE"])
+def profile(uid):
+
+    uid = session.get('uid')
+    if uid is None:
+        flash("セッションが切れました。")
         return redirect(url_for('register'))
 
-    student = Student.query.filter_by(email=email).first()
+    student = Student.query.filter_by(uid=uid).first()
 
     if  request.method == "DELETE":
         db.session.delete(student)
         db.session.commit()
-        flash("変更されました。")
+        flash("削除されました。")
 
-        session["Email"] = data[""]
+        session["uid"] = ""
 
         response = make_response(jsonify(data, 200))
         return response
 
     return render_template("profile.html", data = student)
 
-@app.route("/home", methods=["GET"])
-def home():
+@app.route('/home/<uid>', methods=["GET"])
+def home(uid):
+
+    uid = session.get('uid')
+    if uid is None:
+        flash("セッションが切れました。")
+        return redirect(url_for('register'))
     
     try:        
-        """
-        data = {
-            "faculty" = "Str",
-            "firm" = "Str",
-            "industry" = "Str",
-            "position": "Str",
-            "lab" = "Str",
-            "club" = "Str",
-        }
-        """
-
-        employees = Employee.query.all()
+        posts = Post.query.filter_by(student_id=uid).all()
 
         response = []
 
-        for employee in employees:
-            employee_data = {}
-            employee_data["id"] = employee.id
-            employee_data["name"] = employee.name
-            employee_data["filename"] = 'static/img-get/' + employee.filename
-            employee_data["link"] = employee.link
-            employee_data["firm"] = employee.firm
-            employee_data["industry"] = employee.industry
-            response.append(employee_data)
-        print(response)
+        for post in posts:
+            post_data = {}
+            post_data["id"] = post.id
+            post_data["title"] = post.title
+            post_data["text"] = post.text
+            post_data["created_at"] = post.created_at
+            response.append(post_data)
 
     except FileNotFoundError:
         abort(404)
 
-    return render_template("home.html", files = response)
+    return render_template("home.html", posts = response)
 
-@app.route("/employee/<id>", methods=["GET"])
-def employee(id):
-    
-    employee_data = {}
+@app.route("/mypost/<post_id>", methods=["GET"])
+def mypost(post_id):
+
+    uid = session.get('uid')
+    if uid is None:
+        flash("セッションが切れました。")
+        return redirect(url_for('register'))
+
     try:        
-        employee = Employee.query.filter_by(id=id).first()
-
-        employee_data["id"] = employee.id
-        employee_data["name"] = employee.name
-        employee_data["filename"] = 'static/img-get/' + employee.filename
-        employee_data["link"] = employee.link
-        employee_data["faculty"] = employee.faculty
-        employee_data["firm"] = employee.firm
-        employee_data["industry"] = employee.industry
-        employee_data["position"] = employee.position
-        employee_data["lab"] = employee.lab
-        employee_data["club"] = employee.club
-        employee_data["ask_clicks"] = employee.ask_clicks
+        post = Post.query.filter_by(post_id=post_id).first()
+        
+        post_data = {}
+        post_data["id"] = post.id
+        post_data["title"] = post.title
+        post_data["text"] = post.text
+        post_data["response"] = post.response
+        post_data["created_at"] = post.created_at
         
     except FileNotFoundError:
         abort(404)
         flash("バグを運営に報告してください")
 
-    return render_template('employee.html', file=employee_data)
+    return render_template('mypost.html', post=post_data)
 
 
 
@@ -247,7 +244,6 @@ def employee(id):
 def upload():
 
     if request.method == "POST":
-        print("chekc")
         if request.form:
 
             data = request.form
@@ -298,7 +294,7 @@ def upload():
 
 @app.route('/logout')
 def logout():
-    session.pop('Email', None)
+    session.pop('uid', None)
     return redirect(url_for('register'))
 
 @app.route("/delete/<id>", methods=['POST', "GET", "DELETE"])

@@ -1,0 +1,31 @@
+{% extends "layout.html" %} 
+
+{% block css %}
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/employee.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}"> -->
+{% endblock %}
+
+{% block title %}
+<title>Preshot/Employee</title>
+{% endblock %} 
+
+{% block content %}
+<!-- Contact Card ~ #01 -->
+{% if file %}
+
+<!-- profile画面 -->
+<div>
+    <div>
+        <div>
+            <p> 現在のemail - { data["email"] }}</p>
+        </div>
+        <div>
+            <p class="status-text">- 現在のパスワード - {{ data["password"] }}</p>
+        </div>
+        <div>
+            <button type="submit" onclick="submit_entry();">アカウントを削除</button>
+        </div>
+    </div>
+</div>
+
+{% endblock content %} 
