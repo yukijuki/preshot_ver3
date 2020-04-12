@@ -153,7 +153,7 @@ def register():
             db.session.add(newuser)
             db.session.commit()
             flash("登録しました")
-            return redirect(url_for('profile', uid=uid))
+            return redirect(url_for('setting', uid=uid))
         
         else:
             if student.password == data["password"]:
@@ -168,8 +168,8 @@ def register():
                 return redirect(request.url)
     return render_template("register.html")
 
-@app.route("/profile/<uid>", methods=["GET", "DELETE"])
-def profile(uid):
+@app.route("/setting/<uid>", methods=["GET", "DELETE"])
+def setting(uid):
 
     uid = session.get('uid')
     if uid is None:
@@ -189,7 +189,7 @@ def profile(uid):
         response = make_response(jsonify(data, 200))
         return response
 
-    return render_template("profile.html", data = student)
+    return render_template("setting.html", data = student)
 
 @app.route('/home/<uid>', methods=["GET"])
 def home(uid):
