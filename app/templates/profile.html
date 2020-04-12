@@ -9,10 +9,10 @@
 <div>
     <div>
         <div>
-            <p> 現在のemail - { data["email"] }}</p>
+            <p> 現在のemail - {{ data["email"] }}</p>
         </div>
         <div>
-            <p class="status-text">- 現在のパスワード - {{ data["password"] }}</p>
+            <p> 現在のパスワード - {{ data["password"] }}</p>
         </div>
         <div>
             <button type="submit" onclick="submit_entry();">アカウントを削除</button>
@@ -26,14 +26,14 @@
 <script>
     function submit_entry() {
 
-        var action = "delete";
+        var id = window.sessionStorage.getItem(['uid']);
 
         var entry = {
-            action: action.value,
+            uid: uid.value,
         }
 
-        fetch(`${window.origin}/profile`, {
-                method: "POST",
+        fetch(`${window.origin}/profile/${uid}`, {
+                method: "DELETE",
                 credentials: "include",
                 body: JSON.stringify(entry),
                 cache: "no-cache",

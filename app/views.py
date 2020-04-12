@@ -36,13 +36,15 @@ class Student(db.Model):
 
 class Mentor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), nullable=False)
+    name = db.Column(db.String(80), nullable=False, unique=True)
+    email = db.Column(db.String(80), nullable=False, unique=True)
+    password = db.Column(db.String(80), nullable=False)
     filename = db.Column(db.String(255), nullable=False, unique=True, default="default.jpg")
     university = db.Column(db.String(80), nullable=False)
     faculty = db.Column(db.String(80), nullable=False)
     firm = db.Column(db.String(80), nullable=False)
     position = db.Column(db.String(80), nullable=False)
-    graduation = db.Column(db.Integer, default=0, nullable=False)
+    graduation = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.String(255), nullable=False)
     schedules = db.relationship('Schedule', backref='mentor', lazy=True) #one to many relationship
     # reservations = db.relationship('Reservation', backref='student', lazy=True) #one to many relationship
@@ -176,7 +178,8 @@ def profile(uid):
 
     student = Student.query.filter_by(uid=uid).first()
 
-    if  request.method == "DELETE":
+    if request.method == "DELETE":
+        print("here")
         db.session.delete(student)
         db.session.commit()
         flash("削除されました。")
@@ -223,7 +226,7 @@ def mypost(post_id):
         return redirect(url_for('register'))
 
     try:        
-        post = Post.query.filter_by(post_id=post_id).first()
+        post = Post.query.filter_by(id=post_id).first()
         
         post_data = {}
         post_data["id"] = post.id
@@ -238,9 +241,33 @@ def mypost(post_id):
 
     return render_template('mypost.html', post=post_data)
 
+@app.route("/post", methods=["GET", "POST"])
+def post():
 
+    uid = session.get('uid')
+    if uid is None:
+        flash("セッションが切れました。")
+        return redirect(url_for('register'))
 
-@app.route("/upload", methods=["GET", "POST"])
+    if request.method == "POST":
+        if request.form:
+            data = request.form
+
+            post = Post(
+            title = data["title"],
+            text = data["text"],
+            student_id = uid,
+            created_at=datetime.datetime.now()
+            )
+
+            db.session.add(post)
+            db.session.commit()
+            flash("投稿されました。")
+            return redirect(url_for('home', uid=uid))
+
+    return render_template("post.html")
+
+@app.route("/mentor_upload", methods=["GET", "POST"])
 def upload():
 
     if request.method == "POST":
@@ -269,27 +296,26 @@ def upload():
                 img = crop_max_square(img)
                 img_resize_lanczos = img.resize((350, 350), Image.LANCZOS)
                 img_resize_lanczos.save(os.path.join(app.config["GET_FOLDER"], image.filename))
-                print(filename)
 
-                employee = Employee(
+                mentor = Mentor(
                 name = data["name"],
                 filename = filename,
-                link = data["link"],
+                university = data["university"],
                 faculty = data["faculty"],
                 firm = data["firm"],
-                industry = data["industry"],
+                graduation = data["graduation"],
                 position = data["position"],
-                lab = data["lab"],
-                club = data["club"],
-                ask_clicks = 0
+                comment = data["comment"],
+                schedules = data["schedules"],
+                created_at=datetime.datetime.now()
                 )
 
-                db.session.add(employee)
+                db.session.add(mentor)
                 db.session.commit()
-                flash("Image saved")
+                flash("アカウントが作成されました")
 
             return redirect(request.url)
-    return render_template("upload.html")
+    return render_template("mentor_upload.html")
 
 
 @app.route('/logout')
@@ -297,18 +323,18 @@ def logout():
     session.pop('uid', None)
     return redirect(url_for('register'))
 
-@app.route("/delete/<id>", methods=['POST', "GET", "DELETE"])
-def employee_delete(id):
-    email = session.get('Email')
-    if email == "admin@gmail.com":
-        print(email)
-    else:
-        flash("adminに入ってください")
-        return redirect(url_for('register'))
+# @app.route("/delete/<id>", methods=['POST', "GET", "DELETE"])
+# def employee_delete(id):
+#     email = session.get('Email')
+#     if email == "admin@gmail.com":
+#         print(email)
+#     else:
+#         flash("adminに入ってください")
+#         return redirect(url_for('register'))
 
-    b = Employee.query.filter_by(id=id).first()
-    db.session.delete(b)
-    db.session.commit()
-    flash("deleted")
+#     b = Employee.query.filter_by(id=id).first()
+#     db.session.delete(b)
+#     db.session.commit()
+#     flash("deleted")
 
-    return render_template("admin.html")
+#     return render_template("admin.html")

@@ -1,31 +1,31 @@
 {% extends "layout.html" %} 
 
 {% block css %}
-<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/employee.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}"> -->
-{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css') }}"> 
+{% endblock %} 
 
 {% block title %}
-<title>Preshot/Employee</title>
+<title>Preshot/Upload</title>
 {% endblock %} 
 
 {% block content %}
-<!-- Contact Card ~ #01 -->
-{% if file %}
+<div class="upload">
+    <form action="/post" method="POST" enctype="multipart/form-data">
+        <div class="upload-area">
+            <div class="upload-container">
+                <p class="status">タイトル
+                    <br> <input placeholder="ユーザー数を２倍に.." name="title" id="title" type="text" required>
+                </p>
 
-<!-- profile画面 -->
-<div>
-    <div>
-        <div>
-            <p> 現在のemail - { data["email"] }}</p>
+                <p class="status">テキスト入力
+                    <br><input placeholder="初めまして.." type="text" id="text" name="text" required>
+                </p>
+
+                <button class="btn submit" type="submit">送信</button>
+            </div>
         </div>
-        <div>
-            <p class="status-text">- 現在のパスワード - {{ data["password"] }}</p>
-        </div>
-        <div>
-            <button type="submit" onclick="submit_entry();">アカウントを削除</button>
-        </div>
-    </div>
+    </form>
+
+
 </div>
-
 {% endblock content %} 

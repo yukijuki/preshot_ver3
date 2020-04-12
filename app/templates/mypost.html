@@ -1,0 +1,27 @@
+{% extends "layout.html" %} 
+
+{% block css %}
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/employee.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}"> -->
+{% endblock %}
+
+{% block title %}
+<title>Preshot/Employee</title>
+{% endblock %} 
+
+{% block content %}
+<!-- Contact Card ~ #01 -->
+<div>
+    <div>
+        <div>
+            <p> {{ post.id }}</p>
+            <p >{{ post.title }}</p>
+            <p >{{ post.text }}</p>
+        </div>
+        <div>
+            <p >{{ post.response }}</p>
+        </div>
+    </div>
+</div>
+
+{% endblock content %} 
