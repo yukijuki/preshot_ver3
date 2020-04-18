@@ -36,16 +36,17 @@ class Student(db.Model):
 
 class Mentor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    mid = db.Column(db.String(80), nullable=False, unique=True)
     name = db.Column(db.String(80), nullable=False, unique=True)
     email = db.Column(db.String(80), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
-    filename = db.Column(db.String(255), nullable=False, unique=True, default="default.jpg")
-    university = db.Column(db.String(80), nullable=False)
-    faculty = db.Column(db.String(80), nullable=False)
-    firm = db.Column(db.String(80), nullable=False)
-    position = db.Column(db.String(80), nullable=False)
-    graduation = db.Column(db.Integer, nullable=False)
-    comment = db.Column(db.String(255), nullable=False)
+    filename = db.Column(db.String(255), unique=True)
+    university = db.Column(db.String(80))
+    faculty = db.Column(db.String(80))
+    firm = db.Column(db.String(80))
+    position = db.Column(db.String(80))
+    graduation = db.Column(db.Integer)
+    comment = db.Column(db.String(255))
     schedules = db.relationship('Schedule', backref='mentor', lazy=True) #one to many relationship
     # reservations = db.relationship('Reservation', backref='student', lazy=True) #one to many relationship
     created_at = db.Column(db.DateTime())
@@ -81,9 +82,8 @@ class Reservation(db.Model):
     # mentor_id = db.Column(db.Integer, db.ForeignKey('mentor.id'), nullable=False)
     mentor_id = db.Column(db.Integer, nullable=False) #gotta change it to one to one relationship
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
-    day = db.Column(db.String(80), nullable=False)
-    date = db.Column(db.DateTime())
-    place = db.Column(db.String(80), nullable=False)
+    schedule_id = db.Column(db.String(80), nullable=False, unique=True)
+    post_id = db.Column(db.String(80), nullable=False, unique=True)
     created_at = db.Column(db.DateTime())
     updated_at = db.Column(db.DateTime())
 
@@ -126,9 +126,6 @@ def index():
 def register():
     if request.method == "POST":
         data = request.form
-        if data["email"] == "":
-            print("email absent")
-            return redirect(url_for('register'))
 
         """
         data = {
@@ -153,14 +150,14 @@ def register():
             db.session.add(newuser)
             db.session.commit()
             flash("登録しました")
-            return redirect(url_for('setting', uid=uid))
+            return redirect(url_for('setting'))
         
         else:
             if student.password == data["password"]:
                 session['uid'] = student.uid
 
                 flash("ログインしました")
-                return redirect(url_for('home', uid=student.uid))
+                return redirect(url_for('home'))
 
             else:  
                 #"password is wrong"
@@ -168,8 +165,8 @@ def register():
                 return redirect(request.url)
     return render_template("register.html")
 
-@app.route("/setting/<uid>", methods=["GET", "DELETE"])
-def setting(uid):
+@app.route("/setting", methods=["GET", "DELETE"])
+def setting():
 
     uid = session.get('uid')
     if uid is None:
@@ -191,8 +188,8 @@ def setting(uid):
 
     return render_template("setting.html", data = student)
 
-@app.route('/home/<uid>', methods=["GET"])
-def home(uid):
+@app.route('/home', methods=["GET"])
+def home():
 
     uid = session.get('uid')
     if uid is None:
@@ -267,8 +264,52 @@ def post():
 
     return render_template("post.html")
 
-@app.route("/mentor_upload", methods=["GET", "POST"])
-def upload():
+@app.route("/mentor_register", methods=["GET", "POST"])
+def mentor_register():
+
+    if request.method == "POST":
+        data = request.form
+
+        mentor = Mentor.query.filter_by(email=data["email"]).first()
+
+        if mentor is None:
+
+            mid = str(uuid.uuid4())
+            session['mid'] = mid
+
+            mentor = Mentor(
+            email = data["email"], 
+            mid = mid,
+            password = data["password"], 
+            created_at=datetime.datetime.now()
+            )
+            db.session.add(mentor)
+            db.session.commit()
+            flash("登録しました")
+            return redirect(url_for('mentor_profile'))
+        
+        else:
+            if mentor.password == data["password"]:
+                mentor['uid'] = mentor.uid
+
+                flash("ログインしました")
+                return redirect(url_for('mentor_profile'))
+
+            else:  
+                #"password is wrong"
+                flash("パスワードが違います")
+                return redirect(request.url)
+
+    return render_template("mentor_register.html")
+
+
+@app.route("/mentor_profile", methods=["GET", "POST"])
+def mentor_profile():
+
+    mid = session.get('uid')
+    if mid is None:
+        flash("セッションが切れました。")
+        return redirect(url_for('register'))
 
     if request.method == "POST":
         if request.form:
@@ -297,25 +338,47 @@ def upload():
                 img_resize_lanczos = img.resize((350, 350), Image.LANCZOS)
                 img_resize_lanczos.save(os.path.join(app.config["GET_FOLDER"], image.filename))
 
-                mentor = Mentor(
-                name = data["name"],
-                filename = filename,
-                university = data["university"],
-                faculty = data["faculty"],
-                firm = data["firm"],
-                graduation = data["graduation"],
-                position = data["position"],
-                comment = data["comment"],
-                schedules = data["schedules"],
-                created_at=datetime.datetime.now()
-                )
+                mentor = Mentor.query.filter_by(mid=mid).first()
 
-                db.session.add(mentor)
+                if data["name"] == "":
+                    data["name"] = mentor.name
+                
+                if filename == "":
+                    filename = mentor.filename
+
+                if data["university"] == '':
+                    data["university"] = mentor.university
+
+                if data["faculty"] == '':
+                    data["faculty"] = mentor.faculty
+                
+                if data["firm"] == "":
+                    data["firm"] = mentor.firm
+
+                if data["graduation"] == '':
+                    data["graduation"] = mentor.graduation
+
+                if data["position"] == '':
+                    data["position"] = mentor.position
+
+                if data["comment"] == '':
+                    data["comment"] = mentor.comment
+
+                mentor.name = data["name"]
+                mentor.filename = filename
+                mentor.university = data["university"]
+                mentor.faculty = data["faculty"]
+                mentor.firm = data["firm"]
+                mentor.graduation = data["graduation"]
+                mentor.position = data["position"]
+                mentor.comment = data["comment"]
+                mentor.updated_at = datetime.datetime.now()
                 db.session.commit()
-                flash("アカウントが作成されました")
 
-            return redirect(request.url)
-    return render_template("mentor_upload.html")
+                flash("プロフィールを更新されました")
+
+                return redirect(request.url)
+    return render_template("mentor_profile.html")
 
 
 @app.route('/logout')

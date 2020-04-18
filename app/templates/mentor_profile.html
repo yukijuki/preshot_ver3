@@ -1,0 +1,54 @@
+{% extends "layout.html" %} {% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css') }}"> {% endblock %} {% block title %}
+<title>Preshot/Mentor</title>
+{% endblock %} {% block content %}
+<div class="upload">
+    <form action="/mentor_upload" method="POST" enctype="multipart/form-data">
+        <div class="upload-area">
+            <div class="upload-container">
+
+                <p class="status">名前
+                    <br> <input placeholder="-" name="name" id="name" type="text" required>
+                </p>
+
+                <p class="status">大学
+                    <br><input placeholder="-" type="text" id="university" name="university" required>
+                </p>
+
+                <p class="status">学部
+                    <br> <input placeholder="-" name="faculty" id="faculty" type="text" required>
+                </p>
+
+                <p class="status">企業
+                    <br><input placeholder="-" type="text" id="firm" name="firm" required>
+                </p>
+
+                <p class="status">卒業年度
+                    <br> <input placeholder="-" name="graduation" id="graduation" type="number" required>
+                </p>
+
+                <p class="status">職種
+                    <br><input placeholder="-" type="text" id="position" name="position" required>
+                </p>
+
+                <p class="status">コメント
+                    <br><input placeholder="-" type="text" id="comment" name="comment" required>
+                </p>
+
+                <div class="status img-select">
+                    <p>プロフィール写真を選択してください</p>
+                    <div class="image-upload">選択
+                        <input type="file" class="custome-file-input" name="image" id="image" onchange="uv.style.display='inline-block'; uv.value=this.value;" required />
+                        <input type="text" id="uv" class="uploadValue" disabled />
+                    </div>
+                </div>
+
+
+                <button class="btn submit" type="submit">送信</button>
+            </div>
+        </div>
+    </form>
+
+
+</div>
+{% endblock content %}
