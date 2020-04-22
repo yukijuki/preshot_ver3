@@ -80,7 +80,6 @@ class Response(db.Model):
 class Reservation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     # mentor_id = db.Column(db.Integer, db.ForeignKey('mentor.id'), nullable=False)
-    mentor_id = db.Column(db.Integer, nullable=False) #gotta change it to one to one relationship
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
     schedule_id = db.Column(db.String(80), nullable=False, unique=True)
     post_id = db.Column(db.String(80), nullable=False, unique=True)
