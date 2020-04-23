@@ -114,12 +114,12 @@ def crop_max_square(pil_img):
     return crop_center(pil_img, min(pil_img.size), min(pil_img.size))
 
 #----------------------------------------------------------------
-#Routes
+#Student API
+#----------------------------------------------------------------
 
 @app.route("/")
 def index():
     return render_template("register.html")
-
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -187,8 +187,8 @@ def setting():
 
     return render_template("setting.html", data = student)
 
-@app.route('/home', methods=["GET"])
-def home():
+@app.route('/mypost', methods=["GET"])
+def mypost():
 
     uid = session.get('uid')
     if uid is None:
@@ -211,10 +211,10 @@ def home():
     except FileNotFoundError:
         abort(404)
 
-    return render_template("home.html", posts = response)
+    return render_template("mypost.html", posts = response)
 
-@app.route("/mypost/<post_id>", methods=["GET"])
-def mypost(post_id):
+@app.route("/mypost/<pid>", methods=["GET"])
+def mypost(pid):
 
     uid = session.get('uid')
     if uid is None:
@@ -263,6 +263,20 @@ def post():
 
     return render_template("post.html")
 
+@app.route("/select_mentor/<mid>", methods=["GET", "POST"])
+def select_mentor(mid):
+    return render_template("select_mentor.html")
+
+@app.route("/reservation/<sid>", methods=["GET", "POST"])
+def reservation(sid):
+    return render_template("reservation.html")
+
+
+
+#----------------------------------------------------------------
+#Mentor API
+#----------------------------------------------------------------
+
 @app.route("/mentor_register", methods=["GET", "POST"])
 def mentor_register():
 
@@ -300,7 +314,6 @@ def mentor_register():
                 return redirect(request.url)
 
     return render_template("mentor_register.html")
-
 
 @app.route("/mentor_profile", methods=["GET", "POST"])
 def mentor_profile():
@@ -379,6 +392,26 @@ def mentor_profile():
                 return redirect(request.url)
     return render_template("mentor_profile.html")
 
+@app.route("/mentor_schedule", methods=["GET", "POST"])
+def mentor_schedule():
+    return render_template("mentor_schedule.html")
+
+@app.route("/mentor_setting", methods=["GET", "POST"])
+def mentor_setting():
+    return render_template("mentor_setting.html")
+
+@app.route("/mentor_home", methods=["GET", "POST"])
+def mentor_home():
+    return render_template("mentor_home.html")
+
+@app.route("/mentor_home/<pid>", methods=["GET", "POST"])
+def mentor_home_pid():
+    return render_template("mentor_home_pid.html")
+
+
+#----------------------------------------------------------------
+#For both
+#----------------------------------------------------------------
 
 @app.route('/logout')
 def logout():
