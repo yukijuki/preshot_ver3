@@ -54,6 +54,7 @@ class Mentor(db.Model):
 
 class Schedule(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    sid = db.Column(db.String(80), nullable=False, unique=True)
     day = db.Column(db.String(80), nullable=False)
     date = db.Column(db.String(80), nullable=False)
     place = db.Column(db.String(80), nullable=False)
@@ -63,6 +64,7 @@ class Schedule(db.Model):
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    pid = db.Column(db.String(80), nullable=False, unique=True)
     title = db.Column(db.String(80), nullable=False)
     text = db.Column(db.String(255), nullable=False)
     response = db.relationship('Response', backref='post', lazy=True) #one to many relationship
@@ -79,7 +81,7 @@ class Response(db.Model):
 
 class Reservation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    # mentor_id = db.Column(db.Integer, db.ForeignKey('mentor.id'), nullable=False)
+    rid = db.Column(db.String(80), nullable=False, unique=True)
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
     schedule_id = db.Column(db.String(80), nullable=False, unique=True)
     post_id = db.Column(db.String(80), nullable=False, unique=True)
@@ -222,7 +224,7 @@ def mypost(pid):
         return redirect(url_for('register'))
 
     try:        
-        post = Post.query.filter_by(id=post_id).first()
+        post = Post.query.filter_by(id=pid).first()
         
         post_data = {}
         post_data["id"] = post.id
@@ -249,8 +251,11 @@ def post():
         if request.form:
             data = request.form
 
+            pid = str(uuid.uuid4())
+
             post = Post(
             title = data["title"],
+            pid = pid,
             text = data["text"],
             student_id = uid,
             created_at=datetime.datetime.now()
@@ -265,7 +270,11 @@ def post():
 
 @app.route("/select_mentor/<mid>", methods=["GET", "POST"])
 def select_mentor(mid):
-    return render_template("select_mentor.html")
+    
+    # need to call the Schedule too
+    mentor = Mentor.query.filter_by(mid=mid).first()
+
+    return render_template("select_mentor.html", data = mentor)
 
 @app.route("/reservation/<sid>", methods=["GET", "POST"])
 def reservation(sid):
@@ -303,7 +312,7 @@ def mentor_register():
         
         else:
             if mentor.password == data["password"]:
-                mentor['uid'] = mentor.uid
+                mentor['mid'] = mentor.uid
 
                 flash("ログインしました")
                 return redirect(url_for('mentor_profile'))
@@ -318,7 +327,7 @@ def mentor_register():
 @app.route("/mentor_profile", methods=["GET", "POST"])
 def mentor_profile():
 
-    mid = session.get('uid')
+    mid = session.get('mid')
     if mid is None:
         flash("セッションが切れました。")
         return redirect(url_for('register'))
@@ -394,19 +403,95 @@ def mentor_profile():
 
 @app.route("/mentor_schedule", methods=["GET", "POST"])
 def mentor_schedule():
+
+    mid = session.get('mid')
+    if mid is None:
+        flash("セッションが切れました。")
+        return redirect(url_for('register'))
+    
+    if request.method == "POST":
+        data = request.form
+
+        schedule = Schedule(
+        day = data["day"], 
+        date = data["date"],
+        place = data["place"], 
+        mentor_id = mid,
+        created_at = datetime.datetime.now()
+        )
+
+        db.session.add(mentor)
+        db.session.commit()
+
+        flash("追加しました。")
+        return redirect(url_for('mentor_profile'))
+        
     return render_template("mentor_schedule.html")
 
 @app.route("/mentor_setting", methods=["GET", "POST"])
 def mentor_setting():
-    return render_template("mentor_setting.html")
+
+    mid = session.get('mid')
+    if mid is None:
+        flash("セッションが切れました。")
+        return redirect(url_for('register'))
+
+    mentor = Mentor.query.filter_by(mid=mid).first()
+
+    if request.method == "DELETE":
+        db.session.delete(mentor)
+        db.session.commit()
+        flash("削除されました。")
+
+        session["uid"] = ""
+
+        response = make_response(jsonify(data, 200))
+        return response
+
+
+    return render_template("mentor_setting.html", data = mentor)
 
 @app.route("/mentor_home", methods=["GET", "POST"])
 def mentor_home():
-    return render_template("mentor_home.html")
+
+    mid = session.get('mid')
+    if mid is None:
+        flash("セッションが切れました。")
+        return redirect(url_for('register'))
+    
+    posts = Post.query.all()
+
+    response = []
+
+    for post in posts:
+        post_data = {}
+        post_data["id"] = post.id
+        post_data["title"] = post.title
+        post_data["text"] = post.text
+        post_data["created_at"] = post.created_at
+        response.append(post_data)    
+
+    return render_template("mentor_home.html", data = response)
 
 @app.route("/mentor_home/<pid>", methods=["GET", "POST"])
-def mentor_home_pid():
-    return render_template("mentor_home_pid.html")
+def mentor_home_pid(pid):
+
+    mid = session.get('mid')
+    if mid is None:
+        flash("セッションが切れました。")
+        return redirect(url_for('register'))
+    
+    post = Post.query.filter_by(post_id=pid).first()
+    response = Response.query.filter_by(post_id=pid).first()
+        
+    post_data = {}
+    post_data["id"] = post.id
+    post_data["title"] = post.title
+    post_data["text"] = post.text
+    post_data["response"] = post.response
+    post_data["created_at"] = post.created_at
+
+    return render_template("mentor_home_pid.html", data = post_data)
 
 
 #----------------------------------------------------------------
