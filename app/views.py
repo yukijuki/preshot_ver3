@@ -37,7 +37,7 @@ class Student(db.Model):
 class Mentor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     mid = db.Column(db.String(80), nullable=False, unique=True)
-    name = db.Column(db.String(80), nullable=False, unique=True)
+    name = db.Column(db.String(80), unique=True)
     email = db.Column(db.String(80), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
     filename = db.Column(db.String(255), unique=True)
@@ -121,7 +121,7 @@ def crop_max_square(pil_img):
 
 @app.route("/")
 def index():
-    return render_template("register.html")
+    return render_template("index.html")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -148,8 +148,10 @@ def register():
             password = data["password"], 
             created_at=datetime.datetime.now()
             )
+
             db.session.add(newuser)
             db.session.commit()
+            
             flash("登録しました")
             return redirect(url_for('setting'))
         
@@ -158,12 +160,13 @@ def register():
                 session['uid'] = student.uid
 
                 flash("ログインしました")
-                return redirect(url_for('home'))
+                return redirect(url_for('mypost'))
 
             else:  
                 #"password is wrong"
                 flash("パスワードが違います")
                 return redirect(request.url)
+
     return render_template("register.html")
 
 @app.route("/setting", methods=["GET", "DELETE"])
@@ -216,7 +219,7 @@ def mypost():
     return render_template("mypost.html", posts = response)
 
 @app.route("/mypost/<pid>", methods=["GET"])
-def mypost(pid):
+def eachpost(pid):
 
     uid = session.get('uid')
     if uid is None:
@@ -237,7 +240,7 @@ def mypost(pid):
         abort(404)
         flash("バグを運営に報告してください")
 
-    return render_template('mypost.html', post=post_data)
+    return render_template('eachpost.html', post=post_data)
 
 @app.route("/post", methods=["GET", "POST"])
 def post():
@@ -264,7 +267,8 @@ def post():
             db.session.add(post)
             db.session.commit()
             flash("投稿されました。")
-            return redirect(url_for('home', uid=uid))
+
+            return redirect(url_for('mypost'))
 
     return render_template("post.html")
 
@@ -273,6 +277,8 @@ def select_mentor(mid):
     
     # need to call the Schedule too
     mentor = Mentor.query.filter_by(mid=mid).first()
+    
+
 
     return render_template("select_mentor.html", data = mentor)
 
@@ -312,7 +318,8 @@ def mentor_register():
         
         else:
             if mentor.password == data["password"]:
-                mentor['mid'] = mentor.uid
+                print(mentor.mid)
+                session['mid'] = mentor.mid
 
                 flash("ログインしました")
                 return redirect(url_for('mentor_profile'))
@@ -323,6 +330,7 @@ def mentor_register():
                 return redirect(request.url)
 
     return render_template("mentor_register.html")
+
 
 @app.route("/mentor_profile", methods=["GET", "POST"])
 def mentor_profile():
@@ -347,7 +355,7 @@ def mentor_profile():
                 return redirect(request.url)
             else:
                 filename = secure_filename(image.filename)
-                emp_file = Employee.query.filter_by(filename=filename).first()
+                emp_file = Mentor.query.filter_by(filename=filename).first()
                 if emp_file:
                     flash("ファイル名を変更してください")
                     return redirect(request.url)
@@ -443,7 +451,7 @@ def mentor_setting():
         db.session.commit()
         flash("削除されました。")
 
-        session["uid"] = ""
+        session["mid"] = ""
 
         response = make_response(jsonify(data, 200))
         return response
@@ -465,13 +473,13 @@ def mentor_home():
 
     for post in posts:
         post_data = {}
-        post_data["id"] = post.id
+        post_data["id"] = post.pid
         post_data["title"] = post.title
         post_data["text"] = post.text
         post_data["created_at"] = post.created_at
         response.append(post_data)    
 
-    return render_template("mentor_home.html", data = response)
+    return render_template("mentor_home.html", posts = response)
 
 @app.route("/mentor_home/<pid>", methods=["GET", "POST"])
 def mentor_home_pid(pid):
@@ -481,17 +489,41 @@ def mentor_home_pid(pid):
         flash("セッションが切れました。")
         return redirect(url_for('register'))
     
-    post = Post.query.filter_by(post_id=pid).first()
+    post = Post.query.filter_by(pid=pid).first()
     response = Response.query.filter_by(post_id=pid).first()
         
     post_data = {}
-    post_data["id"] = post.id
+    post_data["id"] = post.pid
     post_data["title"] = post.title
     post_data["text"] = post.text
-    post_data["response"] = post.response
+    post_data["response"] = response
     post_data["created_at"] = post.created_at
 
-    return render_template("mentor_home_pid.html", data = post_data)
+    return render_template("mentor_home_pid.html", post = post_data)
+
+@app.route("/mentor_response/<pid>", methods=["GET", "POST"])
+def mentor_response(pid):
+
+    mid = session.get('mid')
+    if mid is None:
+        flash("セッションが切れました。")
+        return redirect(url_for('register'))
+
+    response = Response.query.filter_by(post_id = pid).filter_by(mentor_id = mid).first()
+    
+    if response is None:
+        response = Response(
+        post_id = pid,
+        mentor_id = mid,
+        created_at = datetime.datetime.now()
+        )
+
+        db.session.add(response)
+        db.session.commit()
+
+        flash("追加しました。")
+
+    return redirect(url_for('mentor_home'))
 
 
 #----------------------------------------------------------------

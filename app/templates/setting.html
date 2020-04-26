@@ -1,5 +1,10 @@
-{% extends "layout.html" %} {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}"> {% endblock %} {% block title %}
+{% extends "layout.html" %} 
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}"> 
+{% endblock %}
+
+{% block title %}
 <title>Preshot/Profile</title>
 {% endblock %} 
 
@@ -23,16 +28,17 @@
 {% endblock content %} 
 
 {% block script %}
+
 <script>
     function submit_entry() {
 
         var id = window.sessionStorage.getItem(['uid']);
 
         var entry = {
-            uid: uid.value,
+            uid: id.value
         }
 
-        fetch(`${window.origin}/profile/${uid}`, {
+        fetch(`${window.origin}/setting`, {
                 method: "DELETE",
                 credentials: "include",
                 body: JSON.stringify(entry),

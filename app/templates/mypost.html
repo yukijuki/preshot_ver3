@@ -10,18 +10,26 @@
 {% endblock %} 
 
 {% block content %}
-<!-- Contact Card ~ #01 -->
-<div>
-    <div>
-        <div>
-            <p> {{ post.id }}</p>
-            <p >{{ post.title }}</p>
-            <p >{{ post.text }}</p>
+
+<div class="card-list">
+
+    <!-- Contact Card ~ #01 -->
+    {% if posts %}
+    
+    {% for post in posts %}
+
+        <div class="card" id={{post.id}}>
+            <h1>{{ post.title }}</h1>
+            <h3>{{ post.text }}</h3>
+            <a href="/mypost/{{post.id}}">See more</a>
         </div>
-        <div>
-            <p >{{ post.response }}</p>
-        </div>
-    </div>
+
+    {% endfor %}
+
+    {% else %}
+        <h2>No files</h2>
+    {% endif %}
+
 </div>
 
-{% endblock content %} 
+{% endblock content %}

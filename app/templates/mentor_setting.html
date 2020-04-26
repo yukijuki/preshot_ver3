@@ -1,0 +1,27 @@
+{% extends "layout.html" %} 
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}"> 
+{% endblock %}
+
+{% block title %}
+<title>Preshot/Profile</title>
+{% endblock %} 
+
+{% block content %}
+
+<div>
+    <div>
+        <div>
+            <p> 現在のemail - {{ data["email"] }}</p>
+        </div>
+        <div>
+            <p> 現在のパスワード - {{ data["password"] }}</p>
+        </div>
+        <div>
+            <button type="submit" onclick="submit_entry();">アカウントを削除</button>
+        </div>
+    </div>
+</div>
+
+{% endblock content %} 
