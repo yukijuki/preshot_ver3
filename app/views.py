@@ -79,7 +79,7 @@ class Response(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     mentor_id = db.Column(db.Integer, nullable=False) 
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
-    mentor = db.relationship('Mentor', backref=db.backref('Response', lazy=True), lazy=True)
+    mentor = db.relationship('Mentor', backref=db.backref('Response', lazy=True))
     created_at = db.Column(db.DateTime())
 
 
