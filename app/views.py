@@ -32,10 +32,9 @@ class Student(db.Model):
     uid = db.Column(db.String(80), nullable=False, unique=True)
     email = db.Column(db.String(80), nullable=False, unique=True)
     password = db.Column(db.Integer, default=0)
-    posts = db.relationship('Post', backref='student', lazy=True)  # one to many relationship
-    reservations = db.relationship('Reservation', backref='student', lazy=True)  # one to many relationship
+    posts = db.relationship('Post', backref='student', lazy=True) 
+    reservations = db.relationship('Reservation', backref='student', lazy=True) 
     created_at = db.Column(db.DateTime())
-    updated_at = db.Column(db.DateTime())
 
 
 class Mentor(db.Model):
@@ -51,10 +50,8 @@ class Mentor(db.Model):
     position = db.Column(db.String(80))
     graduation = db.Column(db.Integer)
     comment = db.Column(db.String(255))
-    schedules = db.relationship('Schedule', backref='mentor', lazy=True)  # one to many relationship
-    # reservations = db.relationship('Reservation', backref='student', lazy=True) #one to many relationship
+    schedules = db.relationship('Schedule', backref='mentor', lazy=True) 
     created_at = db.Column(db.DateTime())
-    updated_at = db.Column(db.DateTime())
 
 
 class Schedule(db.Model):
@@ -65,7 +62,6 @@ class Schedule(db.Model):
     place = db.Column(db.String(80), nullable=False)
     mentor_id = db.Column(db.Integer, db.ForeignKey('mentor.id'), nullable=False)
     created_at = db.Column(db.DateTime())
-    updated_at = db.Column(db.DateTime())
 
 
 class Post(db.Model):
@@ -73,28 +69,25 @@ class Post(db.Model):
     pid = db.Column(db.String(80), nullable=False, unique=True)
     title = db.Column(db.String(80), nullable=False)
     text = db.Column(db.String(255), nullable=False)
-    response = db.relationship('Response', backref='post', lazy=True)  # one to many relationship
+    response = db.relationship('Response', backref='post', lazy=True)
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
     created_at = db.Column(db.DateTime())
-    updated_at = db.Column(db.DateTime())
 
 
 class Response(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    mentor_id = db.Column(db.Integer, nullable=False)  # gotta change it to one to one relationship
+    mentor_id = db.Column(db.Integer, nullable=False) 
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
     created_at = db.Column(db.DateTime())
-    updated_at = db.Column(db.DateTime())
 
 
 class Reservation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     rid = db.Column(db.String(80), nullable=False, unique=True)
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
-    schedule_id = db.Column(db.String(80), nullable=False, unique=True)
-    post_id = db.Column(db.String(80), nullable=False, unique=True)
+    schedule_id = db.Column(db.String(80), unique=True)
+    mentor_id = db.Column(db.String(80), unique=True, nullable=False)
     created_at = db.Column(db.DateTime())
-    updated_at = db.Column(db.DateTime())
 
 
 # ----------------------------------------------------------------
@@ -226,9 +219,6 @@ def eachpost(pid):
     if uid is None:
         flash("セッションが切れました。")
         return redirect(url_for('register'))
-    
-    #Need it for making reservation post in select mentor
-    session['pid'] = pid
 
     post = Post.query.options(
         orm.subqueryload(Post.response)
@@ -277,9 +267,11 @@ def post():
 def select_mentor(mid):
     # need to call the Schedule too
     uid = session.get('uid')
-    pid = session.get('pid')
 
-    if uid is None or pid is None:
+    #Need it for making reservation post
+    session['mentor_id'] = mid
+
+    if uid is None:
         flash("セッションが切れました。")
         return redirect(url_for('register'))
 
@@ -290,6 +282,30 @@ def select_mentor(mid):
 
 @app.route("/reservation/<sid>", methods=["GET", "POST"])
 def reservation(sid):
+    uid = session.get('uid')
+    mid = session.get('mentor_id')
+
+    if uid is None or mid is None:
+        flash("セッションが切れました。")
+        return redirect(url_for('register'))
+    
+    rid = str(uuid.uuid4())
+
+    mentor = Reservation(
+        rid=rid,
+        student_id=uid,
+        mentor_id=mid,
+        schedule_id=sid,
+        created_at=datetime.datetime.now()
+    )
+    db.session.add(mentor)
+    db.session.commit()
+    flash("登録しました")
+
+    return redirect(url_for('mypost'))
+    
+
+
     return render_template("reservation.html")
 
 
@@ -307,6 +323,8 @@ def mentor_register():
         if mentor is None:
 
             mid = str(uuid.uuid4())
+            sid = str(uuid.uuid4())
+
             session['mid'] = mid
 
             mentor = Mentor(
@@ -315,7 +333,18 @@ def mentor_register():
                 password=data["password"],
                 created_at=datetime.datetime.now()
             )
+
+            schedule = Schedule(
+                sid = sid,
+                day = "いつでも", 
+                date = "いつでも",
+                place = "オンライン", 
+                mentor_id = mid,
+                created_at = datetime.datetime.now()
+                )
+
             db.session.add(mentor)
+            db.session.add(schedule)
             db.session.commit()
             flash("登録しました")
             return redirect(url_for('mentor_profile'))
