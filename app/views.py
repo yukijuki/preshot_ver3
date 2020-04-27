@@ -208,7 +208,7 @@ def mypost():
 
         for post in posts:
             post_data = {}
-            post_data["id"] = post.id
+            post_data["pid"] = post.pid
             post_data["title"] = post.title
             post_data["text"] = post.text
             post_data["created_at"] = post.created_at
@@ -228,8 +228,8 @@ def eachpost(pid):
         return redirect(url_for('register'))
     post = Post.query.options(
         SQLAlchemy.subqueryload(Post.response)
-    ).filter_by(id=pid).order_by(Post.id).first_or_404(description="バグを運営に報告してください")
-    post_data = {"id": post.id,
+    ).filter_by(pid=pid).order_by(Post.id).first_or_404(description="バグを運営に報告してください")
+    post_data = {"pid": post.pid,
                  "title": post.title,
                  "text": post.text,
                  "response": post.response,
@@ -237,7 +237,7 @@ def eachpost(pid):
     return render_template('eachpost.html', post=post_data)
 
 
-@app.route("/post", methods=["POST"])
+@app.route("/post", methods=["GET", "POST"])
 def post():
     uid = session.get('uid')
     if uid is None:
@@ -466,7 +466,7 @@ def mentor_home():
 
     for post in posts:
         post_data = {}
-        post_data["id"] = post.pid
+        post_data["pid"] = post.pid
         post_data["title"] = post.title
         post_data["text"] = post.text
         post_data["created_at"] = post.created_at
@@ -486,7 +486,7 @@ def mentor_home_pid(pid):
     response = Response.query.filter_by(post_id=pid).all()
 
     post_data = {}
-    post_data["id"] = post.pid
+    post_data["pid"] = post.pid
     post_data["title"] = post.title
     post_data["text"] = post.text
     post_data["response"] = response
