@@ -228,12 +228,13 @@ def eachpost(pid):
 
     try:        
         post = Post.query.filter_by(id=pid).first()
+        response = Response.query.filter_by(post_id=pid).all()
         
         post_data = {}
         post_data["id"] = post.id
         post_data["title"] = post.title
         post_data["text"] = post.text
-        post_data["response"] = post.response
+        post_data["response"] = response
         post_data["created_at"] = post.created_at
         
     except FileNotFoundError:
@@ -242,7 +243,7 @@ def eachpost(pid):
 
     return render_template('eachpost.html', post=post_data)
 
-@app.route("/post", methods=["GET", "POST"])
+@app.route("/post", methods=["POST"])
 def post():
 
     uid = session.get('uid')
@@ -490,7 +491,7 @@ def mentor_home_pid(pid):
         return redirect(url_for('register'))
     
     post = Post.query.filter_by(pid=pid).first()
-    response = Response.query.filter_by(post_id=pid).first()
+    response = Response.query.filter_by(post_id=pid).all()
         
     post_data = {}
     post_data["id"] = post.pid
@@ -523,6 +524,9 @@ def mentor_response(pid):
 
         flash("追加しました。")
 
+    else:
+        flash("U already reacted")
+
     return redirect(url_for('mentor_home'))
 
 
@@ -535,18 +539,18 @@ def logout():
     session.pop('uid', None)
     return redirect(url_for('register'))
 
-# @app.route("/delete/<id>", methods=['POST', "GET", "DELETE"])
-# def employee_delete(id):
-#     email = session.get('Email')
-#     if email == "admin@gmail.com":
-#         print(email)
-#     else:
-#         flash("adminに入ってください")
-#         return redirect(url_for('register'))
+@app.route("/delete", methods=['POST', "GET", "DELETE"])
+def delete():
+    mid = session.get('mid')
+    mid = session.get('mid')
+    if mid is None:
+        flash("セッションが切れました。")
+        return redirect(url_for('register'))
 
-#     b = Employee.query.filter_by(id=id).first()
-#     db.session.delete(b)
-#     db.session.commit()
-#     flash("deleted")
+    mentor = Mentor.query.filter_by(id=id).first()
+    db.session.delete(mentor)
+    db.session.commit()
+    flash("deleted")
 
-#     return render_template("admin.html")
+    return redirect(url_for('mentor_home'))
+
