@@ -226,14 +226,20 @@ def eachpost(pid):
     if uid is None:
         flash("セッションが切れました。")
         return redirect(url_for('register'))
+    
+    #Need it for making reservation post in select mentor
+    session['pid'] = pid
+
     post = Post.query.options(
         SQLAlchemy.subqueryload(Post.response)
     ).filter_by(pid=pid).order_by(Post.id).first_or_404(description="バグを運営に報告してください")
+
     post_data = {"pid": post.pid,
                  "title": post.title,
                  "text": post.text,
                  "response": post.response,
                  "created_at": post.created_at}
+
     return render_template('eachpost.html', post=post_data)
 
 
@@ -270,6 +276,13 @@ def post():
 @app.route("/select_mentor/<mid>", methods=["GET", "POST"])
 def select_mentor(mid):
     # need to call the Schedule too
+    uid = session.get('uid')
+    pid = session.get('pid')
+
+    if uid is None or pid is None:
+        flash("セッションが切れました。")
+        return redirect(url_for('register'))
+
     mentor = Mentor.query.filter_by(mid=mid).first()
 
     return render_template("select_mentor.html", data=mentor)
@@ -408,6 +421,18 @@ def mentor_schedule():
         flash("セッションが切れました。")
         return redirect(url_for('register'))
 
+    schedules = Schedule.query.filter_by(mentor_id = mid).all()
+
+    response = []
+
+    for schedule in schedules:
+        schedule_data = {}
+        schedule_data["sid"] = schedule.sid
+        schedule_data["day"] = schedule.day
+        schedule_data["date"] = schedule.date
+        schedule_data["place"] = schedule.place
+        response.append(schedule_data)
+
     if request.method == "POST":
         data = request.form
 
@@ -426,9 +451,26 @@ def mentor_schedule():
         db.session.commit()
 
         flash("追加しました。")
-        return redirect(url_for('mentor_home'))
+        return redirect(request.url)
         
-    return render_template("mentor_schedule.html")
+    return render_template("mentor_schedule.html", schedules=response)
+
+@app.route("/mentor_schedule_delete/<sid>", methods=["GET", "DELETE"])
+def mentor_schedule_delete(sid):
+    mid = session.get('mid')
+    if mid is None:
+        flash("セッションが切れました。")
+        return redirect(url_for('register'))
+    
+    schedule = Schedule.query.filter_by(sid=sid).first()
+    db.session.delete(schedule)
+    db.session.commit()
+
+    flash("deleted")
+
+    return redirect(url_for('mentor_schedule'))
+        
+
 
 
 @app.route("/mentor_setting", methods=["GET", "POST"])

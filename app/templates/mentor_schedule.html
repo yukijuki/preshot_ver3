@@ -9,6 +9,18 @@
 {% endblock %} 
 
 {% block content %}
+
+{% for schedule in schedules %}
+
+<div class="card" id={{schedule.pid}}>
+    <h1>{{ schedule.day }}</h1>
+    <h3>{{ schedule.date }}</h3>
+    <h3>{{ schedule.place }}</h3>
+    <a href="/mentor_schedule_delete/{{schedule.sid}}">Delete</a>
+</div>
+
+{% endfor %}
+
 <div class="upload">
     <form action="/mentor_schedule" method="POST" enctype="multipart/form-data">
         <div class="upload-area">
