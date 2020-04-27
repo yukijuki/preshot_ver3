@@ -179,17 +179,6 @@ def setting():
 
     student = Student.query.filter_by(uid=uid).first()
 
-    if request.method == "DELETE":
-        print("here")
-        db.session.delete(student)
-        db.session.commit()
-        flash("削除されました。")
-
-        session["uid"] = ""
-
-        response = make_response(jsonify(data, 200))
-        return response
-
     return render_template("setting.html", data = student)
 
 @app.route('/mypost', methods=["GET"])
@@ -227,8 +216,9 @@ def eachpost(pid):
         return redirect(url_for('register'))
 
     try:        
-        post = Post.query.filter_by(id=pid).first()
+        post = Post.query.filter_by(pid=pid).first()
         response = Response.query.filter_by(post_id=pid).all()
+        mentor = Mentor.query.filter_by(mid = response.mid).all()
         
         post_data = {}
         post_data["id"] = post.id
@@ -407,7 +397,8 @@ def mentor_profile():
 
                 flash("プロフィールを更新されました")
 
-                return redirect(request.url)
+                return redirect(url_for('mentor_home'))
+
     return render_template("mentor_profile.html")
 
 @app.route("/mentor_schedule", methods=["GET", "POST"])
@@ -421,7 +412,10 @@ def mentor_schedule():
     if request.method == "POST":
         data = request.form
 
+        sid = str(uuid.uuid4())
+
         schedule = Schedule(
+        sid = sid,
         day = data["day"], 
         date = data["date"],
         place = data["place"], 
@@ -429,11 +423,11 @@ def mentor_schedule():
         created_at = datetime.datetime.now()
         )
 
-        db.session.add(mentor)
+        db.session.add(schedule)
         db.session.commit()
 
         flash("追加しました。")
-        return redirect(url_for('mentor_profile'))
+        return redirect(url_for('mentor_home'))
         
     return render_template("mentor_schedule.html")
 
@@ -513,6 +507,7 @@ def mentor_response(pid):
     response = Response.query.filter_by(post_id = pid).filter_by(mentor_id = mid).first()
     
     if response is None:
+
         response = Response(
         post_id = pid,
         mentor_id = mid,
@@ -539,18 +534,36 @@ def logout():
     session.pop('uid', None)
     return redirect(url_for('register'))
 
-@app.route("/delete", methods=['POST', "GET", "DELETE"])
+@app.route("/delete", methods=["GET", "DELETE"])
 def delete():
-    mid = session.get('mid')
+    uid = session.get('uid')
+    if uid is None:
+        flash("セッションが切れました。")
+        return redirect(url_for('register'))
+    
+    student = Student.query.filter_by(uid=uid).first()
+    db.session.delete(student)
+    db.session.commit()
+
+    session.pop('uid', None)
+
+    flash("deleted")
+
+    return redirect(url_for('register'))
+
+@app.route("/mentor_delete", methods=["GET", "DELETE"])
+def mentor_delete():
     mid = session.get('mid')
     if mid is None:
         flash("セッションが切れました。")
         return redirect(url_for('register'))
-
-    mentor = Mentor.query.filter_by(id=id).first()
+    
+    mentor = Mentor.query.filter_by(mid=mid).first()
     db.session.delete(mentor)
     db.session.commit()
     flash("deleted")
 
-    return redirect(url_for('mentor_home'))
+    session.pop('mid', None)
+
+    return redirect(url_for('mentor_register'))
 

@@ -20,45 +20,9 @@
             <p> 現在のパスワード - {{ data["password"] }}</p>
         </div>
         <div>
-            <button type="submit" onclick="submit_entry();">アカウントを削除</button>
+            <a href="/delete"> delete</a>
         </div>
     </div>
 </div>
 
 {% endblock content %} 
-
-{% block script %}
-
-<script>
-    function submit_entry() {
-
-        var id = window.sessionStorage.getItem(['uid']);
-
-        var entry = {
-            uid: id.value
-        }
-
-        fetch(`${window.origin}/setting`, {
-                method: "DELETE",
-                credentials: "include",
-                body: JSON.stringify(entry),
-                cache: "no-cache",
-                headers: new Headers({
-                    "content-type": "application/json"
-                })
-            })
-            .then(function(response) {
-
-                if (response.status != 200) {
-                    console.log(`response status was not 200: ${response.status}`);
-                    return;
-                }
-
-                response.json().then(function(data) {
-                    location.reload();
-                    console.log(data)
-                })
-            })
-    }
-</script>
-{% endblock %}
