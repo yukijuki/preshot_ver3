@@ -10,6 +10,7 @@ import uuid
 UPLOAD_FOLDER = '/static/img'
 GET_FOLDER = '/static/img-get'
 PHYSICAL_ROOT = os.path.dirname(os.path.abspath(__file__))
+POSTS_PER_PAGE = 10
 
 # app.config.from_object("config.DevelopmentConfig")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
@@ -81,8 +82,9 @@ class Post(db.Model):
 
 class Response(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    mentor_id = db.Column(db.Integer, nullable=False)  # gotta change it to one to one relationship
+    mentor_id = db.Column(db.Integer, db.ForeignKey('mentor.id'), nullable=False)  # gotta change it to one to one relationship
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    mentor = db.relationship('Mentor', backref=db.backref('Response', lazy=True), lazy=True)
     created_at = db.Column(db.DateTime())
     updated_at = db.Column(db.DateTime())
 
@@ -501,9 +503,12 @@ def mentor_home():
     if mid is None:
         flash("セッションが切れました。")
         return redirect(url_for('register'))
-
-    posts = Post.query.all()
-
+    page: int = request.args.get('page', 1, type=int)
+    posts = Post.query.all().paginate(page, 10, False)
+    next_url = url_for('index', page=posts.next_num) \
+        if posts.has_next else None
+    prev_url = url_for('index', page=posts.prev_num) \
+        if posts.has_prev else None
     response = []
 
     for post in posts:
@@ -514,7 +519,7 @@ def mentor_home():
         post_data["created_at"] = post.created_at
         response.append(post_data)
 
-    return render_template("mentor_home.html", posts=response)
+    return render_template("mentor_home.html", posts=response, next_url = next_url, prev_url=prev_url)
 
 
 @app.route("/mentor_home/<pid>", methods=["GET", "POST"])
