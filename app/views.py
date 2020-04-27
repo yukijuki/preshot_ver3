@@ -1,7 +1,7 @@
 from app import app
 from flask import Flask, request, redirect, session, send_from_directory, jsonify, render_template, make_response, \
     url_for, abort, flash
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy, orm
 import datetime, os, secrets
 from werkzeug.utils import secure_filename
 from PIL import Image
@@ -231,7 +231,7 @@ def eachpost(pid):
     session['pid'] = pid
 
     post = Post.query.options(
-        SQLAlchemy.subqueryload(Post.response)
+        orm.subqueryload(Post.response)
     ).filter_by(pid=pid).order_by(Post.id).first_or_404(description="バグを運営に報告してください")
 
     post_data = {"pid": post.pid,
