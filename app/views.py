@@ -192,23 +192,7 @@ def setting():
 
     student = Student.query.filter_by(uid=uid).first()
 
-<<<<<<< HEAD
     return render_template("setting.html", data = student)
-=======
-    if request.method == "DELETE":
-        print("here")
-        db.session.delete(student)
-        db.session.commit()
-        flash("削除されました。")
-
-        session["uid"] = ""
-
-        response = make_response(jsonify(data, 200))
-        return response
-
-    return render_template("setting.html", data=student)
-
->>>>>>> 6b260f4e293be38080bd89497e5018ecf122e82c
 
 @app.route('/mypost', methods=["GET"])
 def mypost():
@@ -242,25 +226,6 @@ def eachpost(pid):
     if uid is None:
         flash("セッションが切れました。")
         return redirect(url_for('register'))
-<<<<<<< HEAD
-
-    try:        
-        post = Post.query.filter_by(pid=pid).first()
-        response = Response.query.filter_by(post_id=pid).all()
-        mentor = Mentor.query.filter_by(mid = response.mid).all()
-        
-        post_data = {}
-        post_data["id"] = post.id
-        post_data["title"] = post.title
-        post_data["text"] = post.text
-        post_data["response"] = response
-        post_data["created_at"] = post.created_at
-        
-    except FileNotFoundError:
-        abort(404)
-        flash("バグを運営に報告してください")
-
-=======
     post = Post.query.options(
         SQLAlchemy.subqueryload(Post.response)
     ).filter_by(id=pid).order_by(Post.id).first_or_404(description="バグを運営に報告してください")
@@ -269,7 +234,6 @@ def eachpost(pid):
                  "text": post.text,
                  "response": post.response,
                  "created_at": post.created_at}
->>>>>>> 6b260f4e293be38080bd89497e5018ecf122e82c
     return render_template('eachpost.html', post=post_data)
 
 
@@ -450,33 +414,20 @@ def mentor_schedule():
         sid = str(uuid.uuid4())
 
         schedule = Schedule(
-<<<<<<< HEAD
         sid = sid,
         day = data["day"], 
         date = data["date"],
         place = data["place"], 
         mentor_id = mid,
         created_at = datetime.datetime.now()
-=======
-            day=data["day"],
-            date=data["date"],
-            place=data["place"],
-            mentor_id=mid,
-            created_at=datetime.datetime.now()
->>>>>>> 6b260f4e293be38080bd89497e5018ecf122e82c
         )
 
         db.session.add(schedule)
         db.session.commit()
 
         flash("追加しました。")
-<<<<<<< HEAD
         return redirect(url_for('mentor_home'))
         
-=======
-        return redirect(url_for('mentor_profile'))
-
->>>>>>> 6b260f4e293be38080bd89497e5018ecf122e82c
     return render_template("mentor_schedule.html")
 
 
@@ -581,12 +532,7 @@ def logout():
     session.pop('uid', None)
     return redirect(url_for('register'))
 
-<<<<<<< HEAD
 @app.route("/delete", methods=["GET", "DELETE"])
-=======
-
-@app.route("/delete", methods=['POST', "GET", "DELETE"])
->>>>>>> 6b260f4e293be38080bd89497e5018ecf122e82c
 def delete():
     uid = session.get('uid')
     if uid is None:
@@ -615,11 +561,7 @@ def mentor_delete():
     db.session.commit()
     flash("deleted")
 
-<<<<<<< HEAD
     session.pop('mid', None)
 
     return redirect(url_for('mentor_register'))
 
-=======
-    return redirect(url_for('mentor_home'))
->>>>>>> 6b260f4e293be38080bd89497e5018ecf122e82c
