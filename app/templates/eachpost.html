@@ -11,7 +11,8 @@
 
         {% for response in post.response %}
 
-            <h1>{{ response.mentor_id }}</h1>
+            <h1>{{ response.mentor.name }}</h1>
+            <p>{{ response.mentor.filename }}</p>
 
         {% endfor %}
         
