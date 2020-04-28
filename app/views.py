@@ -77,9 +77,9 @@ class Post(db.Model):
 
 class Response(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    mentor_id = db.Column(db.Integer, nullable=False) 
+    mentor_id = db.Column(db.Integer, db.ForeignKey('mentor.id'), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
-    mentor_id = db.Column(db.String(80), nullable=False, unique=True)
+    mentor = db.relationship('Mentor', backref=db.backref('response', lazy=True))
     created_at = db.Column(db.DateTime())
 
 
@@ -535,13 +535,10 @@ def mentor_home():
 
     page: int = request.args.get('page', 1, type=int)
 
-    posts = Post.query.all().paginate(page, 10, False)
-
-    next_url = url_for('index', page=posts.next_num) \
-        if posts.has_next else None
-    prev_url = url_for('index', page=posts.prev_num) \
-        if posts.has_prev else None
-
+    posts = Post.query.paginate(page, 10, False)
+    next_url = url_for('index', page=posts.next_num) if posts.has_next else None
+    prev_url = url_for('index', page=posts.prev_num) if posts.has_prev else None
+    
     response = []
 
     for post in posts:
