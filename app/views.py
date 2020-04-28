@@ -71,7 +71,7 @@ class Post(db.Model):
     title = db.Column(db.String(80), nullable=False)
     text = db.Column(db.String(255), nullable=False)
     response = db.relationship('Response', backref='post', lazy=True)
-    student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
+    student_id = db.Column(db.String(80), db.ForeignKey('student.id'), nullable=False)
     created_at = db.Column(db.DateTime())
 
 
@@ -79,14 +79,14 @@ class Response(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     mentor_id = db.Column(db.Integer, nullable=False) 
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
-    mentor = db.relationship('Mentor', backref=db.backref('Response', lazy=True))
+    mentor = db.Column(db.String(80), nullable=False, unique=True)
     created_at = db.Column(db.DateTime())
 
 
 class Reservation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     rid = db.Column(db.String(80), nullable=False, unique=True)
-    student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
+    student_id = db.Column(db.String(80), db.ForeignKey('student.id'), nullable=False)
     schedule_id = db.Column(db.String(80), unique=True)
     mentor_id = db.Column(db.String(80), unique=True, nullable=False)
     created_at = db.Column(db.DateTime())
@@ -532,12 +532,16 @@ def mentor_home():
     if mid is None:
         flash("セッションが切れました。")
         return redirect(url_for('register'))
+
     page: int = request.args.get('page', 1, type=int)
+    
     posts = Post.query.all().paginate(page, 10, False)
+
     next_url = url_for('index', page=posts.next_num) \
         if posts.has_next else None
     prev_url = url_for('index', page=posts.prev_num) \
         if posts.has_prev else None
+
     response = []
 
     for post in posts:
