@@ -79,7 +79,7 @@ class Response(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     mentor_id = db.Column(db.Integer, nullable=False) 
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
-    mentor = db.Column(db.String(80), nullable=False, unique=True)
+    mentor_id = db.Column(db.String(80), nullable=False, unique=True)
     created_at = db.Column(db.DateTime())
 
 
@@ -534,7 +534,7 @@ def mentor_home():
         return redirect(url_for('register'))
 
     page: int = request.args.get('page', 1, type=int)
-    
+
     posts = Post.query.all().paginate(page, 10, False)
 
     next_url = url_for('index', page=posts.next_num) \
