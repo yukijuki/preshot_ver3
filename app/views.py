@@ -535,7 +535,7 @@ def mentor_home():
 
     page: int = request.args.get('page', 1, type=int)
 
-    posts = Post.query.paginate(page, 10, False)
+    posts = Post.query.paginate(page, 10, False).items
     next_url = url_for('index', page=posts.next_num) if posts.has_next else None
     prev_url = url_for('index', page=posts.prev_num) if posts.has_prev else None
     response = []
