@@ -3,7 +3,11 @@
     <div class="card" id={{post.id}}>
         <h1>{{ post.title }}</h1>
         <h3>{{ post.text }}</h3>
-        <h3>{{ post.response }}</h3>
+        {% if post.response  %}
+            <h2>Reacted</h2>
+        {% else %}
+            <h2>Want to react?</h2>
+        {% endif %}
         <a href="/mentor_response/{{post.pid}}">React</a>
     </div>
 

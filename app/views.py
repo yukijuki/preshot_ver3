@@ -1,6 +1,6 @@
 from app import app
 from flask import Flask, request, redirect, session, send_from_directory, jsonify, render_template, make_response, \
-    url_for, abort, flash
+url_for, abort, flash
 from flask_sqlalchemy import SQLAlchemy, orm
 import datetime, os, secrets
 from werkzeug.utils import secure_filename
@@ -222,9 +222,11 @@ def eachpost(pid):
         flash("セッションが切れました。")
         return redirect(url_for('register'))
 
-    post = Post.query.options(
-        orm.subqueryload(Post.response)
-    ).filter_by(pid=pid).order_by(Post.id).first_or_404(description="バグを運営に報告してください")
+    # post = Post.query.options(
+    #     orm.subqueryload(Post.response)
+    # ).filter_by(pid=pid).order_by(Post.id).first_or_404(description="バグを運営に報告してください")
+    post = Post.query.filter_by(pid=pid).first()
+    response = Response.query.filter_by(rid=post.response_id).all()
 
     post_data = {"pid": post.pid,
                  "title": post.title,
@@ -486,6 +488,7 @@ def mentor_schedule():
         
     return render_template("mentor_schedule.html", schedules=response)
 
+
 @app.route("/mentor_schedule_delete/<sid>", methods=["GET", "DELETE"])
 def mentor_schedule_delete(sid):
     mid = session.get('mid')
@@ -500,8 +503,6 @@ def mentor_schedule_delete(sid):
     flash("deleted")
 
     return redirect(url_for('mentor_schedule'))
-        
-
 
 
 @app.route("/mentor_setting", methods=["GET", "POST"])
