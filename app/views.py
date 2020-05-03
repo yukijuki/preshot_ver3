@@ -1,6 +1,5 @@
 from app import app
-from flask import Flask, request, redirect, session, send_from_directory, jsonify, render_template, make_response, \
-url_for, abort, flash
+from flask import Flask, request, redirect, session, send_from_directory, jsonify, render_template, make_response, url_for, abort, flash
 from flask_sqlalchemy import SQLAlchemy, orm
 import datetime, os, secrets
 from werkzeug.utils import secure_filename
@@ -130,18 +129,17 @@ def crop_max_square(pil_img):
 def index():
     return render_template("index.html")
 
+@app.route("/test",  methods=["GET"])
+def test():
+    mentors = Mentor.query.all()
+
+    return render_template("test.html", mentors = mentors)
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         data = request.form
-
-        """
-        data = {
-            "email":"Str",
-            "password" = 6,
-        }
-        """
 
         student = Student.query.filter_by(email=data["email"]).first()
 
@@ -159,20 +157,19 @@ def register():
 
             db.session.add(newuser)
             db.session.commit()
-
-            flash("登録しました")
+            flash("Created")
             return redirect(url_for('setting'))
 
         else:
             if student.password == data["password"]:
                 session['uid'] = student.uid
 
-                flash("ログインしました")
+                flash("Logged in")
                 return redirect(url_for('mypost'))
 
             else:
                 # "password is wrong"
-                flash("パスワードが違います")
+                flash("Wrong password")
                 return redirect(request.url)
 
     return render_template("register.html")
@@ -182,7 +179,7 @@ def register():
 def setting():
     uid = session.get('uid')
     if uid is None:
-        flash("セッションが切れました。")
+        flash("Session is no longer available")
         return redirect(url_for('register'))
 
     student = Student.query.filter_by(uid=uid).first()
@@ -193,7 +190,7 @@ def setting():
 def mypost():
     uid = session.get('uid')
     if uid is None:
-        flash("セッションが切れました。")
+        flash("Session is no longer available")
         return redirect(url_for('register'))
 
     try:
@@ -219,14 +216,13 @@ def mypost():
 def eachpost(pid):
     uid = session.get('uid')
     if uid is None:
-        flash("セッションが切れました。")
+        flash("Session is no longer available")
         return redirect(url_for('register'))
 
     # post = Post.query.options(
     #     orm.subqueryload(Post.response)
-    # ).filter_by(pid=pid).order_by(Post.id).first_or_404(description="バグを運営に報告してください")
+    # ).filter_by(pid=pid).order_by(Post.id).first_or_404(description="contact")
     post = Post.query.filter_by(pid=pid).first()
-    response = Response.query.filter_by(rid=post.response_id).all()
 
     post_data = {"pid": post.pid,
                  "title": post.title,
@@ -241,7 +237,7 @@ def eachpost(pid):
 def post():
     uid = session.get('uid')
     if uid is None:
-        flash("セッションが切れました。")
+        flash("Session is no longer available")
         return redirect(url_for('register'))
 
     if request.method == "POST":
@@ -260,7 +256,7 @@ def post():
 
             db.session.add(post)
             db.session.commit()
-            flash("投稿されました。")
+            flash("Posted")
 
             return redirect(url_for('mypost'))
 
@@ -276,7 +272,6 @@ def select_mentor(mid):
     session['mentor_id'] = mid
 
     if uid is None:
-        flash("セッションが切れました。")
         return redirect(url_for('register'))
 
     mentor = Mentor.query.filter_by(mid=mid).first()
@@ -290,7 +285,6 @@ def reservation(sid):
     mid = session.get('mentor_id')
 
     if uid is None or mid is None:
-        flash("セッションが切れました。")
         return redirect(url_for('register'))
     
     rid = str(uuid.uuid4())
