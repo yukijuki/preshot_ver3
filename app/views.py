@@ -398,9 +398,11 @@ def mentor_profile():
         return redirect(url_for('register'))
 
     if request.method == "POST":
+        filename = ""
+        
         if request.form:
 
-            data = request.form
+            data = request.form.to_dict()
 
             if request.files["image"]:
                 image = request.files["image"]
@@ -413,11 +415,11 @@ def mentor_profile():
                     flash("PNG, JPG, JPEGを選んでください")
                     return redirect(request.url)
                 else:
-                    # filename = secure_filename(image.filename)
-                    # emp_file = Mentor.query.filter_by(filename=filename).first()
-                    # if emp_file:
-                    #     flash("ファイル名を変更してください")
-                    #     return redirect(request.url)
+                    filename = secure_filename(image.filename)
+                    emp_file = Mentor.query.filter_by(filename=filename).first()
+                    if emp_file:
+                        flash("ファイル名を変更してください")
+                        return redirect(request.url)
 
                     image.save(os.path.join(app.config["UPLOAD_FOLDER"], image.filename))
 
