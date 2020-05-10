@@ -32,8 +32,6 @@ class Student(db.Model):
     uid = db.Column(db.String(80), nullable=False, unique=True)
     email = db.Column(db.String(80), nullable=False, unique=True)
     password = db.Column(db.Integer, default=0)
-    posts = db.relationship('Post', backref='student', lazy=True) 
-    reservations = db.relationship('Reservation', backref='student', lazy=True) 
     created_at = db.Column(db.DateTime())
 
 
@@ -50,7 +48,6 @@ class Mentor(db.Model):
     position = db.Column(db.String(80))
     graduation = db.Column(db.Integer)
     comment = db.Column(db.String(255))
-    schedules = db.relationship('Schedule', backref='mentor', lazy=True) 
     created_at = db.Column(db.DateTime())
 
 
@@ -60,7 +57,7 @@ class Schedule(db.Model):
     day = db.Column(db.String(80), nullable=False)
     date = db.Column(db.String(80), nullable=False)
     place = db.Column(db.String(80), nullable=False)
-    mentor_id = db.Column(db.Integer, db.ForeignKey('mentor.id'), nullable=False)
+    mentor_id = db.Column(db.String(80), nullable=False)
     created_at = db.Column(db.DateTime())
 
 
@@ -69,25 +66,23 @@ class Post(db.Model):
     pid = db.Column(db.String(80), nullable=False, unique=True)
     title = db.Column(db.String(80), nullable=False)
     text = db.Column(db.String(255), nullable=False)
-    response = db.relationship('Response', backref='post', lazy=True)
-    student_id = db.Column(db.String(80), db.ForeignKey('student.id'), nullable=False)
+    student_id = db.Column(db.String(80), nullable=False)
     created_at = db.Column(db.DateTime())
 
 
 class Response(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    mentor_id = db.Column(db.Integer, db.ForeignKey('mentor.id'), nullable=False)
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
-    mentor = db.relationship('Mentor', backref=db.backref('response', lazy=True))
+    mentor_id = db.Column(db.String(80), nullable=False, unique=True)
+    post_id = db.Column(db.String(80), nullable=False)
     created_at = db.Column(db.DateTime())
 
 
 class Reservation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     rid = db.Column(db.String(80), nullable=False, unique=True)
-    student_id = db.Column(db.String(80), db.ForeignKey('student.id'), nullable=False)
+    student_id = db.Column(db.String(80), nullable=False)
     schedule_id = db.Column(db.String(80), unique=True)
-    mentor_id = db.Column(db.String(80), unique=True, nullable=False)
+    mentor_id = db.Column(db.String(80), nullable=False)
     created_at = db.Column(db.DateTime())
 
 
@@ -219,15 +214,23 @@ def eachpost(pid):
         flash("Session is no longer available")
         return redirect(url_for('register'))
 
-    # post = Post.query.options(
-    #     orm.subqueryload(Post.response)
-    # ).filter_by(pid=pid).order_by(Post.id).first_or_404(description="contact")
     post = Post.query.filter_by(pid=pid).first()
+    responses = Response.query.filter_by(post_id=pid).all()
 
+    mentor_info = []
+
+    for response in responses:
+        mentor = Mentor.query.filter_by(mid = response.mentor_id).first()
+        mentor_data = {}
+        mentor_data["mid"] = mentor.mid
+        mentor_data["name"] = mentor.name
+        mentor_data["filename"] = mentor.filename
+        mentor_info.append(mentor_data)
+        
     post_data = {"pid": post.pid,
                  "title": post.title,
                  "text": post.text,
-                 "response": post.response,
+                 "response": mentor_info,
                  "created_at": post.created_at}
 
     return render_template('eachpost.html', post=post_data)
@@ -301,8 +304,6 @@ def reservation(sid):
     flash("登録しました")
 
     return redirect(url_for('mypost'))
-    
-
 
     return render_template("reservation.html")
 
