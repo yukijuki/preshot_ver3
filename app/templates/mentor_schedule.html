@@ -1,4 +1,7 @@
-{% extends "layout.html" %} 
+{% extends "mentor_layout.html" %} 
+
+{% block content %}
+
 
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css') }}"> 
@@ -8,7 +11,6 @@
 <title>Preshot/Upload</title>
 {% endblock %} 
 
-{% block content %}
 
 {% for schedule in schedules %}
 

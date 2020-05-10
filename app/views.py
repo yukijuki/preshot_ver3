@@ -81,7 +81,7 @@ class Reservation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     rid = db.Column(db.String(80), nullable=False, unique=True)
     student_id = db.Column(db.String(80), nullable=False)
-    schedule_id = db.Column(db.String(80), unique=True)
+    schedule_id = db.Column(db.String(80), nullable=False)
     mentor_id = db.Column(db.String(80), nullable=False)
     created_at = db.Column(db.DateTime())
 
@@ -270,16 +270,41 @@ def post():
 def select_mentor(mid):
     # need to call the Schedule too
     uid = session.get('uid')
+    if uid is None:
+        flash("Session is no longer available")
+        return redirect(url_for('register'))
 
     #Need it for making reservation post
     session['mentor_id'] = mid
 
-    if uid is None:
-        return redirect(url_for('register'))
 
     mentor = Mentor.query.filter_by(mid=mid).first()
+    schedules = Schedule.query.filter_by(mentor_id=mid).all()
 
-    return render_template("select_mentor.html", data=mentor)
+    schedule_info = []
+
+    for schedule in schedules:
+        schedule_data = {}
+        schedule_data["sid"] = schedule.sid
+        schedule_data["day"] = schedule.day
+        schedule_data["date"] = schedule.date
+        schedule_data["place"] = schedule.place
+        schedule_info.append(schedule_data)
+        
+    mentor_data = {
+                    "mid": mentor.mid,
+                    "name": mentor.name,
+                    "filename": mentor.filename,
+                    "university": mentor.university,
+                    "faculty": mentor.faculty,
+                    "firm": mentor.firm,
+                    "position": mentor.position,
+                    "schedule": schedule_info,
+                    "comment": mentor.comment,
+                    "graduation": mentor.graduation
+                }
+
+    return render_template("select_mentor.html", mentor = mentor_data)
 
 
 @app.route("/reservation/<sid>", methods=["GET", "POST"])
@@ -301,11 +326,12 @@ def reservation(sid):
     )
     db.session.add(mentor)
     db.session.commit()
+    
     flash("登録しました")
 
-    return redirect(url_for('mypost'))
+    #return redirect(url_for('mypost'))
 
-    return render_template("reservation.html")
+    return render_template("reservation.html", rid = rid)
 
 
 # ----------------------------------------------------------------
