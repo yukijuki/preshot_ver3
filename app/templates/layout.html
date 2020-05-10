@@ -20,12 +20,16 @@
         .lead{
             font-weight: 500;
         }
+        body{ 
+            padding-top: 60px; 
+        }
     </style>
     {% block css %}{% endblock %}
     {% block title %}{% endblock %}
 </head>
 
 <body>
+    <div class='fixed-top'>
     <nav class="navbar preshot-color">
         <nav class="navbar preshot-color">
             <a class="navbar-text text-white" href="#">＜戻る</a>
@@ -41,7 +45,8 @@
             </a>
         </nav>
         
-    </nav>  
+    </nav>
+    </div>
 
     {% for message in get_flashed_messages() %}
     <div class="alert">{{ message }}</div>
