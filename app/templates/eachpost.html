@@ -7,15 +7,23 @@
             <p> {{ post.pid }}</p>
             <p >{{ post.title }}</p>
             <p >{{ post.text }}</p>
-            <p >{{ post.response }}</p>
         </div>
 
-        {% for response in post.response %}
+        {% if post.response %}
+    
+        {% for post_response in post.response %}
 
-            <h1>{{ response.mentor.name }}</h1>
-            <p>{{ response.mentor.filename }}</p>
+            <div class="card" id={{post_response.mid}}>
+                <p >{{ post_response.name }}</p>
+                <p >{{ post_response.filename }}</p>
+                <a href="/select_mentor/{{post_response.mid}}">See this mentor</a>
+            </div>
 
         {% endfor %}
+
+        {% else %}
+            <h2>No Response</h2>
+        {% endif %}
         
     </div>
 </div>
