@@ -1,0 +1,31 @@
+{% extends "layout.html" %} 
+
+{% block content %}
+<!-- Contact Card ~ #01 -->
+<div>
+    <div>
+
+        {% if chatlist %}
+    
+        {% for chat in chatlist %}
+
+            <div class="card">
+                <p >{{ chat.date }}</p>
+                <p >{{ chat.day }}</p>
+                <p >{{ chat.place }}</p>
+                <img src=/{{chat.filename}} alt="pic1">
+                <p >{{ chat.name }}</p>
+                <p >{{ chat.created_at }}</p>
+                <a href="/chat/{{chat.rid}}">Got to chat with this mentor</a>
+            </div>
+
+        {% endfor %}
+
+        {% else %}
+            <h2>No Reservation</h2>
+        {% endif %}
+        
+    </div>
+</div>
+
+{% endblock content %} 
