@@ -1,0 +1,37 @@
+{% block content %}
+<!-- Contact Card ~ #01 -->
+<div>
+    <div>
+
+        <div>
+            <p> {{ mentor.mid }}</p>
+            <p >{{ mentor.name }}</p>
+            <p >{{ mentor.filename }}</p>
+            <p >{{ mentor.university }}</p>
+            <p >{{ mentor.faculty }}</p>
+            <p >{{ mentor.firm }}</p>
+            <p >{{ mentor.comment }}</p>
+            <p >{{ mentor.graduation }}</p>
+        </div>
+
+        {% if mentor.schedule %}
+    
+        {% for schedule in mentor.schedule %}
+
+            <div class="card" id={{schedule.sid}}>
+                <p >{{ schedule.day }}</p>
+                <p >{{ schedule.date }}</p>
+                <p >{{ schedule.place }}</p>
+                <a href="/reservation/{{schedule.sid}}">See this Reservation</a>
+            </div>
+
+        {% endfor %}
+
+        {% else %}
+            <h2>No Schedule</h2>
+        {% endif %}
+        
+    </div>
+</div>
+
+{% endblock content %} 
