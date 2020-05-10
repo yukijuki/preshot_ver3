@@ -333,6 +333,14 @@ def reservation(sid):
 
     return render_template("reservation.html", rid = rid)
 
+@app.route("/chat/<rid>", methods=["GET", "POST"])
+def chat(rid):
+    return render_template("chat.html")
+
+@app.route("/chatlist", methods=["GET", "POST"])
+def chatlist():
+    return render_template("chatlist.html")
+
 
 # ----------------------------------------------------------------
 # Mentor API
@@ -399,7 +407,7 @@ def mentor_profile():
 
     if request.method == "POST":
         filename = ""
-        
+
         if request.form:
 
             data = request.form.to_dict()
@@ -626,9 +634,16 @@ def mentor_response(pid):
 
     return redirect(url_for('mentor_home'))
 
+@app.route("/mentor_chat/<rid>", methods=["GET", "POST"])
+def mentor_chat(rid):
+    return render_template("mentor_chat.html")
+
+@app.route("/mentor_chatlist", methods=["GET", "POST"])
+def mentor_chatlist():
+    return render_template("mentor_chatlist.html")
 
 # ----------------------------------------------------------------
-# For both
+# Delete or logout
 # ----------------------------------------------------------------
 
 @app.route('/logout')
