@@ -8,28 +8,40 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
     <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>preshot</title>
+    <style>
+        .navbar{
+            padding: .2rem .5rem;
+        }
+        .preshot-color{
+            background-color: #FF514D;
+        }
+        .lead{
+            font-weight: 500;
+        }
+    </style>
     {% block css %}{% endblock %}
     {% block title %}{% endblock %}
 </head>
 
 <body>
-    <!-- <header>
-        <ul class="tab-nav">
-            <li class="tab tab-logo">
-                <a href="/"><img src="{{ url_for('static', filename='preshot_img/preshot_logo02.png') }}" alt="preshot_logo"></a>
-            </li>　　　
-            <li class="tab left">
-                <a href="/home" class="fas fa-address-card"></a>
-            </li>
-            <li class="tab center is-active">
-                <a href="/profile" class="fas fa-cogs"></a>
-            </li>
-            <li class="tab right is-active">
-                <a href="/logout" class="fas fa-sign-out-alt"></a>
-            </li>
-        </ul>
-
-    </header> -->
+    <nav class="navbar preshot-color">
+        <nav class="navbar preshot-color">
+            <a class="navbar-text text-white" href="#">＜戻る</a>
+        </nav>
+    
+        <nav class="navbar preshot-color">
+            <a class="navbar-text text-white lead" href="#">Preshot</a>
+        </nav>
+    
+        <nav class="navbar preshot-color">
+            <a class="navbar-brand" href="#">
+                <img src="{{ url_for('static', filename='preshot_img/setting-icon.png') }}" class="" width="30" height="30" alt="">
+            </a>
+        </nav>
+        
+    </nav>  
 
     {% for message in get_flashed_messages() %}
     <div class="alert">{{ message }}</div>
