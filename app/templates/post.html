@@ -1,5 +1,6 @@
 {% extends "layout.html" %} 
 
+
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css') }}"> 
 {% endblock %} 
@@ -9,6 +10,7 @@
 {% endblock %} 
 
 {% block content %}
+
 <div class="upload">
     <form action="/post" method="POST" enctype="multipart/form-data">
         <div class="upload-area">

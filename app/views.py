@@ -380,7 +380,7 @@ def mentor_register():
                 session['mid'] = mentor.mid
 
                 flash("ログインしました")
-                return redirect(url_for('mentor_profile'))
+                return redirect(url_for('mentor_home'))
 
             else:
                 # "password is wrong"
@@ -401,69 +401,71 @@ def mentor_profile():
         if request.form:
 
             data = request.form
-            image = request.files["image"]
 
-            if image.filename == "":
-                flash("Image must have a name")
-                return redirect(request.url)
+            if request.files["image"]:
+                image = request.files["image"]
 
-            if not allowed_image(image.filename):
-                flash("PNG, JPG, JPEGを選んでください")
-                return redirect(request.url)
-            else:
-                filename = secure_filename(image.filename)
-                emp_file = Mentor.query.filter_by(filename=filename).first()
-                if emp_file:
-                    flash("ファイル名を変更してください")
+                if image.filename == "":
+                    flash("Image must have a name")
                     return redirect(request.url)
 
-                image.save(os.path.join(app.config["UPLOAD_FOLDER"], image.filename))
+                if not allowed_image(image.filename):
+                    flash("PNG, JPG, JPEGを選んでください")
+                    return redirect(request.url)
+                else:
+                    # filename = secure_filename(image.filename)
+                    # emp_file = Mentor.query.filter_by(filename=filename).first()
+                    # if emp_file:
+                    #     flash("ファイル名を変更してください")
+                    #     return redirect(request.url)
 
-                img = Image.open(os.path.join(app.config["UPLOAD_FOLDER"], image.filename))
-                img = crop_max_square(img)
-                img_resize_lanczos = img.resize((350, 350), Image.LANCZOS)
-                img_resize_lanczos.save(os.path.join(app.config["GET_FOLDER"], image.filename))
+                    image.save(os.path.join(app.config["UPLOAD_FOLDER"], image.filename))
 
-                mentor = Mentor.query.filter_by(mid=mid).first()
+                    img = Image.open(os.path.join(app.config["UPLOAD_FOLDER"], image.filename))
+                    img = crop_max_square(img)
+                    img_resize_lanczos = img.resize((350, 350), Image.LANCZOS)
+                    img_resize_lanczos.save(os.path.join(app.config["GET_FOLDER"], image.filename))
 
-                if data["name"] == "":
-                    data["name"] = mentor.name
+            mentor = Mentor.query.filter_by(mid=mid).first()
 
-                if filename == "":
-                    filename = mentor.filename
+            if data["name"] == "":
+                data["name"] = mentor.name
 
-                if data["university"] == '':
-                    data["university"] = mentor.university
+            if request.files["image"].filename == "":
+                filename = mentor.filename
 
-                if data["faculty"] == '':
-                    data["faculty"] = mentor.faculty
+            if data["university"] == '':
+                data["university"] = mentor.university
 
-                if data["firm"] == "":
-                    data["firm"] = mentor.firm
+            if data["faculty"] == '':
+                data["faculty"] = mentor.faculty
 
-                if data["graduation"] == '':
-                    data["graduation"] = mentor.graduation
+            if data["firm"] == "":
+                data["firm"] = mentor.firm
 
-                if data["position"] == '':
-                    data["position"] = mentor.position
+            if data["graduation"] == '':
+                data["graduation"] = mentor.graduation
 
-                if data["comment"] == '':
-                    data["comment"] = mentor.comment
+            if data["position"] == '':
+                data["position"] = mentor.position
 
-                mentor.name = data["name"]
-                mentor.filename = filename
-                mentor.university = data["university"]
-                mentor.faculty = data["faculty"]
-                mentor.firm = data["firm"]
-                mentor.graduation = data["graduation"]
-                mentor.position = data["position"]
-                mentor.comment = data["comment"]
-                mentor.updated_at = datetime.datetime.now()
-                db.session.commit()
+            if data["comment"] == '':
+                data["comment"] = mentor.comment
 
-                flash("プロフィールを更新されました")
+            mentor.name = data["name"]
+            mentor.filename = filename
+            mentor.university = data["university"]
+            mentor.faculty = data["faculty"]
+            mentor.firm = data["firm"]
+            mentor.graduation = data["graduation"]
+            mentor.position = data["position"]
+            mentor.comment = data["comment"]
+            mentor.updated_at = datetime.datetime.now()
+            db.session.commit()
 
-                return redirect(url_for('mentor_home'))
+            flash("プロフィールを更新されました")
+
+            return redirect(url_for('mentor_home'))
 
     return render_template("mentor_profile.html")
 
