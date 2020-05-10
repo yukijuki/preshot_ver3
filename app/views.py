@@ -230,7 +230,7 @@ def eachpost(pid):
         mentor_data = {
             "mid": mentor.mid,
             "name": mentor.name,
-            "filename": mentor.filename
+            "filename": 'static/img-get/' + mentor.filename
         }
         mentor_info.append(mentor_data)
 
@@ -303,7 +303,7 @@ def select_mentor(mid):
     mentor_data = {
         "mid": mentor.mid,
         "name": mentor.name,
-        "filename": mentor.filename,
+        "filename": 'static/img-get/' + mentor.filename,
         "university": mentor.university,
         "faculty": mentor.faculty,
         "firm": mentor.firm,
@@ -345,12 +345,43 @@ def reservation(sid):
 
 @app.route("/chat/<rid>", methods=["GET", "POST"])
 def chat(rid):
+    uid = session.get('uid')
+    if uid is None:
+        flash("Session is no longer available")
+        return redirect(url_for('register'))
+
     return render_template("chat.html")
 
 
 @app.route("/chatlist", methods=["GET", "POST"])
 def chatlist():
-    return render_template("chatlist.html")
+    # need to call the Schedule too
+    uid = session.get('uid')
+    if uid is None:
+        flash("Session is no longer available")
+        return redirect(url_for('register'))
+
+    reservations = Reservation.query.filter_by(student_id = uid).all()
+
+    chatlist = []
+
+    for reservation in reservations:
+        schedule = Schedule.query.filter_by(sid = reservation.schedule_id).first()
+        mentor = Mentor.query.filter_by(mid = reservation.mentor_id).first()
+
+        chat_history = {}
+        chat_history["date"] = schedule.date
+        chat_history["day"] = schedule.day
+        chat_history["place"] = schedule.place
+        chat_history["rid"] = reservation.rid
+        chat_history["filename"] = 'static/img-get/' + mentor.filename 
+        chat_history["name"] = mentor.name
+        chat_history["created_at"] = reservation.created_at
+        chatlist.append(chat_history)
+    
+    chatlist.sort(key=lambda x: x['created_at'], reverse=True)
+
+    return render_template("chatlist.html", chatlist = chatlist)
 
 
 # ----------------------------------------------------------------
