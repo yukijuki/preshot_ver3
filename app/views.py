@@ -333,14 +333,23 @@ def reservation(sid):
 
     return render_template("reservation.html", rid = rid)
 
+
 @app.route("/chat/<rid>", methods=["GET", "POST"])
 def chat(rid):
     uid = session.get('uid')
     if uid is None:
         flash("Session is no longer available")
         return redirect(url_for('register'))
+    
+    reservation = Reservation.query.filter_by(rid = rid).first()
+
+    mid = reservation.mentor_id
+    sid = reservation.student_id
+
+    #I need your chat system here!
 
     return render_template("chat.html")
+
 
 @app.route("/chatlist", methods=["GET", "POST"])
 def chatlist():
@@ -667,6 +676,12 @@ def mentor_response(pid):
 
 @app.route("/mentor_chat/<rid>", methods=["GET", "POST"])
 def mentor_chat(rid):
+    mid = session.get('mid')
+    if mid is None:
+        flash("セッションが切れました。")
+        return redirect(url_for('register'))
+    
+
     return render_template("mentor_chat.html")
 
 @app.route("/mentor_chatlist", methods=["GET", "POST"])
