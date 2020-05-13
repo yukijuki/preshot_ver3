@@ -7,7 +7,7 @@ from flask import request, redirect, session, jsonify, render_template, make_res
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 
-from app import app
+from app import app, socketio
 
 UPLOAD_FOLDER = '/static/img'
 GET_FOLDER = '/static/img-get'
@@ -68,7 +68,7 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     pid = db.Column(db.String(80), nullable=False, unique=True)
     title = db.Column(db.String(80), nullable=False)
-    text = db.Column(db.String(255), nullable=False)
+    text = db.Column(db.UnicodeText, nullable=False)
     student_id = db.Column(db.String(80), nullable=False)
     created_at = db.Column(db.DateTime())
 
@@ -87,6 +87,14 @@ class Reservation(db.Model):
     schedule_id = db.Column(db.String(80), nullable=False)
     mentor_id = db.Column(db.String(80), nullable=False)
     created_at = db.Column(db.DateTime())
+
+
+class Chat(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    reservation_id = db.Column(db.String(80), nullable=False)
+    is_mentor = db.Column(db.Boolean, nullable=False)
+    message = db.Column(db.UnicodeText(), nullable=False)
+    created_at = db.Column(db.DateTime(), nullable=False)
 
 
 # ----------------------------------------------------------------
@@ -343,22 +351,33 @@ def reservation(sid):
     return render_template("reservation.html", rid=rid)
 
 
-
-@app.route("/chat/<rid>", methods=["GET", "POST"])
+@app.route("/chat/<rid>", methods=["GET"])
 def chat(rid):
     uid = session.get('uid')
     if uid is None:
         flash("Session is no longer available")
         return redirect(url_for('register'))
-    
-    reservation = Reservation.query.filter_by(rid = rid).first()
+    # load messages from Chat table for a reservation and paginate
+    # The javascript has to manually generate the messages anyways,
+    # so it can handle pagination without next_num or prev_num.
+    page = request.args.get('page', 1, type=int)
+    reservation = Reservation.query.filter_by(rid=rid).first()
+    c = Chat.query.filter_by(reservation_id=rid)\
+        .order_by(SQLAlchemy.desc(Chat.created_at))\
+        .paginate(page, 25, False)
+
+    messages = c.items
 
     mid = reservation.mentor_id
     sid = reservation.student_id
 
-    #I need your chat system here!
-
+    if page is not None: # If ?page=<int>, send data as JSON instead
+        print('TODO')
+        #TODO: need to implement the JSON rendering
     return render_template("chat.html")
+
+
+@socketio.on('message')
 
 
 @app.route("/chatlist", methods=["GET", "POST"])
@@ -369,27 +388,28 @@ def chatlist():
         flash("Session is no longer available")
         return redirect(url_for('register'))
 
-    reservations = Reservation.query.filter_by(student_id = uid).all()
+    reservations = Reservation.query.filter_by(student_id=uid).all()
 
     chatlist = []
 
     for reservation in reservations:
-        schedule = Schedule.query.filter_by(sid = reservation.schedule_id).first()
-        mentor = Mentor.query.filter_by(mid = reservation.mentor_id).first()
+        schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
+        mentor = Mentor.query.filter_by(mid=reservation.mentor_id).first()
 
-        chat_history = {}
-        chat_history["date"] = schedule.date
-        chat_history["day"] = schedule.day
-        chat_history["place"] = schedule.place
-        chat_history["rid"] = reservation.rid
-        chat_history["filename"] = 'static/img-get/' + mentor.filename 
-        chat_history["name"] = mentor.name
-        chat_history["created_at"] = reservation.created_at
+        chat_history = {
+            "date": schedule.date,
+            "day": schedule.day,
+            "place": schedule.place,
+            "rid": reservation.rid,
+            "filename": 'static/img-get/' + mentor.filename,
+            "name": mentor.name,
+            "created_at": reservation.created_at
+        }
         chatlist.append(chat_history)
-    
+
     chatlist.sort(key=lambda x: x['created_at'], reverse=True)
 
-    return render_template("chatlist.html", chatlist = chatlist)
+    return render_template("chatlist.html", chatlist=chatlist)
 
 
 # ----------------------------------------------------------------
@@ -604,7 +624,7 @@ def mentor_setting():
 
         session["mid"] = ""
 
-        response = make_response(jsonify(data, 200))
+        response = make_response(jsonify(mentor, 200))
         return response
 
     return render_template("mentor_setting.html", data=mentor)
@@ -617,7 +637,7 @@ def mentor_home():
         flash("セッションが切れました。")
         return redirect(url_for('register'))
 
-    page: int = request.args.get('page', 1, type=int)
+    page = request.args.get('page', 1, type=int)
 
     posts = Post.query.paginate(page, 10, False)
     next_url = url_for('index', page=posts.next_num) if posts.has_next else None
@@ -693,7 +713,6 @@ def mentor_chat(rid):
     if mid is None:
         flash("セッションが切れました。")
         return redirect(url_for('register'))
-    
 
     return render_template("mentor_chat.html")
 
