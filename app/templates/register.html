@@ -11,20 +11,32 @@
 
 {% block content %}
 
-<div class="login">
+<div class="login bg-preshot">
+
+    <div class="logo text-center">
+        <img src="{{ url_for('static', filename='preshot_img/preshot_logo01.png') }}" class="w-75" alt="preshot_logo">
+    </div>
 
     <form class="login_bottom" action="/register" method="post" novalidate>
-        <div class="form">
-
-            <ul class="form-container">
-                <li><input type="email" id="email" name="email" placeholder="e-mail" required></li>
-                <li><input type="password" class="login-password" id="password" name="password" placeholder="password" required></li>
-            </ul>
-
-            <div class="form-container">
-                <button class="btn2" type="submit">新規登録/ログイン</button>
+        
+        <div class="form-group text-center">
+            <div class="rounded-pill bg-white w-75 mx-auto">
+                <div class="d-inline border-right"><i class="fa fa-user d-inline text-preshot mr-2" style="font-size: 2.5vh;"></i></div>
+                <input type="email" class="form-control d-inline ml-1 border-0 p-0" style="width: 75%;" id="email" name="email" placeholder="Email" required>
             </div>
         </div>
+
+        <div class="form-group text-center">
+            <div class="rounded-pill bg-white w-75 mx-auto">
+                <div class="d-inline border-right"><i class="fa fa-user d-inline text-preshot mr-2" style="font-size: 2.5vh;"></i></div>
+                <input type="password" class="form-control d-inline ml-1 border-0 p-0" style="width: 75%;" id="password" name="password" placeholder="Password" required>            
+            </div>
+        </div>
+        
+        <div class="form-container text-center">
+            <button class="btn rounded-pill text-preshot bg-white font-weight-bold" type="submit">新規登録/ログイン</button>
+        </div>
+        
     </form>
 
 </div>

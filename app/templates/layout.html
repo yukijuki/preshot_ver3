@@ -16,24 +16,20 @@
         .nav-bottom-container{
             padding: .2rem 2rem;
         }
-        .preshot-color{
+        .bg-preshot{
             background-color: #FF514D;
         }
-        .lead{
-            font-weight: 500;
+        .text-preshot{
+            color: #FF514D;
+        }        
+        .form-control::placeholder{
+            color: #FF514D;
         }
         body{ 
             padding-top: 60px; 
         }
         .fas{
             font-size: 30px;
-        }
-        .nav-item{
-            margin-right: 0;
-        }
-        .nav-top-item{
-            margin-right: .5rem;
-            margin-left: .5rem;
         }
     </style>
 
@@ -45,18 +41,18 @@
 <body>
     <!--header-nav-->
     <div class='fixed-top'>
-        <nav class="navbar preshot-color">
+        <nav class="navbar bg-preshot">
 
-            <nav class="navbar preshot-color">
+            <nav class="navbar bg-preshot">
                 <a class="navbar-text text-white" href="#">＜戻る</a>
             </nav>
         
-            <nav class="navbar preshot-color">
+            <nav class="navbar bg-preshot">
                 <a class="navbar-text text-white lead" href="#">Preshot</a>
             </nav>
         
-            <nav class="navbar preshot-color">
-                <a class="navbar-brand fas fa-cog nav-top-item" href="#"></a>
+            <nav class="navbar bg-preshot">
+                <a class="navbar-brand fas fa-cog mx-2" href="#"></a>
             </nav>
             
         </nav>
@@ -74,22 +70,22 @@
 
     <!--footer-nav-->
     <div class='fixed-bottom'>
-        <nav class="navbar nav-bottom-container preshot-color">
+        <nav class="navbar nav-bottom-container bg-preshot">
 
-            <nav class="navbar nav-bottom-container preshot-color">
-                <a class="navbar-brand nav-item" href="#">
+            <nav class="navbar nav-bottom-container bg-preshot">
+                <a class="navbar-brand mr-0" href="#">
                     <i class="fas fa-list-ul"></i>
                 </a>
             </nav>
         
-            <nav class="navbar nav-bottom-container preshot-color">
-                <a class="navbar-brand nav-item" href="#">
+            <nav class="navbar nav-bottom-container bg-preshot">
+                <a class="navbar-brand mr-0" href="#">
                     <i class="fas fa-plus"></i>
                 </a>
             </nav>
         
-            <nav class="navbar nav-bottom-container preshot-color">
-                <a class="navbar-brand nav-item" href="#">
+            <nav class="navbar nav-bottom-container bg-preshot">
+                <a class="navbar-brand mr-0" href="#">
                     <i class="fas fa-comments"></i>
                 </a>
             </nav>
