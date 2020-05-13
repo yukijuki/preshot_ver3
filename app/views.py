@@ -139,6 +139,7 @@ def test():
 def register():
     if request.method == "POST":
         data = request.form
+        print(data)
 
         student = Student.query.filter_by(email=data["email"]).first()
 
