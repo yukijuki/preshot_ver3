@@ -364,7 +364,7 @@ def chat(rid):
     page = request.args.get('page', 1, type=int)
     reservation = Reservation.query.filter_by(rid=rid).first()
     c = Chat.query.filter_by(reservation_id=rid)\
-        .order_by(SQLAlchemy.desc(Chat.created_at))\
+        .order_by(Chat.created_at.desc())\
         .paginate(page, 25, False)
 
     messages = c.items
