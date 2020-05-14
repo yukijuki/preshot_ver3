@@ -11,18 +11,27 @@
 {% block content %}
 
         <!-- profile画面 -->
-<div>
-    <div>
-        <div>
-            <p> 現在のemail - {{ data["email"] }}</p>
-        </div>
-        <div>
-            <p> 現在のパスワード - {{ data["password"] }}</p>
-        </div>
-        <div>
-            <a href="/delete"> delete</a>
+
+<div class="container mt-5">
+    <div class="panel panel-primary">
+        <div class="panel-heading text-secondary">現在のメールアドレス</div>
+        <div class="panel-body mt-2 border-bottom">
+            {{ data["email"] }}
         </div>
     </div>
+    <div class="panel panel-primary mt-3">
+        <div class="panel-heading text-secondary">現在のパスワード</div>
+        <div class="panel-body mt-2 border-bottom">
+            {{ data["password"] }}
+        </div>
+    </div>
+    <div class="d-flex justify-content-center login_container mt-5">
+        <button type="submit" class="btn-group-lg text-white bg-preshot btn-block" style="height: 40px;">このアカウントを削除する</button>
+    </div>
 </div>
+
+
+
+
 
 {% endblock content %} 
