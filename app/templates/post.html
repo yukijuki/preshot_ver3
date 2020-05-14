@@ -11,23 +11,25 @@
 
 {% block content %}
 
-<div class="upload">
-    <form action="/post" method="POST" enctype="multipart/form-data">
-        <div class="upload-area">
-            <div class="upload-container">
-                <p class="status">タイトル
-                    <br> <input placeholder="ユーザー数を２倍に.." name="title" id="title" type="text" required>
-                </p>
+<div class="container mt-5">
 
-                <p class="status">テキスト入力
-                    <br><input placeholder="初めまして.." type="text" id="text" name="text" required>
-                </p>
-
-                <button class="btn submit" type="submit">送信</button>
+    <form>
+        <div class="form-group" action="/post" method="POST" enctype="multipart/form-data">
+            <label for="text" class="col-form-label">投稿タイトル</label> 
+            <div class="">
+                <input id="title" name="title" placeholder="タイトルを入力" class="form-control here" required="required" type="text" required>
             </div>
         </div>
+        <div class="form-group">
+            <label for="textarea" class="col-form-label">聞きたい内容</label> 
+            <div class="">
+                <textarea id="text" name="text" type="text" placeholder="聞きたい内容を入力" cols="40" rows="5" class="form-control" required></textarea>
+            </div>
+            <div class="d-flex justify-content-center login_container">
+                <button type="submit" class="btn btn-group-lg bg-preshot btn-block rounded-pill" style="height: 40px;">投稿</button>
+            </div>
+        </div> 
     </form>
-
-
+    
 </div>
 {% endblock content %} 
