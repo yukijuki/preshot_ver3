@@ -13,8 +13,8 @@
 
 <div class="container mt-5">
 
-    <form>
-        <div class="form-group" action="/post" method="POST" enctype="multipart/form-data">
+    <form action="/post" method="post" enctype="multipart/form-data" novalidate>
+        <div class="form-group">
             <label for="text" class="col-form-label">投稿タイトル</label> 
             <div class="">
                 <input id="title" name="title" placeholder="タイトルを入力" class="form-control here" required="required" type="text" required>
