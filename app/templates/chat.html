@@ -1,64 +1,29 @@
 {% extends "layout.html" %} 
 
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}"> 
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">  -->
 {% endblock %} 
 
 {% block content %}
 <body>
-    <!-- 自分やユーザーの情報 -->
-    <h3 id="me" user_id="1">あなたはユーザー1です</h3>
-    <h3 id="partner" thread_id="1">相手</h3>
-
-    <div id="users">
-        <button class="user" user_id="2">ユーザー2</button>
-    </div>
-    
+    <h3 id="me" user_id="1">{{data.mentor_name}}</h3>
+    {{data.date}}
+    {{data.day}}
+    {{data.place}}
+    {{data.rid}}
+    {% if data.messages %}
+    {% for message in data.messages %}
     <br>
-    <div id="your_container">
+    {{message.message}}
+    {% endfor %}
+    {% endif %}
 
-        <!-- チャットの外側部分① -->
-        <div id="bms_messages_container">
-            <!-- ヘッダー部分② -->
-            <div id="bms_chat_header">
-                <!--ステータス-->
-                <div id="bms_chat_user_status">
-                    <!--ステータスアイコン-->
-                    <div id="bms_status_icon">●</div>
-                    <!--ユーザー名-->
-                    <div id="bms_chat_user_name">ユーザー</div>
-                </div>
-            </div>
 
-            <!-- タイムライン部分③ -->
-            <div id="bms_messages">
+    <form class="login_bottom" action="/chat/{{data.rid}}" method="post" novalidate>
+        <input type="text" id="text" name="text" placeholder="入力.." required>    
+        <button class="btn2" type="submit">送信</button>
+    </form>
 
-                <!--メッセージ１（左側）-->
-                <div class="bms_message bms_left">
-                    <div class="bms_message_box">
-                        <div class="bms_message_content">
-                            <div class="bms_message_text">ほうほうこりゃー便利じゃないか</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bms_clear"></div><!-- 回り込みを解除（スタイルはcssで充てる） -->
-
-                <!--メッセージ２（右側）-->
-                <div class="bms_message bms_right">
-                    <div class="bms_message_box">
-                        <div class="bms_message_content">
-                            <div class="bms_message_text">うん、まあまあいけとるな</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bms_clear"></div><!-- 回り込みを解除（スタイルはcssで充てる） -->
-            </div>
-
-            <!-- テキストボックス、送信ボタン④ -->
-            <div id="bms_send">
-                <textarea id="bms_send_message"></textarea>
-                <div id="bms_send_btn">送信</div>
-            </div>
         </div>
     </div>
 </body>

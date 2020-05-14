@@ -147,7 +147,6 @@ def test():
 def register():
     if request.method == "POST":
         data = request.form
-        print(data)
 
         student = Student.query.filter_by(email=data["email"]).first()
 
@@ -352,30 +351,61 @@ def reservation(sid):
     return render_template("reservation.html", rid=rid)
 
 
-@app.route("/chat/<rid>", methods=["GET"])
+@app.route("/chat/<rid>", methods=["GET", "POST"])
 def chat(rid):
     uid = session.get('uid')
     if uid is None:
         flash("Session is no longer available")
         return redirect(url_for('register'))
-    # load messages from Chat table for a reservation and paginate
-    # The javascript has to manually generate the messages anyways,
-    # so it can handle pagination without next_num or prev_num.
+
+    #TASK for you
+    #if the message is being posted this catches and post
+    if request.method == "POST":
+        data = request.form
+
+        is_mentor = False
+
+        chat = Chat(
+            reservation_id=rid,
+            is_mentor=is_mentor,
+            message=data["text"],
+            created_at=datetime.datetime.now()
+        )
+
+        db.session.add(chat)
+        db.session.commit()
+
+        return redirect(request.url)
+
     page = request.args.get('page', 1, type=int)
     reservation = Reservation.query.filter_by(rid=rid).first()
     c = Chat.query.filter_by(reservation_id=rid)\
         .order_by(Chat.created_at.desc())\
         .paginate(page, 25, False)
 
+    #loop to divide the messages grouped by if its is_mentor is false or not
     messages = c.items
 
     mid = reservation.mentor_id
-    sid = reservation.student_id
+
+    schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
+    mentor = Mentor.query.filter_by(mid=mid).first()
+
+    data = {
+            "date": schedule.date,
+            "day": schedule.day,
+            "place": schedule.place,
+            "rid": reservation.rid,
+            "mentor_name": mentor.name,
+            "messages": messages
+        }
+
 
     if page is not None: # If ?page=<int>, send data as JSON instead
         print('TODO')
         #TODO: need to implement the JSON rendering
-    return render_template("chat.html")
+
+    return render_template("chat.html", data = data)
 
 
 @socketio.on('message')
