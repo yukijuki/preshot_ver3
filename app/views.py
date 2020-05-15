@@ -27,7 +27,6 @@ app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["PNG", "JPG", "JPEG"]
 app.debug = True
 db = SQLAlchemy(app)
 
-
 # Define Models
 
 class Student(db.Model):
@@ -75,7 +74,7 @@ class Post(db.Model):
 
 class Response(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    mentor_id = db.Column(db.String(80), nullable=False, unique=True)
+    mentor_id = db.Column(db.String(80), nullable=False)
     post_id = db.Column(db.String(80), nullable=False)
     created_at = db.Column(db.DateTime())
 

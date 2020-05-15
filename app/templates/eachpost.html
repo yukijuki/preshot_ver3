@@ -18,7 +18,7 @@
         <nav class="navbar">
 
             <nav class="navbar preshot-color pl-3">
-                <span class="navbar-brand fas fa-comment nav-top-item p-0 text-secondary" style="font-size: 25px;"></span>
+                <span class="navbar-brand fas fa-comment nav-top-item p-0" style="color:#778899; font-size: 25px;"></span>
             </nav>
             
         </nav>
@@ -28,11 +28,21 @@
     
         {% for mentor in post.response %}
 
-            <div class="card">
-                <p >{{ mentor.name }}</p>
-                <img src=/{{mentor.filename}} alt="pic1">
-                <a href="/select_mentor/{{mentor.mid}}">See this mentor</a>
+        <div class="d-flex flex-row border-top border-bottom" style="background-color: #f5f5f5; border-color:gray;">
+
+            <div class="w-25 text-center">
+                <img src=/{{mentor.filename}} class="rounded-circle my-2" style="height: 50px;" alt="pic1">
             </div>
+            <div class="my-auto" style="width: 45%;">
+                <p class="font-weight-bold mb-0">{{ mentor.name }}</p>
+            </div>
+            <div class="my-auto">
+                <a href="/select_mentor/{{mentor.mid}}" class="font-weight-bolder btn bg-preshot rounded-pill" style="color:#f5f5f5; font-size:12px; padding: 0.3rem .6rem;" role="button">連絡してみる</a>
+            </div>
+            
+        </div>
+            
+            
             
 
         {% endfor %}
