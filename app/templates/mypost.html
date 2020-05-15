@@ -14,29 +14,31 @@
 
 {% block content %}
 
-<div class="card-list">
+<div class="container">
+    <div class="card-list">
 
-    <!-- Contact Card ~ #01 -->
-    {% if posts %}
-    
-    {% for post in posts %}
+        <!-- Contact Card ~ #01 -->
+        {% if posts %}
+        
+        {% for post in posts %}
 
-        <div class="card my-3 mx-auto shadow" id={{post.pid}}　>
-            <a  href="/mypost/{{post.pid}}" class="card-body">
-                <h6 class="card-title" style="color: black;">{{ post.title }}</h6>
-                <p class="card-text text-muted" style="font-size: small;">{{ post.text }}</p>
-                
-            </a>
-        </div>
+            <div class="card my-3 mx-auto shadow" id={{post.pid}}　>
+                <a  href="/mypost/{{post.pid}}" class="card-body">
+                    <h6 class="card-title" style="color: black;">{{ post.title }}</h6>
+                    <p class="card-text text-muted" style="font-size: small;">{{ post.text }}</p>
+                    
+                </a>
+            </div>
 
-    {% endfor %}
+        {% endfor %}
 
-    {% else %}
-        <h2>投稿がありません</h2>
-    {% endif %}
+        {% else %}
+            <h2>投稿がありません</h2>
+        {% endif %}
 
-    <div style="height: 57px;"></div>
+        <div style="height: 57px;"></div>
 
+    </div>
 </div>
 
 {% endblock content %}
