@@ -57,7 +57,7 @@ class Schedule(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     sid = db.Column(db.String(80), nullable=False, unique=True)
     day = db.Column(db.String(80), nullable=False)
-    date = db.Column(db.String(80), nullable=False)
+    date = db.Column(db.String(80), nullable=False) #think it as time
     place = db.Column(db.String(80), nullable=False)
     mentor_id = db.Column(db.String(80), nullable=False)
     created_at = db.Column(db.DateTime())
@@ -347,7 +347,20 @@ def reservation(sid):
 
     # return redirect(url_for('mypost'))
 
-    return render_template("reservation.html", rid=rid)
+    mentor = Mentor.query.filter_by(mid=mid).first()
+    schedule = Schedule.query.filter_by(sid=sid).first()
+
+    data = {
+        "date": schedule.date,
+        "day": schedule.day,
+        "place": schedule.place,
+        "filename": 'static/img-get/' + mentor.filename,
+        "name": mentor.name,
+        "rid": rid
+    }
+
+
+    return render_template("reservation.html", data=data)
 
 
 @app.route("/chat/<rid>", methods=["GET", "POST"])
