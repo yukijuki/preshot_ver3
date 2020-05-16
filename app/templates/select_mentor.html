@@ -24,10 +24,14 @@
                     <p class="card-text" style="font-size: small; color:#b0c4de;">{{ mentor.comment }}</p>
                 </div>
 
-                <div>
-                    <div style="margin-left:4rem;">
+                <div class="row">
+                    <div class="col-2"></div>
+                    <div class="col-8">
                         <div><i class="fas fa-comment mr-3" style="color:#a9a9a9; font-size: 1em;"></i>
                             <span style="color:#808080;">{{ mentor.firm }}</span>
+                        </div>
+                        <div><i class="fas fa-comment mr-3" style="color:#a9a9a9; font-size: 1em;"></i>
+                            <span style="color:#808080;">{{ mentor.position }}</span>
                         </div>
                         <div><i class="fas fa-comment mr-3" style="color:#a9a9a9; font-size: 1em;"></i>
                             <span style="color:#808080;">{{ mentor.university }}</span>
@@ -39,6 +43,7 @@
                             <span style="color:#808080;">{{ mentor.graduation }}</span>
                         </div>
                     </div>
+                    <div class="col-2"></div>
                 </div>
                 
 
@@ -51,12 +56,21 @@
     
         {% for schedule in mentor.schedule %}
 
-            <div class="card" id={{schedule.sid}}>
-                <p >{{ schedule.day }}</p>
-                <p >{{ schedule.date }}</p>
-                <p >{{ schedule.place }}</p>
-                <a href="/reservation/{{schedule.sid}}">See this Reservation</a>
+    
+            <div class="card my-3 mx-auto shadow" id={{schedule.sid}}>
+                
+                <a href="/reservation/{{schedule.sid}}" class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="col-4">火曜日</div>
+                        <div class="col-4">{{ schedule.place }}</div>
+                        <div class="col-4">12:00~</div>
+                    </div>
+                </a>
+                
             </div>
+            {{ schedule.day }}
+            
+            {{ schedule.date }}
 
         {% endfor %}
 
