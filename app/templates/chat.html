@@ -19,13 +19,11 @@
     {% endif %}
 
 
-    <form class="login_bottom" action="/chat/{{data.rid}}" method="post" novalidate>
+    <form class="login_bottom" action="/chat/{{data.rid}}" method="post">
         <input type="text" id="text" name="text" placeholder="入力.." required>    
         <button class="btn2" type="submit">送信</button>
     </form>
 
-        </div>
-    </div>
 </body>
 
 {% endblock content %} 
