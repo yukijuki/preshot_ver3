@@ -15,7 +15,7 @@
             </div>
         </div>
 
-        <nav class="navbar">
+        <nav class="navbar border-bottom">
 
             <nav class="navbar preshot-color pl-3">
                 <span class="navbar-brand fas fa-comment nav-top-item p-0" style="color:#778899; font-size: 25px;"></span>
@@ -28,7 +28,7 @@
     
         {% for mentor in post.response %}
 
-        <div class="d-flex flex-row border-top border-bottom" style="background-color: #f5f5f5; border-color:gray;">
+        <div class="d-flex flex-row border-bottom" style="background-color: #f5f5f5; border-color:gray;">
 
             <div class="w-25 text-center">
                 <img src=/{{mentor.filename}} class="rounded-circle my-2" style="height: 50px;" alt="pic1">
@@ -48,7 +48,9 @@
         {% endfor %}
 
         {% else %}
-            <h2>No Response</h2>
+        
+        <div class="text-secondary text-center mt-3">メンターが見つかっていません</>
+        
         {% endif %}
         
     </div>
