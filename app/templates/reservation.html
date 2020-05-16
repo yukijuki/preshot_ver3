@@ -2,16 +2,28 @@
 
 {% block content %}
 <!-- Contact Card ~ #01 -->
-<div>
-    <div>
-        <p>Reservaton Complete</p>
-        <p >{{ data.date }}</p>
-        <p >{{ data.day }}</p>
-        <p >{{ data.place }}</p>
-        <p >{{ data.name }}</p>
-        
-        <a href="/chat/{{rid}}">Start chating</a>
+<div class="container">
+    
+    <div class="pt-5">
+
+        <div class="text-center">
+            <img src=/{{data.filename}} class="rounded-circle" style="height: 5rem;">
+        </div>
+
+        <div class="card border-0 pt-2">
+            <p class="pl-1 mb-1">予約完了</p>
+            <div class="card-body" style="background-color: whitesmoke;">
+                <h6 class="mb-2 text-secondary">曜日：{{ data.day }}</h6>
+                <h6 class="mb-2 text-secondary">時間：{{ data.date }}</h6>
+                <h6 class="mb-2 text-secondary">場所：{{ data.place }}</h6>
+                <h6 class="mb-2 text-secondary">指導者：{{ data.name }}</h6>
             </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="/chat/{{data.rid}}" class="btn bg-preshot shadow py-2" style="font-size:small; color:#f5f5f5;" role="button">チャットを開始する</a>
+        </div>
+            
     </div>
 </div>
 
