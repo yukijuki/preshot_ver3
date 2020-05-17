@@ -500,7 +500,6 @@ def mentor_register():
 
         else:
             if mentor.password == data["password"]:
-                print(mentor.mid)
                 session['mid'] = mentor.mid
 
                 flash("ログインしました")
