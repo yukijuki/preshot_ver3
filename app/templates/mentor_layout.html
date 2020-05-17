@@ -12,51 +12,92 @@
     <title>preshot</title>
     <style>
         .navbar{
-            padding: .2rem .5rem;
+            padding: .1rem .5rem;
         }
-        .preshot-color{
+        .nav-bottom-container{
+            padding: .2rem 1rem;
+        }
+        .navbar-brand{
+            margin-right: .5rem;
+            margin-left: .5rem;
+        }
+        .bg-preshot{
             background-color: #FF514D;
         }
-        .lead{
-            font-weight: 500;
+        .text-preshot{
+            color: #FF514D;
+        }        
+        .form-control::placeholder{
+            color: #FF514D;
         }
         body{ 
-            padding-top: 60px; 
+            padding-top: 60px;
         }
+        .fas{
+            font-size: 30px;
+        }
+        
     </style>
+
     {% block css %}{% endblock %}
     {% block title %}{% endblock %}
 </head>
 
 <body>
-    <div class='fixed-top'>
-    <nav class="navbar preshot-color">
-        <nav class="navbar preshot-color">
-            <a class="navbar-text text-white" href="#">＜戻る</a>
+
+    <nav class="navbar bg-preshot fixed-top">
+
+        <nav class="navbar bg-preshot">
+            <span class="navbar-text text-preshot">戻る</span>
         </nav>
     
         <nav class="navbar preshot-color">
-            <a class="navbar-text text-white lead" href="#">Preshot</a>
+            <a class="navbar-text text-white lead" href="/mentor_home">Preshot</a>
         </nav>
     
         <nav class="navbar preshot-color">
-            <a class="navbar-brand" href="#">
-                <img src="{{ url_for('static', filename='preshot_img/setting-icon.png') }}" class="" width="30" height="30" alt="">
-            </a>
+            <a class="navbar-brand fas fa-cog nav-top-item" href="/mentor_setting"></a>
         </nav>
         
     </nav>
-    </div>
 
 
     {% for message in get_flashed_messages() %}
     <div class="alert">{{ message }}</div>
     {% endfor %}
 
-    <div class="container">
+    <div>
         {% block content %}
         {% endblock %}
     </div>
+
+    <nav class="navbar nav-bottom-container bg-preshot fixed-bottom">
+
+        <nav class="navbar nav-bottom-container preshot-color">
+            <a class="navbar-brand nav-item" href="/mentor_home">
+                <i class="fas fa-list-ul"></i>
+            </a>
+        </nav>
+    
+        <nav class="navbar nav-bottom-container preshot-color">
+            <a class="navbar-brand nav-item" href="/mentor_chatlist">
+                <i class="fas fa-comments"></i>
+            </a>
+        </nav>
+    
+        <nav class="navbar nav-bottom-container preshot-color">
+            <a class="navbar-brand nav-item" href="/mentor_profile">
+                <i class="fas fa-user-circle"></i>
+            </a>
+        </nav>
+
+        <nav class="navbar nav-bottom-container preshot-color">
+            <a class="navbar-brand nav-item" href="/mentor_schedule">
+                <i class="fas fa-calendar-alt"></i>
+            </a>
+        </nav>
+        
+    </nav>
 
 </body>
 

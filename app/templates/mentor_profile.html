@@ -21,63 +21,66 @@
 {% block content %}
 
 
-<div class="container mt-3">
+<div class="container my-5 pb-5">
+    <div class="container">
 
-    <form action="/mentor_profile" method="POST" enctype="multipart/form-data">
+        <form action="/mentor_profile" method="POST" enctype="multipart/form-data">
 
-        <div class="form-group">
-            <label for="text" class="col-form-label">名前</label> 
-            <input id="name" name="name" placeholder="就活太郎" class="text-muted form-control here border-0" style="background-color: whitesmoke;" required="required" type="text" required>
-        </div>
-
-        <div class="form-group">
-            <label for="text" class="col-form-label">企業</label> 
-            <div>
-                <input id="firm" name="firm" placeholder="株式会社preshot" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="text" required>
+            <div class="form-group">
+                <label for="text" class="col-form-label">名前</label> 
+                <input id="name" name="name" placeholder="就活太郎" class="text-muted form-control here border-0" style="background-color: whitesmoke;" required="required" type="text" required>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label for="text" class="col-form-label">職種</label> 
-            <input id="position" name="position" placeholder="データアナリスト" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="text" required>
-        </div>
+            <div class="form-group">
+                <label for="text" class="col-form-label">企業</label> 
+                <div>
+                    <input id="firm" name="firm" placeholder="株式会社preshot" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="text" required>
+                </div>
+            </div>
 
-        <div class="form-group">
-            <label for="text" class="col-form-label">大学</label> 
-            <input id="university" name="university" placeholder="選考大学" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="text" required>    
-        </div>
+            <div class="form-group">
+                <label for="text" class="col-form-label">職種</label> 
+                <input id="position" name="position" placeholder="データアナリスト" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="text" required>
+            </div>
 
-        <div class="form-group">
-            <label for="text" class="col-form-label">学部</label> 
-            <input name="faculty" id="faculty" placeholder="対策学部" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="text" required>
-        </div>
+            <div class="form-group">
+                <label for="text" class="col-form-label">大学</label> 
+                <input id="university" name="university" placeholder="選考大学" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="text" required>    
+            </div>
 
-        <div class="form-group">
-            <label for="text" class="col-form-label">卒業年度</label> 
-            <input name="graduation" id="graduation" placeholder="〇〇大学" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="number" required>
-        </div>
+            <div class="form-group">
+                <label for="text" class="col-form-label">学部</label> 
+                <input name="faculty" id="faculty" placeholder="対策学部" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="text" required>
+            </div>
 
-        <div class="form-group">
-            <label for="text" class="col-form-label">経歴</label> 
-            <textarea id="history" name="history" placeholder="選考大学" class="form-control here border-0" style="background-color: whitesmoke;" cols="40" rows="6.5" required="required" type="text" required></textarea>
-        </div>
+            <div class="form-group">
+                <label for="text" class="col-form-label">卒業年度</label> 
+                <input name="graduation" id="graduation" placeholder="〇〇大学" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="number" required>
+            </div>
 
-        <div class="form-group">
-            <label for="text" class="col-form-label">コメント</label> 
-            <textarea id="comment" name="comment" placeholder="よろしくお願いします" class="form-control here border-0" style="background-color: whitesmoke;" cols="40" rows="6.5" required="required" type="text" required></textarea>
-        </div>
+            <div class="form-group">
+                <label for="text" class="col-form-label">経歴</label> 
+                <textarea id="history" name="history" placeholder="選考大学" class="form-control here border-0" style="background-color: whitesmoke;" cols="40" rows="6.5" required="required" type="text" required></textarea>
+            </div>
 
-        <div class="form-group mb-5">
-            <label for="text" class="col-form-label">プロフィール画像を選択</label> 
-            <input type="file" class="border rounded-lg form-control-file" style="color:white;" name="image" id="image">
-        </div>
+            <div class="form-group">
+                <label for="text" class="col-form-label">コメント</label> 
+                <textarea id="comment" name="comment" placeholder="よろしくお願いします" class="form-control here border-0" style="background-color: whitesmoke;" cols="40" rows="6.5" required="required" type="text" required></textarea>
+            </div>
 
-        <div class="form-group d-flex justify-content-center mb-5">
-            <button type="submit" class="btn btn-group-lg bg-preshot shadow btn-block text-white" style="height: 40px;">送信</button>
-        </div>
+            <div class="form-group mb-5">
+                <label for="text" class="col-form-label">プロフィール画像を選択</label> 
+                <input type="file" class="border rounded-lg form-control-file" style="color:white;" name="image" id="image">
+            </div>
+
+            <div class="form-group d-flex justify-content-center mb-5">
+                <button type="submit" class="btn btn-group-lg bg-preshot shadow btn-block text-white" style="height: 40px;">送信</button>
+            </div>
 
 
-    </form>
+        </form>
+
+    </div>
     
 </div>
 
