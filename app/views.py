@@ -47,6 +47,7 @@ class Mentor(db.Model):
     university = db.Column(db.String(80))
     faculty = db.Column(db.String(80))
     firm = db.Column(db.String(80))
+    history = db.Column(db.String(255))
     position = db.Column(db.String(80))
     graduation = db.Column(db.Integer)
     comment = db.Column(db.String(255))
@@ -316,6 +317,7 @@ def select_mentor(mid):
         "faculty": mentor.faculty,
         "firm": mentor.firm,
         "position": mentor.position,
+        "history": mentor.history,
         "schedule": schedule_info,
         "comment": mentor.comment,
         "graduation": mentor.graduation
@@ -566,6 +568,9 @@ def mentor_profile():
 
             if data["firm"] == "":
                 data["firm"] = mentor.firm
+            
+            if data["history"] == "":
+                data["history"] = mentor.history
 
             if data["graduation"] == '':
                 data["graduation"] = mentor.graduation
@@ -583,6 +588,7 @@ def mentor_profile():
             mentor.firm = data["firm"]
             mentor.graduation = data["graduation"]
             mentor.position = data["position"]
+            mentor.history = data["history"]
             mentor.comment = data["comment"]
             mentor.updated_at = datetime.datetime.now()
             db.session.commit()
