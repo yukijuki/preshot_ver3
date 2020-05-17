@@ -340,6 +340,15 @@ def reservation(sid):
 
     if uid is None or mid is None:
         return redirect(url_for('register'))
+    
+    #check if the reservation had been made before 
+    reservation = Reservation.query.filter_by(student_id=uid).first()
+    schedule = reservation.schedule_id
+
+    if sid == schedule:
+        flash("この予約すでにされています。")
+        return redirect(url_for('chatlist', rid = reservation.rid))
+
 
     rid = str(uuid.uuid4())
 
@@ -421,7 +430,8 @@ def chat(rid):
             "day": schedule.day,
             "place": schedule.place,
             "rid": reservation.rid,
-            "mentor_name": mentor.name,
+            "name": mentor.name,
+            "filename": 'static/img-get/' + mentor.filename,
             "messages": messages
         }
 
@@ -609,7 +619,7 @@ def mentor_profile():
 
             return redirect(url_for('mentor_home'))
 
-    return render_template("mentor_profile.html", mentor = data)
+    return render_template("mentor_profile.html")
 
 
 @app.route("/mentor_schedule", methods=["GET", "POST"])

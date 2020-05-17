@@ -8,6 +8,7 @@
 <body>
     
     <h3 id="me" user_id="1">{{data.mentor_name}}</h3>
+    {{data.filename}}
     {{data.date}}
     {{data.day}}
     {{data.place}}
@@ -15,6 +16,7 @@
     {% if data.messages %}
     {% for message in data.messages %}
     <br>
+    <!--このメッセージは、Student側のメッセージ-->
     {{message.message}}
     {% endfor %}
     {% endif %}
