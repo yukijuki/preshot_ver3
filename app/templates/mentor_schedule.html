@@ -1,7 +1,12 @@
 {% extends "mentor_layout.html" %} 
 
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css') }}"> 
+<style>
+    .form-control::placeholder{
+        color: #dcdcdc;
+    }
+
+</style>
 {% endblock %} 
 
 {% block title %}
@@ -11,39 +16,70 @@
 
 {% block content %}
 
-{% for schedule in schedules %}
 
-<div class="card" id={{schedule.pid}}>
-    <h1>{{ schedule.day }}</h1>
-    <h3>{{ schedule.date }}</h3>
-    <h3>{{ schedule.place }}</h3>
-    <a href="/mentor_schedule_delete/{{schedule.sid}}">Delete</a>
-</div>
+<div class="container mt-5">
+    <div class="container">
 
-{% endfor %}
-
-<div class="upload">
-    <form action="/mentor_schedule" method="POST" enctype="multipart/form-data">
-        <div class="upload-area">
-            <div class="upload-container">
-
-                <p class="status">Day
-                    <br> <input placeholder="火曜日" name="day" id="day" type="text" required>
-                </p>
-
-                <p class="status">Time
-                    <br><input placeholder="12:00~" type="text" id="date" name="date" required>
-                </p>
-
-                <p class="status">Place
-                    <br><input placeholder="日吉駅" type="text" id="place" name="place" required>
-                </p>
-
-                <button class="btn submit" type="submit">送信</button>
-            </div>
+        <div class="text-center">
+            <h6>スケジュールを追加</h6>
         </div>
-    </form>
 
+        <form action="/mentor_profile" method="POST" enctype="multipart/form-data">
+
+            <div class="form-group">
+                <label for="text" class="col-form-label">曜日</label> 
+                <input id="day" name="day" placeholder="火曜日" class="text-muted form-control here border-0" style="background-color: whitesmoke;" required="required" type="text" required>
+            </div>
+
+            <div class="form-group">
+                <label for="text" class="col-form-label">時間</label> 
+                <div>
+                    <input id="date" name="date" placeholder="12:00~" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="text" required>
+                </div>
+            </div>
+
+            <div class="form-grou mb-4 pb-2">
+                <label for="text" class="col-form-label">場所</label> 
+                <input id="place" name="place" placeholder="東京駅" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="text" required>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-group-lg bg-preshot shadow btn-block text-white" style="height: 40px;">追加する</button>
+            </div>
+
+
+        </form>
+
+    </div>
+    
+
+    <div class="card-list my-5">
+
+        {% for schedule in schedules %}
+    
+        <div class="card mb-2 mx-auto shadow" id={{schedule.sid}}>
+                        
+            <div class="d-flex flex-row p-3">
+                <div class="col-3 d-flex flex-column px-0 my-auto text-center">
+                    <span class="text-dark float-left">{{ schedule.day }}</span>
+                    <span class="text-dark float-left text-muted" style="font-size: .8rem;">{{ schedule.date }}</span>
+                </div>
+                <div class="col-6 text-center my-auto text-dark">{{ schedule.place }}</div>
+                <div class="col-3 d-flex align-items-center" style="font-size: .7rem;">
+                    <div class="mx-auto">
+                        <a href="/mentor_schedule_delete/{{schedule.sid}}">
+                            <i class="far fa-trash-alt h4 mb-0"></i>
+                        </a>    
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
 
 </div>
+
 {% endblock content %} 

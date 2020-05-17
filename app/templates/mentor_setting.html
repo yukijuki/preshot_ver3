@@ -10,25 +10,25 @@
 
 {% block content %}
 
-<div>
-    <div>
-        <div>
-            <p> 現在のemail - {{ data["email"] }}</p>
-            <p> 現在のname - {{ data["name"] }}</p>
-            <p> 現在のfilename - {{ data["filename"] }}</p>
-            <p> 現在のfaculty - {{ data["faculty"] }}</p>
-            <p> 現在のposition - {{ data["position"] }}</p>
-            <p> 現在のcomment - {{ data["comment"] }}</p>
-            <p> 現在のgraduation- {{ data["graduation"] }}</p>
-            
+<div class="container">
+    <div class="container mt-5">
+        <div class="panel panel-primary">
+            <div class="panel-heading text-secondary">現在のメールアドレス</div>
+            <div class="panel-body mt-2 border-bottom">
+                {{ data["email"] }}
+            </div>
         </div>
-        <div>
-            <p> 現在のパスワード - {{ data["password"] }}</p>
+        <div class="panel panel-primary mt-3">
+            <div class="panel-heading text-secondary">現在のパスワード</div>
+            <div class="panel-body mt-2 border-bottom">
+                {{ data["password"] }}
+            </div>
         </div>
-        <div>
-            <a href="/mentor_delete"> delete</a>
+        <div class="d-flex justify-content-center login_container mt-5">
+            <button type="submit" class="btn-group-lg text-white bg-preshot btn-block" style="height: 40px;">このアカウントを削除する</button>
         </div>
     </div>
 </div>
+
 
 {% endblock content %} 
