@@ -790,19 +790,19 @@ def mentor_chat(rid):
     if request.method == "POST":
         data = request.form
 
-    is_mentor = False
+        is_mentor = True
 
-    chat = Chat(
-        reservation_id=rid,
-        is_mentor=is_mentor,
-        message=data["text"],
-        created_at=datetime.datetime.now()
-    )
+        chat = Chat(
+            reservation_id=rid,
+            is_mentor=is_mentor,
+            message=data["text"],
+            created_at=datetime.datetime.now()
+        )
 
-    db.session.add(chat)
-    db.session.commit()
+        db.session.add(chat)
+        db.session.commit()
 
-    return redirect(request.url)
+        return redirect(request.url)
 
     page = request.args.get('page', 1, type=int)
     reservation = Reservation.query.filter_by(rid=rid).first()
@@ -813,31 +813,28 @@ def mentor_chat(rid):
     #loop to divide the messages grouped by if its is_mentor is false or not
     messages = c.items
 
-    mid = reservation.mentor_id
+    uid = reservation.student_id
 
     schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
-    mentor = Mentor.query.filter_by(mid=mid).first()
-    if mentor.filename is None:
-        mentor.filename = "default.jpg"
+    student = Student.query.filter_by(uid=uid).first()
+    if student is not None:
+        if schedule is not None:
 
-    data = {
-            "date": schedule.date,
-            "day": schedule.day,
-            "place": schedule.place,
-            "rid": reservation.rid,
-            "name": mentor.name,
-            "filename": 'static/img-get/' + mentor.filename,
-            "messages": messages
-        }
+            data = {
+                    "date": schedule.date,
+                    "day": schedule.day,
+                    "place": schedule.place,
+                    "rid": reservation.rid,
+                    "name": student.email[:5]+"さん",
+                    "messages": messages
+                }
 
 
     if page is not None: # If ?page=<int>, send data as JSON instead
         print('TODO')
         #TODO: need to implement the JSON rendering
 
-    return render_template("chat.html", data = data)
-
-    return render_template("mentor_chat.html")
+    return render_template("mentor_chat.html", data = data)
 
 
 @app.route("/mentor_chatlist", methods=["GET", "POST"])
