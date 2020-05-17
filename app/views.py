@@ -40,7 +40,7 @@ class Student(db.Model):
 class Mentor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     mid = db.Column(db.String(80), nullable=False, unique=True)
-    name = db.Column(db.String(80), unique=True)
+    name = db.Column(db.String(80))
     email = db.Column(db.String(80), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
     filename = db.Column(db.String(255), unique=True)
@@ -61,6 +61,7 @@ class Schedule(db.Model):
     date = db.Column(db.String(80), nullable=False) #think it as time
     place = db.Column(db.String(80), nullable=False)
     mentor_id = db.Column(db.String(80), nullable=False)
+    is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime())
 
 
@@ -235,16 +236,16 @@ def eachpost(pid):
 
     for response in responses:
         mentor = Mentor.query.filter_by(mid=response.mentor_id).first()
+        if mentor is not None:
+            if mentor.filename is None:
+                mentor.filename = "default.jpg"
 
-        if mentor.filename is None:
-            mentor.filename = "default.jpg"
-
-        mentor_data = {
-            "mid": mentor.mid,
-            "name": mentor.name,
-            "filename": 'static/img-get/' + mentor.filename
-        }
-        mentor_info.append(mentor_data)
+            mentor_data = {
+                "mid": mentor.mid,
+                "name": mentor.name,
+                "filename": 'static/img-get/' + mentor.filename
+            }
+            mentor_info.append(mentor_data)
 
     post_data = {
         "pid": post.pid,
@@ -300,7 +301,7 @@ def select_mentor(mid):
     session['mentor_id'] = mid
 
     mentor = Mentor.query.filter_by(mid=mid).first()
-    schedules = Schedule.query.filter_by(mentor_id=mid).all()
+    schedules = Schedule.query.filter_by(mentor_id=mid).filter_by(is_active=True).all()
 
     if mentor.filename is None:
         mentor.filename = "default.jpg"
@@ -422,6 +423,8 @@ def chat(rid):
 
     schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
     mentor = Mentor.query.filter_by(mid=mid).first()
+    if mentor.filename is None:
+        mentor.filename = "default.jpg"
 
     data = {
             "date": schedule.date,
@@ -458,20 +461,21 @@ def chatlist():
     for reservation in reservations:
         schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
         mentor = Mentor.query.filter_by(mid=reservation.mentor_id).first()
-        if schedule is not None:
-            if mentor.filename is None:
-                mentor.filename = "default.jpg"
+        if mentor is not None:
+            if schedule is not None:
+                if mentor.filename is None:
+                    mentor.filename = "default.jpg"
 
-            chat_history = {
-                "date": schedule.date,
-                "day": schedule.day,
-                "place": schedule.place,
-                "rid": reservation.rid,
-                "filename": 'static/img-get/' + mentor.filename,
-                "name": mentor.name,
-                "created_at": reservation.created_at
-            }
-            chatlist.append(chat_history)
+                chat_history = {
+                    "date": schedule.date,
+                    "day": schedule.day,
+                    "place": schedule.place,
+                    "rid": reservation.rid,
+                    "filename": 'static/img-get/' + mentor.filename,
+                    "name": mentor.name,
+                    "created_at": reservation.created_at
+                }
+                chatlist.append(chat_history)
 
     chatlist.sort(key=lambda x: x['created_at'], reverse=True)
 
@@ -626,7 +630,7 @@ def mentor_schedule():
         flash("セッションが切れました。")
         return redirect(url_for('register'))
 
-    schedules = Schedule.query.filter_by(mentor_id=mid).all()
+    schedules = Schedule.query.filter_by(mentor_id=mid).filter_by(is_active=True).all()
 
     response = []
 
@@ -661,14 +665,15 @@ def mentor_schedule():
     return render_template("mentor_schedule.html", schedules=response)
 
 
-@app.route("/mentor_schedule_delete/<sid>", methods=["GET", "DELETE"])
+@app.route("/mentor_schedule_delete/<sid>", methods=["GET", "POST"])
 def mentor_schedule_delete(sid):
     mid = session.get('mid')
     if mid is None:
         flash("セッションが切れました。")
         return redirect(url_for('register'))
+
     schedule = Schedule.query.filter_by(sid=sid).first()
-    db.session.delete(schedule)
+    schedule.is_active = False
     db.session.commit()
 
     flash("deleted")
@@ -717,8 +722,8 @@ def mentor_home():
     for post in posts:
         post_data = {
             "pid": post.pid,
-            "title": post.title,
-            "text": post.text,
+            "title": post.title[:18]+" ..",
+            "text": post.text[:105]+"...",
             "created_at": post.created_at
         }
         response.append(post_data)
@@ -734,7 +739,7 @@ def mentor_home_pid(pid):
         return redirect(url_for('register'))
 
     post = Post.query.filter_by(pid=pid).first()
-    response = Response.query.filter_by(post_id=pid).all()
+    response = Response.query.filter_by(post_id=pid).filter_by(mentor_id=mid).first()
 
     post_data = {
         "pid": post.pid,
@@ -781,13 +786,89 @@ def mentor_chat(rid):
     if mid is None:
         flash("セッションが切れました。")
         return redirect(url_for('register'))
+    
+    if request.method == "POST":
+        data = request.form
+
+    is_mentor = False
+
+    chat = Chat(
+        reservation_id=rid,
+        is_mentor=is_mentor,
+        message=data["text"],
+        created_at=datetime.datetime.now()
+    )
+
+    db.session.add(chat)
+    db.session.commit()
+
+    return redirect(request.url)
+
+    page = request.args.get('page', 1, type=int)
+    reservation = Reservation.query.filter_by(rid=rid).first()
+    c = Chat.query.filter_by(reservation_id=rid)\
+        .order_by(Chat.created_at.desc())\
+        .paginate(page, 25, False)
+
+    #loop to divide the messages grouped by if its is_mentor is false or not
+    messages = c.items
+
+    mid = reservation.mentor_id
+
+    schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
+    mentor = Mentor.query.filter_by(mid=mid).first()
+    if mentor.filename is None:
+        mentor.filename = "default.jpg"
+
+    data = {
+            "date": schedule.date,
+            "day": schedule.day,
+            "place": schedule.place,
+            "rid": reservation.rid,
+            "name": mentor.name,
+            "filename": 'static/img-get/' + mentor.filename,
+            "messages": messages
+        }
+
+
+    if page is not None: # If ?page=<int>, send data as JSON instead
+        print('TODO')
+        #TODO: need to implement the JSON rendering
+
+    return render_template("chat.html", data = data)
 
     return render_template("mentor_chat.html")
 
 
 @app.route("/mentor_chatlist", methods=["GET", "POST"])
 def mentor_chatlist():
-    return render_template("mentor_chatlist.html")
+    mid = session.get('mid')
+    if mid is None:
+        flash("セッションが切れました。")
+        return redirect(url_for('register'))
+
+    reservations = Reservation.query.filter_by(mentor_id=mid).all()
+    chatlist = []
+
+    for reservation in reservations:
+        schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
+        student = Student.query.filter_by(uid=reservation.student_id).first()
+        if student is not None:
+            if schedule is not None:
+                
+                chat_history = {
+                    "date": schedule.date,
+                    "day": schedule.day,
+                    "place": schedule.place,
+                    "rid": reservation.rid,
+                    "name": student.email[:5]+"さん",
+                    "created_at": reservation.created_at
+                }
+                chatlist.append(chat_history)
+
+    chatlist.sort(key=lambda x: x['created_at'], reverse=True)
+
+    return render_template("mentor_chatlist.html", chatlist=chatlist)
 
 
 # ----------------------------------------------------------------
