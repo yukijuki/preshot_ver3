@@ -75,7 +75,7 @@
                                 <p class="modal-title pl-2" id="staticBackdropLabel">この日程で予約しますか？</p>
                                 
                                 <div class="mt-4 p-2 float-right">
-                                    <button type="button" class="pr-3 text-dark" style="font-size: .9rem;"><a href="/reservation/{{schedule.sid}}">はい</a></button>
+                                    <button type="button" class="pr-3" style="font-size: .9rem;"><a href="/reservation/{{schedule.sid}}" class="text-dark">はい</a></button>
                                     <button type="button" class="pr-2 text-dark" data-dismiss="modal" style="font-size: .9rem;">いいえ</button>
                                 </div>
                             </div>
@@ -89,23 +89,6 @@
         {% else %}
             <div class="text-secondary text-center mt-3">スケジュールがありません</div>
         {% endif %}
-        
-        <!-- モーダルの設定 -->
-        <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content shadow-lg w-75">
-                    <div class="modal-body">
-                        
-                        <p class="modal-title pl-2" id="staticBackdropLabel">この日程で予約しますか？</p>
-                        
-                        <div class="mt-4 p-2 float-right">
-                            <button type="button" class="pr-3 text-dark" style="font-size: .9rem;" onclick="location.href='#'">はい</button>
-                            <button type="button" class="pr-2 text-dark" data-dismiss="modal" style="font-size: .9rem;">いいえ</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
 
     </div>
