@@ -341,7 +341,7 @@ def reservation(sid):
     if uid is None or mid is None:
         return redirect(url_for('register'))
     
-    #check if the reservation had been made before 
+    # check if the reservation had been made before 
     reservation = Reservation.query.filter_by(schedule_id=sid).filter_by(mentor_id=mid).filter_by(student_id=uid).first()
     if reservation is not None:
         flash("この予約すでにされています。")
@@ -453,26 +453,25 @@ def chatlist():
         return redirect(url_for('register'))
 
     reservations = Reservation.query.filter_by(student_id=uid).all()
-
     chatlist = []
 
     for reservation in reservations:
         schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
         mentor = Mentor.query.filter_by(mid=reservation.mentor_id).first()
+        if schedule is not None:
+            if mentor.filename is None:
+                mentor.filename = "default.jpg"
 
-        if mentor.filename is None:
-            mentor.filename = "default.jpg"
-
-        chat_history = {
-            "date": schedule.date,
-            "day": schedule.day,
-            "place": schedule.place,
-            "rid": reservation.rid,
-            "filename": 'static/img-get/' + mentor.filename,
-            "name": mentor.name,
-            "created_at": reservation.created_at
-        }
-        chatlist.append(chat_history)
+            chat_history = {
+                "date": schedule.date,
+                "day": schedule.day,
+                "place": schedule.place,
+                "rid": reservation.rid,
+                "filename": 'static/img-get/' + mentor.filename,
+                "name": mentor.name,
+                "created_at": reservation.created_at
+            }
+            chatlist.append(chat_history)
 
     chatlist.sort(key=lambda x: x['created_at'], reverse=True)
 

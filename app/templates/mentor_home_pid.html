@@ -2,19 +2,51 @@
 
 {% block content %}
 
-<div class="card-list">
+<div>
+    <div>
+        <div class="bg-preshot" style="border-bottom-left-radius: .5rem; border-bottom-right-radius: .5rem;">
+            <div class="container pb-4">
+                <div class="card mx-auto shadow" style="border-radius: .5rem;" id={{post.pid}}　>
+                    <div class="card-body">
+                        <h6 class="card-title" style="color: black;">{{ post.title }}</h6>
+                        <p class="card-text text-muted" style="font-size: small;">{{ post.text }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <div class="card" id={{post.id}}>
-        <h1>{{ post.title }}</h1>
-        <h3>{{ post.text }}</h3>
+        <nav class="navbar border-bottom">
+
+            <nav class="navbar preshot-color pl-3">
+                <span class="navbar-brand fas fa-comment nav-top-item p-0" style="color:#778899; font-size: 25px;"></span>
+                {{ post.count }}
+            </nav>
+            
+        </nav>
+
+        
+
+
         {% if post.response  %}
-            <h2>Reacted</h2>
+
+        <div class="container d-flex justify-content-center mt-4">
+            <div class="text-center d-flex align-items-center btn btn-group-lg shadow-lg btn-block text-white" style="height: 3rem; background-color:gray;">
+                <span class="mx-auto">アクション済み</span>
+            </div>
+        </div>
+
         {% else %}
-            <h2>Want to react?</h2>
+        
+        <div class="container d-flex justify-content-center mt-4">
+            <a href="/mentor_response/{{post.pid}}" class="text-center d-flex align-items-center btn btn-group-lg bg-preshot shadow-lg btn-block text-white" style="height: 3rem;">
+                <span class="mx-auto">声をかけてみる</span>
+            </a>
+        </div>
+        
         {% endif %}
-        <a href="/mentor_response/{{post.pid}}">React</a>
+        
+                
+
     </div>
-
-
 </div>
 {% endblock content %}
