@@ -342,10 +342,8 @@ def reservation(sid):
         return redirect(url_for('register'))
     
     #check if the reservation had been made before 
-    reservation = Reservation.query.filter_by(student_id=uid).first()
-    schedule = reservation.schedule_id
-
-    if sid == schedule:
+    reservation = Reservation.query.filter_by(schedule_id=sid).filter_by(mentor_id=mid).filter_by(student_id=uid).first()
+    if reservation is not None:
         flash("この予約すでにされています。")
         return redirect(url_for('chatlist', rid = reservation.rid))
 
@@ -670,7 +668,6 @@ def mentor_schedule_delete(sid):
     if mid is None:
         flash("セッションが切れました。")
         return redirect(url_for('register'))
-
     schedule = Schedule.query.filter_by(sid=sid).first()
     db.session.delete(schedule)
     db.session.commit()
@@ -711,7 +708,7 @@ def mentor_home():
 
     page = request.args.get('page', 1, type=int)
 
-    posts = Post.query.paginate(page, 10, False)
+    posts = Post.query.order_by(Post.created_at.desc()).paginate(page, 10, False)
     next_url = url_for('index', page=posts.next_num) if posts.has_next else None
     prev_url = url_for('index', page=posts.prev_num) if posts.has_prev else None
 
