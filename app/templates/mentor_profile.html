@@ -19,102 +19,60 @@
 {% endblock %} 
 
 {% block content %}
-<<<<<<< HEAD
-<div class="upload">
-    <form action="/mentor_profile" method="POST" enctype="multipart/form-data">
-        <div class="upload-area">
-            <div class="upload-container">
-
-                <p class="status">名前
-                    <br> <input placeholder="-" name="name" id="name" type="text">
-                </p>
-
-                <p class="status">大学
-                    <br><input placeholder="-" type="text" id="university" name="university">
-                </p>
-
-                <p class="status">学部
-                    <br> <input placeholder="-" name="faculty" id="faculty" type="text">
-                </p>
-
-                <p class="status">企業
-                    <br><input placeholder="-" type="text" id="firm" name="firm">
-                </p>
-
-                <p class="status">卒業年度
-                    <br> <input placeholder="-" name="graduation" id="graduation" type="number">
-                </p>
-
-                <p class="status">職種
-                    <br><input placeholder="-" type="text" id="position" name="position">
-                </p>
-
-                <p class="status">経歴
-                    <br><input placeholder="-" type="text" id="history" name="history">
-                </p>
-
-                <p class="status">コメント
-                    <br><input placeholder="-" type="text" id="comment" name="comment">
-                </p>
-
-                <div class="form-group">
-                    <label for="text" class="col-form-label">プロフィール写真を選択してください</label> 
-                    <input type="file" class="form-control-file" name="image" id="image">
-=======
-
-
+{{ mentor.name }}
 <div class="container my-5 pb-5">
     <div class="container">
 
-        <form action="/mentor_profile" method="POST" enctype="multipart/form-data">
+        <form action="/mentor_profile" method="POST" enctype="multipart/form-data" novalidate>
 
             <div class="form-group">
                 <label for="text" class="col-form-label">名前</label> 
-                <input id="name" name="name" placeholder="就活太郎" class="text-muted form-control here border-0" style="background-color: whitesmoke;" required="required" type="text" required>
+                <input id="name" name="name" placeholder="就活太郎" class="text-muted form-control here border-0" style="background-color: whitesmoke;" required="required" type="text">
             </div>
 
             <div class="form-group">
                 <label for="text" class="col-form-label">企業</label> 
                 <div>
-                    <input id="firm" name="firm" placeholder="株式会社preshot" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="text" required>
->>>>>>> 3b18f6897fcff47c071e58d9547ae5a528e18304
+                    <input id="firm" name="firm" placeholder="株式会社preshot" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="text">
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="text" class="col-form-label">職種</label> 
-                <input id="position" name="position" placeholder="データアナリスト" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="text" required>
+                <input id="position" name="position" placeholder="データアナリスト" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="text">
             </div>
 
             <div class="form-group">
                 <label for="text" class="col-form-label">大学</label> 
-                <input id="university" name="university" placeholder="選考大学" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="text" required>    
+                <input id="university" name="university" placeholder="選考大学" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="text">    
             </div>
 
             <div class="form-group">
                 <label for="text" class="col-form-label">学部</label> 
-                <input name="faculty" id="faculty" placeholder="対策学部" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="text" required>
+                <input name="faculty" id="faculty" placeholder="対策学部" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="text">
             </div>
 
             <div class="form-group">
                 <label for="text" class="col-form-label">卒業年度</label> 
-                <input name="graduation" id="graduation" placeholder="〇〇大学" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="number" required>
+                <input name="graduation" id="graduation" placeholder="〇〇大学" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="number">
             </div>
 
             <div class="form-group">
                 <label for="text" class="col-form-label">経歴</label> 
-                <textarea id="history" name="history" placeholder="選考大学" class="form-control here border-0" style="background-color: whitesmoke;" cols="40" rows="6.5" required="required" type="text" required></textarea>
+                <textarea id="history" name="history" placeholder="選考大学" class="form-control here border-0" style="background-color: whitesmoke;" cols="40" rows="6.5" required="required" type="text"></textarea>
             </div>
 
             <div class="form-group">
                 <label for="text" class="col-form-label">コメント</label> 
-                <textarea id="comment" name="comment" placeholder="よろしくお願いします" class="form-control here border-0" style="background-color: whitesmoke;" cols="40" rows="6.5" required="required" type="text" required></textarea>
+                <textarea id="comment" name="comment" placeholder="よろしくお願いします" class="form-control here border-0" style="background-color: whitesmoke;" cols="40" rows="6.5" required="required" type="text"></textarea>
             </div>
 
-            <div class="form-group mb-5">
+            <div class="form-group">
                 <label for="text" class="col-form-label">プロフィール画像を選択</label> 
-                <input type="file" class="border rounded-lg form-control-file" style="color:white;" name="image" id="image">
+                <input type="file" class="form-control-file"  name="image" id="image">
             </div>
+
+            <br>
 
             <div class="form-group d-flex justify-content-center mb-5">
                 <button type="submit" class="btn btn-group-lg bg-preshot shadow btn-block text-white" style="height: 40px;">送信</button>
