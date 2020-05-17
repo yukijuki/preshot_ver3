@@ -235,6 +235,10 @@ def eachpost(pid):
 
     for response in responses:
         mentor = Mentor.query.filter_by(mid=response.mentor_id).first()
+
+        if mentor.filename is None:
+            mentor.filename = "default.jpg"
+
         mentor_data = {
             "mid": mentor.mid,
             "name": mentor.name,
@@ -298,6 +302,9 @@ def select_mentor(mid):
     mentor = Mentor.query.filter_by(mid=mid).first()
     schedules = Schedule.query.filter_by(mentor_id=mid).all()
 
+    if mentor.filename is None:
+        mentor.filename = "default.jpg"
+
     schedule_info = []
 
     for schedule in schedules:
@@ -352,6 +359,9 @@ def reservation(sid):
 
     mentor = Mentor.query.filter_by(mid=mid).first()
     schedule = Schedule.query.filter_by(sid=sid).first()
+
+    if mentor.filename is None:
+        mentor.filename = "default.jpg"
 
     data = {
         "date": schedule.date,
@@ -442,6 +452,9 @@ def chatlist():
         schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
         mentor = Mentor.query.filter_by(mid=reservation.mentor_id).first()
 
+        if mentor.filename is None:
+            mentor.filename = "default.jpg"
+
         chat_history = {
             "date": schedule.date,
             "day": schedule.day,
@@ -500,7 +513,6 @@ def mentor_register():
 
         else:
             if mentor.password == data["password"]:
-                print(mentor.mid)
                 session['mid'] = mentor.mid
 
                 flash("ログインしました")
@@ -597,7 +609,7 @@ def mentor_profile():
 
             return redirect(url_for('mentor_home'))
 
-    return render_template("mentor_profile.html")
+    return render_template("mentor_profile.html", mentor = data)
 
 
 @app.route("/mentor_schedule", methods=["GET", "POST"])

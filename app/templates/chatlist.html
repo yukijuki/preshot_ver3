@@ -2,20 +2,29 @@
 
 {% block content %}
 <!-- Contact Card ~ #01 -->
-<div>
+<div class="container pt-3">
     <div>
 
         {% if chatlist %}
     
         {% for chat in chatlist %}
 
-            <div class="card">
-                <p >{{ chat.date }}</p>
-                <p >{{ chat.day }}</p>
-                <p >{{ chat.place }}</p>
-                <img src=/{{chat.filename}} alt="pic1">
-                <p >{{ chat.name }}</p>
-                <a href="/chat/{{chat.rid}}">Got to chat with this mentor</a>
+            <div class="card mb-2 mx-auto shadow" style="border-radius: 0.5rem!important;">
+                
+                <a href="/chat/{{chat.rid}}" class="card-body p-3">
+                    <div class="d-flex flex-row">
+                        <div class="col-3 px-0 my-auto text-center">
+                            <img src=/{{chat.filename}} class="shadow-lg rounded-circle" style="height: 3.3rem;" alt="pic1">
+                        </div>
+                        <div class="col-4 my-auto text-dark">{{ chat.name }}</div>
+                        <div class="col-5 d-flex flex-column  my-auto" style="font-size: .7rem;">
+                            <span class="text-secondary pl-1">曜日：{{ chat.day }}</span>
+                            <span class="text-secondary pl-1">時間：{{ chat.date }}</span>
+                            <span class="text-secondary pl-1">場所：{{ chat.place }}</span>
+                        </div>
+                    </div>
+                </a>
+                
             </div>
 
         {% endfor %}
