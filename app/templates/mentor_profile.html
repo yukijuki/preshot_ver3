@@ -1,7 +1,7 @@
 {% extends "mentor_layout.html" %} 
 
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css') }}"> 
+
 {% endblock %} 
 
 {% block title %}
@@ -9,54 +9,66 @@
 {% endblock %} 
 
 {% block content %}
-<div class="upload">
+
+
+<div class="container mt-3">
+
     <form action="/mentor_profile" method="POST" enctype="multipart/form-data">
-        <div class="upload-area">
-            <div class="upload-container">
 
-                <p class="status">名前
-                    <br> <input placeholder="-" name="name" id="name" type="text">
-                </p>
+        <div class="form-group">
+            <label for="text" class="col-form-label">名前</label> 
+            <input id="name" name="name" placeholder="就活太郎" class="form-control here" required="required" type="text" required>
+        </div>
 
-                <p class="status">大学
-                    <br><input placeholder="-" type="text" id="university" name="university">
-                </p>
-
-                <p class="status">学部
-                    <br> <input placeholder="-" name="faculty" id="faculty" type="text">
-                </p>
-
-                <p class="status">企業
-                    <br><input placeholder="-" type="text" id="firm" name="firm">
-                </p>
-
-                <p class="status">卒業年度
-                    <br> <input placeholder="-" name="graduation" id="graduation" type="number">
-                </p>
-
-                <p class="status">職種
-                    <br><input placeholder="-" type="text" id="position" name="position">
-                </p>
-
-                <p class="status">コメント
-                    <br><input placeholder="-" type="text" id="comment" name="comment">
-                </p>
-
-                <div class="status img-select">
-                    <p>プロフィール写真を選択してください</p>
-                    <div class="image-upload">選択
-                        <input type="file" class="custome-file-input" name="image" id="image" >
-                        <input type="text" id="uv" class="uploadValue" disabled />
-                    </div>
-                </div>
-
-
-                <button class="btn submit" type="submit">送信</button>
+        <div class="form-group">
+            <label for="text" class="col-form-label">企業</label> 
+            <div>
+                <input id="firm" name="firm" placeholder="株式会社preshot" class="form-control here" required="required" type="text" required>
             </div>
         </div>
+
+        <div class="form-group">
+            <label for="text" class="col-form-label">職種</label> 
+            <input id="position" name="position" placeholder="データアナリスト" class="form-control here" required="required" type="text" required>
+        </div>
+
+        <div class="form-group">
+            <label for="text" class="col-form-label">大学</label> 
+            <input id="university" name="university" placeholder="選考大学" class="form-control here" required="required" type="text" required>    
+        </div>
+
+        <div class="form-group">
+            <label for="text" class="col-form-label">学部</label> 
+            <input name="faculty" id="faculty" placeholder="対策学部" class="form-control here" required="required" type="text" required>
+        </div>
+
+        <div class="form-group">
+            <label for="text" class="col-form-label">卒業年度</label> 
+            <input name="graduation" id="graduation" placeholder="〇〇大学" class="form-control here" required="required" type="number" required>
+        </div>
+
+        <div class="form-group">
+            <label for="text" class="col-form-label">コメント</label> 
+            <input id="comment" name="comment" placeholder="よろしくお願いします" class="form-control here" required="required" type="text" required>
+        </div>
+
+        <div class="form-group">
+            <label for="text" class="col-form-label">プロフィール写真を選択してください</label> 
+            <input type="file" class="form-control-file" name="image" id="image">
+        </div>
+
+        <div class="form-group">
+            <label for="textarea" class="col-form-label">聞きたい内容</label> 
+            <div>
+                <textarea id="name" name="name" type="text" placeholder="聞きたい内容を入力" cols="40" rows="6.5" class="form-control" required></textarea>
+            </div>
+            <div class="d-flex justify-content-center login_container">
+                <button type="submit" class="btn btn-group-lg bg-preshot btn-block rounded-pill" style="height: 40px;">送信</button>
+            </div>
+        </div> 
+
     </form>
-
-
+    
 </div>
 
 {% endblock content %} 

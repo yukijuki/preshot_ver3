@@ -246,6 +246,7 @@ def eachpost(pid):
         "title": post.title,
         "text": post.text,
         "response": mentor_info,
+        "count": len(mentor_info),
         "created_at": post.created_at
     }
 
@@ -482,8 +483,8 @@ def mentor_register():
 
             schedule = Schedule(
                 sid=sid,
-                day="いつでも",
-                date="いつでも",
+                day="土曜日",
+                date="18:00",
                 place="オンライン",
                 mentor_id=mid,
                 created_at=datetime.datetime.now()
