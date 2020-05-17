@@ -24,17 +24,25 @@
             
         </nav>
 
+        
+
+
+        {% if post.response  %}
+
+        <div class="container d-flex justify-content-center mt-4">
+            <div class="text-center d-flex align-items-center btn btn-group-lg shadow-lg btn-block text-white" style="height: 3rem; background-color:gray;">
+                <span class="mx-auto">アクション済み</span>
+            </div>
+        </div>
+
+        {% else %}
+        
         <div class="container d-flex justify-content-center mt-4">
             <a href="/mentor_response/{{post.pid}}" class="text-center d-flex align-items-center btn btn-group-lg bg-preshot shadow-lg btn-block text-white" style="height: 3rem;">
                 <span class="mx-auto">声をかけてみる</span>
             </a>
         </div>
-
-
-        {% if post.response  %}
-            <h2>Reacted</h2>
-        {% else %}
-            <h2>Want to react?</h2>
+        
         {% endif %}
         
                 
