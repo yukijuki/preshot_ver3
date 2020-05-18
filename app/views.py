@@ -339,6 +339,8 @@ def reservation(sid):
     uid = session.get('uid')
     mid = session.get('mentor_id')
 
+    print(sid)
+
     if uid is None or mid is None:
         return redirect(url_for('register'))
     
