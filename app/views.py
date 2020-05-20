@@ -100,7 +100,7 @@ class Chat(db.Model):
 
 # ----------------------------------------------------------------
 # db.drop_all()
-# db.create_all()
+db.create_all()
 # ----------------------------------------------------------------
 # Functions for images
 
@@ -345,7 +345,7 @@ def reservation(sid):
         return redirect(url_for('register'))
     
     # check if the reservation had been made before 
-    reservation = Reservation.query.filter_by(schedule_id=sid).filter_by(mentor_id=mid).filter_by(student_id=uid).first()
+    reservation = Reservation.query.filter_by(schedule_id=sid).first()
     if reservation is not None:
         flash("この予約すでにされています。")
         return redirect(url_for('chatlist', rid = reservation.rid))

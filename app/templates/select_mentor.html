@@ -64,25 +64,25 @@
                             <i class="far fa-clock text-primary h4 mb-0"></i>
                             <span class="text-dark">{{ schedule.date }}</span>
                         </div>
+                    </div>
+                </a>
 
-                        <!-- モーダルの設定 -->
-                        <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                                <div class="modal-content shadow-lg w-75">
-                                    <div class="modal-body">
-                                        
-                                        <p class="modal-title pl-2" id="staticBackdropLabel">この日程で予約しますか？</p>
-                                        
-                                        <div class="mt-4 p-2 float-right">
-                                            <button type="button" class="pr-3" style="font-size: .9rem;" onclick="location.href='/reservation/{{schedule.sid}}'">はい</button>
-                                            <button type="button" class="pr-2 text-dark" data-dismiss="modal" style="font-size: .9rem;">いいえ</button>
-                                        </div>
-                                    </div>
+                <!-- モーダルの設定 -->
+                <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content shadow-lg w-75">
+                            <div class="modal-body">
+                                
+                                <p class="modal-title pl-2" id="staticBackdropLabel">この日程で予約しますか？</p>
+                                
+                                <div class="mt-4 p-2 float-right">
+                                    <button type="button" class="pr-3" onclick="location.href='/reservation/{{schedule.sid}}'">はい</button>
+                                    <button type="button" class="pr-2 text-dark" data-dismiss="modal" >いいえ</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </a>
+                </div>
             </div>
             
         {% endfor %}
