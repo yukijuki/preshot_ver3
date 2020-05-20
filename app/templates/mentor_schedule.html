@@ -5,7 +5,9 @@
     .form-control::placeholder{
         color: #dcdcdc;
     }
-
+    .text-whitesmoke{
+        color: #dcdcdc;
+    }
 </style>
 {% endblock %} 
 
@@ -17,7 +19,7 @@
 {% block content %}
 
 
-<div class="container mt-5">
+<div class="container my-5 pb-5">
     <div class="container">
 
         <div class="text-center">
@@ -26,16 +28,39 @@
 
         <form action="/mentor_schedule" method="POST" enctype="multipart/form-data">
 
+            
             <div class="form-group">
-                <label for="text" class="col-form-label">曜日</label> 
-                <input id="day" name="day" placeholder="火曜日" class="text-muted form-control here border-0" style="background-color: whitesmoke;" required="required" type="text" required>
+                <label for="text" class="control-label">曜日</label>
+                <select class="text-whitesmoke form-control here border-0" style="background-color: whitesmoke;" id="day" name="day">
+                    <option value="日曜日" selected="selected">日曜日</option>
+                    <option value="月曜日">月曜日</option>
+                    <option value="火曜日">火曜日</option>
+                    <option value="水曜日">水曜日</option>
+                    <option value="木曜日">木曜日</option>
+                    <option value="金曜日">金曜日</option>
+                    <option value="土曜日">土曜日</option>
+                </select>
             </div>
 
             <div class="form-group">
-                <label for="text" class="col-form-label">時間</label> 
-                <div>
-                    <input id="date" name="date" placeholder="12:00~" class="form-control here border-0" style="background-color: whitesmoke;" required="required" type="text" required>
-                </div>
+                <label for="text" class="control-label">時間</label>
+                <select class="text-whitesmoke form-control here border-0" style="background-color: whitesmoke;" id="date" name="date">
+                    <option value="8:00" selected="selected">8:00</option>
+                    <option value="9:00">9:00</option>
+                    <option value="10:00">10:00</option>
+                    <option value="11:00">11:00</option>
+                    <option value="12:00">12:00</option>
+                    <option value="13:00">13:00</option>
+                    <option value="14:00">14:00</option>
+                    <option value="15:00">15:00</option>
+                    <option value="16:00">16:00</option>
+                    <option value="17:00">17:00</option>
+                    <option value="18:00">18:00</option>
+                    <option value="19:00">19:00</option>
+                    <option value="20:00">20:00</option>
+                    <option value="21:00">21:00</option>
+                    <option value="22:00">22:00</option>
+                </select>
             </div>
 
             <div class="form-grou mb-4 pb-2">
