@@ -24,6 +24,20 @@
 <title>Preshot/Mentor</title>
 {% endblock %} 
 
+<!-- 
+    返しているJson
+    data = {
+    "name": mentor.name,
+    "filename": mentor.filename,
+    "university": mentor.university,
+    "faculty": mentor.faculty,
+    "firm": mentor.firm,
+    "graduation": mentor.graduation,
+    "position": mentor.position,
+    "history": mentor.history,
+    "comment": mentor.comment
+} -->
+
 {% block content %}
 <div class="container my-3 pb-5">
     <div class="container">
@@ -31,53 +45,60 @@
         <form action="/mentor_profile" method="POST" enctype="multipart/form-data" novalidate>
 
             <div class="form-group">
-                <label for="text" class="col-form-label">名前</label> 
+                <label for="text" class="col-form-label">名前 :</label>
+                {{ data.name }} 
                 <input id="name" name="name" placeholder="就活太郎" class="form-control here border-0 bg-whitesmoke" required="required" type="text">
             </div>
 
             <div class="form-group">
-                <label for="text" class="col-form-label">企業</label> 
+                <label for="text" class="col-form-label">企業 :</label> 
+                {{ data.firm }}
                 <div>
                     <input id="firm" name="firm" placeholder="株式会社preshot" class="form-control here border-0 bg-whitesmoke" required="required" type="text">
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="text" class="col-form-label">職種</label> 
+                <label for="text" class="col-form-label">職種 :</label> 
+                {{ data.position }}
                 <input id="position" name="position" placeholder="データアナリスト" class="form-control here border-0 bg-whitesmoke" required="required" type="text">
             </div>
 
             <div class="form-group">
-                <label for="text" class="col-form-label">大学</label> 
+                <label for="text" class="col-form-label">大学 :</label> 
+                {{ data.university }}
                 <input id="university" name="university" placeholder="選考大学" class="form-control here border-0 bg-whitesmoke" required="required" type="text">
             </div>
 
             <div class="form-group">
-                <label for="text" class="col-form-label">学部</label> 
+                <label for="text" class="col-form-label">学部 :</label> 
+                {{ data.faculty }}
                 <input name="faculty" id="faculty" placeholder="対策学部" class="form-control here border-0 bg-whitesmoke" required="required" type="text">
             </div>
 
             <div class="form-group">
-                <label for="text" class="col-form-label">卒業年度</label> 
+                <label for="text" class="col-form-label">卒業年度 :</label> 
+                {{ data.graduation }}
                 <input name="graduation" id="graduation" placeholder="2020卒" class="form-control here border-0 bg-whitesmoke" required="required" type="number">
             </div>
 
             <div class="form-group">
-                <label for="text" class="col-form-label">経歴</label> 
-                <textarea id="history" name="history" placeholder="Preshot開発インターン" class="form-control here border-0 bg-whitesmoke" cols="40" rows="6.5" required="required" type="text"></textarea>
+                <label for="text" class="col-form-label">経歴 :</label> 
+                <textarea id="history" name="history" placeholder="{{ data.history }}" class="form-control here border-0 bg-whitesmoke" cols="40" rows="6.5" required="required" type="text"></textarea>
             </div>
 
             <div class="form-group">
                 <p>写真を選択してください</p>
-                <div class="custom-file">選択
-                    <input type="file" class="custome-file-input" name="image" id="image" onchange="uv.style.display='inline-block'; uv.value=this.value;" />
+                <img src=/{{data.filename}} class="rounded-circle my-2" style="height: 50px;" alt="pic1">
+                <div class="custom-file">選択 :
+                    <input type="file" class="custome-file-input" name="image" id="image"  />
                     <input type="text" id="uv" class="uploadValue" disabled />
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="text" class="col-form-label">コメント</label> 
-                <textarea id="comment" name="comment" placeholder="よろしくお願いします" class="form-control here border-0 bg-whitesmoke" cols="40" rows="6.5" required="required" type="text"></textarea>
+                <label for="text" class="col-form-label">コメント :</label> 
+                <textarea id="comment" name="comment" placeholder="{{ data.comment }}" class="form-control here border-0 bg-whitesmoke" cols="40" rows="6.5" required="required" type="text"></textarea>
             </div>
 
             <div class="form-group d-flex justify-content-center mt-5 mb-5">
