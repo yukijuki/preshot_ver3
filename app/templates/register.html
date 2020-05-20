@@ -19,6 +19,10 @@
 
 <title>Preshot/Register</title>
 
+{% for message in get_flashed_messages() %}
+<div class="alert-success text-center">{{ message }}</div>
+{% endfor %}
+
 <div class="login bg-preshot h-100">
     
     <div class="container">
@@ -51,3 +55,9 @@
     </div>
 
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('.alert-success').delay(1000).slideUp(500);
+    });
+</script>

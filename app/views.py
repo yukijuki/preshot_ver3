@@ -149,6 +149,13 @@ def register():
     if request.method == "POST":
         data = request.form
 
+        if data["email"] is "":
+            flash("メールアドレスを入力してください")
+            return redirect(request.url)
+        if data["password"] is "":
+            flash("パスワードを入力してください")
+            return redirect(request.url)
+
         student = Student.query.filter_by(email=data["email"]).first()
 
         if student is None:
@@ -341,7 +348,10 @@ def reservation(sid):
 
     print(sid)
 
-    if uid is None or mid is None:
+    if uid is None:
+        return redirect(url_for('register'))
+        flash("セッションが切れました")
+    if mid is None:
         return redirect(url_for('register'))
         flash("セッションが切れました")
     
@@ -493,6 +503,13 @@ def chatlist():
 def mentor_register():
     if request.method == "POST":
         data = request.form
+
+        if data["email"] is "":
+            flash("メールアドレスを入力してください")
+            return redirect(request.url)
+        if data["password"] is "":
+            flash("パスワードを入力してください")
+            return redirect(request.url)
 
         mentor = Mentor.query.filter_by(email=data["email"]).first()
 

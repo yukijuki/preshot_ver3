@@ -21,7 +21,9 @@
 
 <title>Preshot/Mentor_register</title>
 
-
+{% for message in get_flashed_messages() %}
+<div class="alert-success text-center">{{ message }}</div>
+{% endfor %}
 
 <div class="login bg-preshot h-100">
     
