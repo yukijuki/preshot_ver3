@@ -406,9 +406,6 @@ def chat(rid):
 
     reservation = Reservation.query.filter_by(rid=rid).first()
 
-    # load Chat objects
-    messages = bulk_load_chat(1, rid).items
-
     mid = reservation.mentor_id
 
     schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
@@ -422,8 +419,7 @@ def chat(rid):
         "place": schedule.place,
         "rid": reservation.rid,
         "name": mentor.name,
-        "filename": 'static/img-get/' + mentor.filename,
-        "messages": messages
+        "filename": 'static/img-get/' + mentor.filename
     }
 
     session['room'] = rid  # Set room as Reservation ID
@@ -855,9 +851,6 @@ def mentor_chat(rid):
 
     reservation = Reservation.query.filter_by(rid=rid).first()
 
-    # load chat
-    messages = bulk_load_chat(1, rid).items
-
     uid = reservation.student_id
 
     schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
@@ -869,9 +862,10 @@ def mentor_chat(rid):
                 "day": schedule.day,
                 "place": schedule.place,
                 "rid": reservation.rid,
-                "name": student.email[:5] + "さん",
-                "messages": messages
+                "name": student.email[:5] + "さん"
             }
+
+    session['room'] = rid  # Set room as Reservation ID
 
     return render_template("mentor_chat.html", data=data)
 
