@@ -34,7 +34,7 @@ class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     uid = db.Column(db.String(80), nullable=False, unique=True)
     email = db.Column(db.String(80), nullable=False, unique=True)
-    password = db.Column(db.Integer, default=0)
+    password = db.Column(db.String(80), nullable=False, unique=True)
     created_at = db.Column(db.DateTime())
 
 
@@ -174,7 +174,7 @@ def register():
             db.session.add(newuser)
             db.session.commit()
             flash("アカウントが作成されました")
-            return redirect(url_for('setting'))
+            return redirect(url_for('mypost'))
 
         else:
             if student.password == data["password"]:
