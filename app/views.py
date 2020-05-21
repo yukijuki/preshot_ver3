@@ -100,7 +100,7 @@ class Chat(db.Model):
 
 # ----------------------------------------------------------------
 # db.drop_all()
-db.create_all()
+# db.create_all()
 # ----------------------------------------------------------------
 # Functions for images
 
@@ -210,7 +210,7 @@ def mypost():
         return redirect(url_for('register'))
 
     try:
-        posts = Post.query.filter_by(student_id=uid).all()
+        posts = Post.query.filter_by(student_id=uid).order_by(Post.created_at.desc()).all()
 
         response = []
 
@@ -222,7 +222,7 @@ def mypost():
                 "created_at": post.created_at
             }
             response.append(post_data)
-
+        
     except FileNotFoundError:
         abort(404)
 
@@ -640,6 +640,9 @@ def mentor_profile():
 
             return redirect(request.url)
     
+    if mentor.filename is None:
+        mentor.filename = "default.jpg"
+        
     data = {
         "name": mentor.name,
         "filename": 'static/img-get/' + mentor.filename,
