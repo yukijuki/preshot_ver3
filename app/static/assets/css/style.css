@@ -429,19 +429,19 @@ h1, h2, h3, h4, h5, h6 {
 
 #hero .btn-get-started {
   font-family: "Montserrat", sans-serif;
-  font-weight: 500;
+  font-weight: 700;
   font-size: 16px;
   letter-spacing: 1px;
   display: inline-block;
   padding: 10px 30px;
   border-radius: 50px;
   transition: 0.5s;
-  color: #fff;
-  background: #1acc8d;
+  color: #FF514D;
+  background: white;
 }
 
 #hero .btn-get-started:hover {
-  background: #17b57d;
+  background: white;
 }
 
 #hero .animated {
@@ -660,19 +660,19 @@ section {
   justify-content: center;
   width: 64px;
   height: 64px;
-  border: 2px solid #7ceec6;
+  border: 2px solid #FF514D;
   border-radius: 50px;
   transition: 0.5s;
 }
 
 .about .icon-box .icon i {
-  color: #1acc8d;
+  color: #FF514D;
   font-size: 32px;
 }
 
 .about .icon-box:hover .icon {
-  background: #1acc8d;
-  border-color: #1acc8d;
+  background: #FF514D;
+  border-color: #FF514D;
 }
 
 .about .icon-box:hover .icon i {
