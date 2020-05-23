@@ -50,17 +50,17 @@
 
             <nav class="navbar preshot-color">
                 <a class="navbar-brand nav-item " href="javascript:history.back()">
-                    <i class="fas fa-angle-double-left align-middle text-white"></i>
+                    <i class="fas fa-angle-left text-white align-middle pr-2" style="font-size: 2.3rem;"></i>
                 </a>
             </nav>
         
             <nav class="navbar preshot-color">
-                <a class="navbar-text text-white lead" href="/mentor_home">Preshot</a>
+                <a class="navbar-text text-white lead align-middle" href="/mypost">Preshot</a>
             </nav>
         
             <nav class="navbar preshot-color">
-                <a class="navbar-brand nav-top-item" href="/mentor_setting">
-                    <i class="fas fa-cog text-white"></i>
+                <a class="navbar-brand nav-top-item" href="/setting">
+                    <i class="fas fa-cog text-white align-middle"></i>
                 </a>
             </nav>
             
@@ -88,12 +88,6 @@
         </nav>
     
         <nav class="navbar nav-bottom-container preshot-color">
-            <a class="navbar-brand nav-item" href="/mentor_chatlist">
-                <i class="fas fa-comments text-white"></i>
-            </a>
-        </nav>
-    
-        <nav class="navbar nav-bottom-container preshot-color">
             <a class="navbar-brand nav-item" href="/mentor_profile">
                 <i class="fas fa-user-circle text-white"></i>
             </a>
@@ -104,6 +98,12 @@
                 <i class="fas fa-calendar-alt text-white"></i>
             </a>
         </nav>
+
+        <nav class="navbar nav-bottom-container preshot-color">
+            <a class="navbar-brand nav-item" href="/mentor_chatlist">
+                <i class="fas fa-comments text-white"></i>
+            </a>
+        </nav>
         
     </nav>
     
@@ -112,7 +112,12 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function() {
-            $('.alert-success').delay(1000).slideUp(500);
+            $('.alert-success').delay(1000).slideUp(2000);
+        });
+        $(function(){
+            $('select').on('change',function(){
+                $(this).css('color',$(this).find('option:selected').get(0).style.color);
+            }).trigger('change');
         });
     </script>
 </body>

@@ -6,7 +6,7 @@ from PIL import Image
 from flask import request, redirect, session, jsonify, render_template, make_response, url_for, abort, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
-
+from flask_socketio import join_room, leave_room, emit
 from app import app, socketio
 
 UPLOAD_FOLDER = '/static/img'
@@ -27,13 +27,14 @@ app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["PNG", "JPG", "JPEG"]
 app.debug = True
 db = SQLAlchemy(app)
 
+
 # Define Models
 
 class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     uid = db.Column(db.String(80), nullable=False, unique=True)
     email = db.Column(db.String(80), nullable=False, unique=True)
-    password = db.Column(db.Integer, default=0)
+    password = db.Column(db.String(80), nullable=False, unique=True)
     created_at = db.Column(db.DateTime())
 
 
@@ -58,7 +59,7 @@ class Schedule(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     sid = db.Column(db.String(80), nullable=False, unique=True)
     day = db.Column(db.String(80), nullable=False)
-    date = db.Column(db.String(80), nullable=False) #think it as time
+    date = db.Column(db.String(80), nullable=False)  # think it as time
     place = db.Column(db.String(80), nullable=False)
     mentor_id = db.Column(db.String(80), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
@@ -149,6 +150,13 @@ def register():
     if request.method == "POST":
         data = request.form
 
+        if data["email"] is "":
+            flash("メールアドレスを入力してください")
+            return redirect(request.url)
+        if data["password"] is "":
+            flash("パスワードを入力してください")
+            return redirect(request.url)
+
         student = Student.query.filter_by(email=data["email"]).first()
 
         if student is None:
@@ -165,19 +173,19 @@ def register():
 
             db.session.add(newuser)
             db.session.commit()
-            flash("Created")
-            return redirect(url_for('setting'))
+            flash("アカウントが作成されました")
+            return redirect(url_for('mypost'))
 
         else:
             if student.password == data["password"]:
                 session['uid'] = student.uid
 
-                flash("Logged in")
+                flash("ログインしました")
                 return redirect(url_for('mypost'))
 
             else:
                 # "password is wrong"
-                flash("Wrong password")
+                flash("パスワードが違います")
                 return redirect(request.url)
 
     return render_template("register.html")
@@ -187,7 +195,7 @@ def register():
 def setting():
     uid = session.get('uid')
     if uid is None:
-        flash("Session is no longer available")
+        flash("セッションが切れました")
         return redirect(url_for('register'))
 
     student = Student.query.filter_by(uid=uid).first()
@@ -199,11 +207,11 @@ def setting():
 def mypost():
     uid = session.get('uid')
     if uid is None:
-        flash("Session is no longer available")
+        flash("セッションが切れました")
         return redirect(url_for('register'))
 
     try:
-        posts = Post.query.filter_by(student_id=uid).all()
+        posts = Post.query.filter_by(student_id=uid).order_by(Post.created_at.desc()).all()
 
         response = []
 
@@ -215,7 +223,7 @@ def mypost():
                 "created_at": post.created_at
             }
             response.append(post_data)
-
+        
     except FileNotFoundError:
         abort(404)
 
@@ -226,7 +234,7 @@ def mypost():
 def eachpost(pid):
     uid = session.get('uid')
     if uid is None:
-        flash("Session is no longer available")
+        flash("セッションが切れました")
         return redirect(url_for('register'))
 
     post = Post.query.filter_by(pid=pid).first()
@@ -263,7 +271,7 @@ def eachpost(pid):
 def post():
     uid = session.get('uid')
     if uid is None:
-        flash("Session is no longer available")
+        flash("セッションが切れました")
         return redirect(url_for('register'))
 
     if request.method == "POST":
@@ -282,7 +290,7 @@ def post():
 
             db.session.add(post)
             db.session.commit()
-            flash("Posted")
+            flash("投稿しました")
 
             return redirect(url_for('mypost'))
 
@@ -294,7 +302,7 @@ def select_mentor(mid):
     # need to call the Schedule too
     uid = session.get('uid')
     if uid is None:
-        flash("Session is no longer available")
+        flash("セッションが切れました")
         return redirect(url_for('register'))
 
     # Need it for making reservation post
@@ -341,15 +349,19 @@ def reservation(sid):
 
     print(sid)
 
-    if uid is None or mid is None:
+    if uid is None:
         return redirect(url_for('register'))
-    
-    # check if the reservation had been made before 
-    reservation = Reservation.query.filter_by(schedule_id=sid).filter_by(mentor_id=mid).filter_by(student_id=uid).first()
-    if reservation is not None:
-        flash("この予約すでにされています。")
-        return redirect(url_for('chatlist', rid = reservation.rid))
+        flash("セッションが切れました")
+    if mid is None:
+        return redirect(url_for('register'))
+        flash("セッションが切れました")
 
+
+    # check if the reservation had been made before
+    reservation = Reservation.query.filter_by(schedule_id=sid).first()
+    if reservation is not None:
+        flash("この予約はすでにされています。")
+        return redirect(url_for('chatlist', rid = reservation.rid))
 
     rid = str(uuid.uuid4())
 
@@ -363,7 +375,7 @@ def reservation(sid):
     db.session.add(mentor)
     db.session.commit()
 
-    flash("登録しました")
+    flash("予約しました")
 
     # return redirect(url_for('mypost'))
 
@@ -382,7 +394,6 @@ def reservation(sid):
         "rid": rid
     }
 
-
     return render_template("reservation.html", data=data)
 
 
@@ -393,33 +404,7 @@ def chat(rid):
         flash("Session is no longer available")
         return redirect(url_for('register'))
 
-    #TASK for you
-    #if the message is being posted this catches and post
-    if request.method == "POST":
-        data = request.form
-
-        is_mentor = False
-
-        chat = Chat(
-            reservation_id=rid,
-            is_mentor=is_mentor,
-            message=data["text"],
-            created_at=datetime.datetime.now()
-        )
-
-        db.session.add(chat)
-        db.session.commit()
-
-        return redirect(request.url)
-
-    page = request.args.get('page', 1, type=int)
     reservation = Reservation.query.filter_by(rid=rid).first()
-    c = Chat.query.filter_by(reservation_id=rid)\
-        .order_by(Chat.created_at.desc())\
-        .paginate(page, 25, False)
-
-    #loop to divide the messages grouped by if its is_mentor is false or not
-    messages = c.items
 
     mid = reservation.mentor_id
 
@@ -429,24 +414,76 @@ def chat(rid):
         mentor.filename = "default.jpg"
 
     data = {
-            "date": schedule.date,
-            "day": schedule.day,
-            "place": schedule.place,
-            "rid": reservation.rid,
-            "name": mentor.name,
-            "filename": 'static/img-get/' + mentor.filename,
-            "messages": messages
-        }
+        "date": schedule.date,
+        "day": schedule.day,
+        "place": schedule.place,
+        "rid": reservation.rid,
+        "name": mentor.name,
+        "filename": 'static/img-get/' + mentor.filename
+    }
+
+    session['room'] = rid  # Set room as Reservation ID
+    return render_template("chat.html", data=data)
 
 
-    if page is not None: # If ?page=<int>, send data as JSON instead
-        print('TODO')
-        #TODO: need to implement the JSON rendering
+def bulk_load_chat(page, room):
+    return Chat.query.filter_by(reservation_id=room) \
+        .order_by(Chat.created_at.desc()) \
+        .paginate(page, 25, False)
 
-    return render_template("chat.html", data = data)
+
+@socketio.on('join')
+def connect(data):
+    id = session.get('uid') if not None else session.get('mid')
+    room = session.get('room')
+    if id is None:
+        raise socketio.ConnectionRefusedError('unauthorized')
+    if room is None:
+        raise socketio.ConnectionRefusedError('no rid specified')
+    socketio.emit('join', room=room)
 
 
-@socketio.on('message')
+@socketio.on('load')
+def load_messages(data):
+    room = session['room']
+    page = data.get('page')
+    message_list = bulk_load_chat(page, room).items
+    messages = []
+    for m in message_list:
+        messages.append({
+            'reservation_id': m.reservation_id,
+            'is_mentor': m.is_mentor,
+            'message': m.message,
+            'created_at': m.created_at
+        })
+    socketio.emit('load', {'messages': messages}, room=room)
+
+
+@socketio.on('leave')
+def on_leave(data):
+    room = session.pop('room')
+    leave_room(room)
+    socketio.emit('leave', room=room)
+
+
+@socketio.on('chat')
+def message(data):
+    room = session['room']
+    is_mentor = True if session.get('mid') else False
+    message = data['message']
+    created_at = datetime.datetime.now()
+    c = Chat(
+        reservation_id=room,
+        is_mentor=is_mentor,
+        message=message,
+        created_at=created_at,
+    )
+    socketio.emit('message', {
+        'reservation_id': c.reservation_id,
+        'is_mentor': c.is_mentor,
+        'message': c.message,
+        'created_at': c.created_at
+    }, room=room)
 
 
 @app.route("/chatlist", methods=["GET", "POST"])
@@ -454,7 +491,7 @@ def chatlist():
     # need to call the Schedule too
     uid = session.get('uid')
     if uid is None:
-        flash("Session is no longer available")
+        flash("セッションが切れました")
         return redirect(url_for('register'))
 
     reservations = Reservation.query.filter_by(student_id=uid).all()
@@ -493,6 +530,13 @@ def mentor_register():
     if request.method == "POST":
         data = request.form
 
+        if data["email"] is "":
+            flash("メールアドレスを入力してください")
+            return redirect(request.url)
+        if data["password"] is "":
+            flash("パスワードを入力してください")
+            return redirect(request.url)
+
         mentor = Mentor.query.filter_by(email=data["email"]).first()
 
         if mentor is None:
@@ -521,7 +565,7 @@ def mentor_register():
             db.session.add(mentor)
             db.session.add(schedule)
             db.session.commit()
-            flash("登録しました")
+            flash("アカウントを作成しました")
             return redirect(url_for('mentor_profile'))
 
         else:
@@ -546,6 +590,8 @@ def mentor_profile():
         flash("セッションが切れました。")
         return redirect(url_for('register'))
 
+    mentor = Mentor.query.filter_by(mid=mid).first()
+
     if request.method == "POST":
         filename = ""
 
@@ -557,7 +603,7 @@ def mentor_profile():
                 image = request.files["image"]
 
                 if image.filename == "":
-                    flash("Image must have a name")
+                    flash("写真の名前がないです")
                     return redirect(request.url)
 
                 if not allowed_image(image.filename):
@@ -567,7 +613,7 @@ def mentor_profile():
                     filename = secure_filename(image.filename)
                     emp_file = Mentor.query.filter_by(filename=filename).first()
                     if emp_file:
-                        flash("ファイル名を変更してください")
+                        flash("ファイル名を変更してください。かぶっています")
                         return redirect(request.url)
 
                     image.save(os.path.join(app.config["UPLOAD_FOLDER"], image.filename))
@@ -576,8 +622,6 @@ def mentor_profile():
                     img = crop_max_square(img)
                     img_resize_lanczos = img.resize((350, 350), Image.LANCZOS)
                     img_resize_lanczos.save(os.path.join(app.config["GET_FOLDER"], image.filename))
-
-            mentor = Mentor.query.filter_by(mid=mid).first()
 
             if data["name"] == "":
                 data["name"] = mentor.name
@@ -593,7 +637,7 @@ def mentor_profile():
 
             if data["firm"] == "":
                 data["firm"] = mentor.firm
-            
+
             if data["history"] == "":
                 data["history"] = mentor.history
 
@@ -618,11 +662,26 @@ def mentor_profile():
             mentor.updated_at = datetime.datetime.now()
             db.session.commit()
 
-            flash("プロフィールを更新されました")
+            flash("プロフィールを更新しました")
 
-            return redirect(url_for('mentor_home'))
+            return redirect(request.url)
+    
+    if mentor.filename is None:
+        mentor.filename = "default.jpg"
+        
+    data = {
+        "name": mentor.name,
+        "filename": 'static/img-get/' + mentor.filename,
+        "university": mentor.university,
+        "faculty": mentor.faculty,
+        "firm": mentor.firm,
+        "graduation": mentor.graduation,
+        "position": mentor.position,
+        "history": mentor.history,
+        "comment": mentor.comment
+    }
 
-    return render_template("mentor_profile.html")
+    return render_template("mentor_profile.html", data = data)
 
 
 @app.route("/mentor_schedule", methods=["GET", "POST"])
@@ -637,11 +696,12 @@ def mentor_schedule():
     response = []
 
     for schedule in schedules:
-        schedule_data = {}
-        schedule_data["sid"] = schedule.sid
-        schedule_data["day"] = schedule.day
-        schedule_data["date"] = schedule.date
-        schedule_data["place"] = schedule.place
+        schedule_data = {
+            "sid": schedule.sid,
+            "day": schedule.day,
+            "date": schedule.date,
+            "place": schedule.place
+        }
         response.append(schedule_data)
 
     if request.method == "POST":
@@ -724,8 +784,8 @@ def mentor_home():
     for post in posts:
         post_data = {
             "pid": post.pid,
-            "title": post.title[:18]+" ..",
-            "text": post.text[:105]+"...",
+            "title": post.title[:18] + " ..",
+            "text": post.text[:105] + "...",
             "created_at": post.created_at
         }
         response.append(post_data)
@@ -788,32 +848,8 @@ def mentor_chat(rid):
     if mid is None:
         flash("セッションが切れました。")
         return redirect(url_for('register'))
-    
-    if request.method == "POST":
-        data = request.form
 
-        is_mentor = True
-
-        chat = Chat(
-            reservation_id=rid,
-            is_mentor=is_mentor,
-            message=data["text"],
-            created_at=datetime.datetime.now()
-        )
-
-        db.session.add(chat)
-        db.session.commit()
-
-        return redirect(request.url)
-
-    page = request.args.get('page', 1, type=int)
     reservation = Reservation.query.filter_by(rid=rid).first()
-    c = Chat.query.filter_by(reservation_id=rid)\
-        .order_by(Chat.created_at.desc())\
-        .paginate(page, 25, False)
-
-    #loop to divide the messages grouped by if its is_mentor is false or not
-    messages = c.items
 
     uid = reservation.student_id
 
@@ -821,22 +857,17 @@ def mentor_chat(rid):
     student = Student.query.filter_by(uid=uid).first()
     if student is not None:
         if schedule is not None:
-
             data = {
-                    "date": schedule.date,
-                    "day": schedule.day,
-                    "place": schedule.place,
-                    "rid": reservation.rid,
-                    "name": student.email[:5]+"さん",
-                    "messages": messages
-                }
+                "date": schedule.date,
+                "day": schedule.day,
+                "place": schedule.place,
+                "rid": reservation.rid,
+                "name": student.email[:5] + "さん"
+            }
 
+    session['room'] = rid  # Set room as Reservation ID
 
-    if page is not None: # If ?page=<int>, send data as JSON instead
-        print('TODO')
-        #TODO: need to implement the JSON rendering
-
-    return render_template("mentor_chat.html", data = data)
+    return render_template("mentor_chat.html", data=data)
 
 
 @app.route("/mentor_chatlist", methods=["GET", "POST"])
@@ -852,17 +883,21 @@ def mentor_chatlist():
     for reservation in reservations:
         schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
         student = Student.query.filter_by(uid=reservation.student_id).first()
+        response = Response.query.filter_by(mentor_id = mid).first()
         if student is not None:
             if schedule is not None:
-                
+                post = Post.query.filter_by(pid = response.post_id).filter_by(student_id = reservation.student_id).first()
+
                 chat_history = {
                     "date": schedule.date,
                     "day": schedule.day,
                     "place": schedule.place,
                     "rid": reservation.rid,
                     "name": student.email[:5]+"さん",
+                    "title": post.title[:15]+"..",
                     "created_at": reservation.created_at
                 }
+
                 chatlist.append(chat_history)
 
     chatlist.sort(key=lambda x: x['created_at'], reverse=True)
@@ -893,7 +928,7 @@ def delete():
 
     session.pop('uid', None)
 
-    flash("deleted")
+    flash("アカウントを削除しました")
 
     return redirect(url_for('register'))
 
@@ -908,7 +943,7 @@ def mentor_delete():
     mentor = Mentor.query.filter_by(mid=mid).first()
     db.session.delete(mentor)
     db.session.commit()
-    flash("deleted")
+    flash("アカウントを削除しました")
 
     session.pop('mid', None)
 

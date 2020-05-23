@@ -17,6 +17,7 @@
                 </div>
                 
                 <div class="py-3">
+                    <p style="color:#1d1b1b; font-size: small;">紹介文</p>
                     <p class="card-text" style="font-size: small; color:#778899;">{{ mentor.comment }}</p>
                 </div>
 
@@ -38,11 +39,13 @@
                         <div><i class="fas fa-user-graduate mr-3" style="color:#a9a9a9; font-size: 1em;"></i>
                             <span style="color:#808080;">{{ mentor.graduation }}卒</span>
                         </div>
-                        <div><i class="fas fa-briefcase mr-3" style="color:#a9a9a9; font-size: 1em;"></i>
-                            <span style="color:#808080;">{{ mentor.history }}</span>
-                        </div>
                     </div>
                     <div class="col-2"></div>
+                </div>
+                
+                <div class="py-3">
+                    <p style="color:#1d1b1b; font-size: small;" >経歴</p>
+                    <p class="card-text" style="font-size: small; color:#778899;">{{ mentor.history }}</p>
                 </div>
                 
             </div>
@@ -54,35 +57,18 @@
     
             <div class="card my-3 mx-auto shadow" id={{schedule.sid}}>
                 
-                <a href="/reservation/{{schedule.sid}}" class="card-body p-3" data-toggle="modal" data-target="#staticBackdrop">
+                <button type="button" onclick="location.href='/reservation/{{schedule.sid}}'" class="card-body p-3" data-toggle="modal" data-target="#staticBackdrop">
                     <div class="d-flex flex-row">
                         <div class="col-3 px-0 my-auto text-center">
                             <span class="text-dark ">{{ schedule.day }}</span>
                         </div>
                         <div class="col-6 text-center my-auto text-dark">{{ schedule.place }}</div>
-                        <div class="col-3 text-center" style="font-size: .7rem;">
+                        <div class="col-3 text-center d-flex flex-column" style="font-size: .7rem;">
                             <i class="far fa-clock text-primary h4 mb-0"></i>
                             <span class="text-dark">{{ schedule.date }}</span>
                         </div>
-
-                        <!-- モーダルの設定 -->
-                        <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                                <div class="modal-content shadow-lg w-75">
-                                    <div class="modal-body">
-                                        
-                                        <p class="modal-title pl-2" id="staticBackdropLabel">この日程で予約しますか？</p>
-                                        
-                                        <div class="mt-4 p-2 float-right">
-                                            <button type="button" class="pr-3" style="font-size: .9rem;" onclick="location.href='/reservation/{{schedule.sid}}'">はい</button>
-                                            <button type="button" class="pr-2 text-dark" data-dismiss="modal" style="font-size: .9rem;">いいえ</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-                </a>
+                </button>
             </div>
             
         {% endfor %}
