@@ -24,16 +24,6 @@
         </div>
         
     </div>
-    
-    {{data.rid}}
-    {% if data.messages %}
-    {% for message in data.messages %}
-    <br>
-    <!--このメッセージは、Student側のメッセージ-->
-    {{message.message}}
-    {% endfor %}
-    {% endif %}
-
 
     <form class="login_bottom" action="/chat/{{data.rid}}" method="post">
         <input type="text" id="text" name="text" placeholder="入力.." required>    
