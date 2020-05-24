@@ -61,7 +61,7 @@ ul.bxslider {
   padding-top: 20px;
 }
 .bx-wrapper .bx-pager.bx-default-pager a {
-  background: #666;
+  background: rgba(255, 81, 77, 0.5);
   text-indent: -9999px;
   display: block;
   width: 10px;
@@ -75,7 +75,7 @@ ul.bxslider {
 .bx-wrapper .bx-pager.bx-default-pager a:hover,
 .bx-wrapper .bx-pager.bx-default-pager a.active,
 .bx-wrapper .bx-pager.bx-default-pager a:focus {
-  background: #000;
+  background: #FF514D;
 }
 .bx-wrapper .bx-pager-item,
 .bx-wrapper .bx-controls-auto .bx-controls-auto-item {
@@ -115,6 +115,7 @@ ul.bxslider {
   text-indent: -9999px;
   z-index: 9999;
 }
+
 .bx-wrapper .bx-controls-direction a.disabled {
   display: none;
 }
