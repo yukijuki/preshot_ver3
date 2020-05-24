@@ -16,6 +16,7 @@
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
   <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}">
@@ -25,7 +26,8 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/remixicon/remixicon.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/owl.carousel/assets/owl.carousel.min.css') }}">
   <!-- css and js for slide show-->
-  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/jquery.bxslider.css') }}">
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/jquery.bxslider.css') }}"> -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/simpleImageSlide.css') }}">
 
   <!-- Template Main CSS File -->
   <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
@@ -116,13 +118,63 @@
             <!-- movie comment outed by koyo  ==================================================
             <a href="https://www.youtube.com/watch?v=JL27zVa6X8g" class="venobox play-btn mb-4" data-vbtype="video" data-autoplay="true"></a>
               =============================================================== -->
-            <div class="slider">
-              <img src="/static/assets/img/team/team-1.jpg" alt="">
-              <img src="/static/assets/img/team/team-2.jpg" alt="">
-              <img src="/static/assets/img/team/team-3.jpg" alt="">
-            </div>
+              <div id="wrapper">
+                 	  <div id="slider-wrap">
+                    	  <ul id="slider">
+                        	 <li data-color="#1abc9c">
+                              <div>
+                                  <h3>Slide #1</h3>
+                                  <span>Sub-title #1</span>
+                              </div>
+                              <i class="fa fa-image"></i>
+                           </li>
 
+                           <li data-color="#3498db">
+                              <div>
+                                  <h3>Slide #2</h3>
+                                  <span>Sub-title #2</span>
+                              </div>
+                              <i class="fa fa-gears"></i>
+                           </li>
+
+                           <li data-color="#9b59b6">
+                              <div>
+                                  <h3>Slide #3</h3>
+                                  <span>Sub-title #3</span>
+                              </div>
+                              <i class="fa fa-sliders"></i>
+                           </li>
+
+                           <li data-color="#34495e">
+                              <div>
+                                  <h3>Slide #4</h3>
+                                  <span>Sub-title #4</span>
+                              </div>
+                              <i class="fa fa-code"></i>
+                           </li>
+
+                           <li data-color="#e74c3c">
+                              <div>
+                                  <h3>Slide #5</h3>
+                                  <span>Sub-title #5</span>
+                              </div>
+                              <i class="fa fa-microphone-slash"></i>
+                           </li>
+                        </ul>
+                         <!--controls-->
+                        <div class="btns" id="next"><i class="fa fa-arrow-right"></i></div>
+                        <div class="btns" id="previous"><i class="fa fa-arrow-left"></i></div>
+                        <div id="counter"></div>
+
+                        <div id="pagination-wrap">
+                          <ul>
+                          </ul>
+                        </div>
+                        <!--controls-->
+                    </div>
+                 </div>
           </div>
+
           <div class="col-xl-7 col-lg-6 icon-boxes d-flex flex-column align-items-stretch justify-content-center py-5 px-lg-5" data-aos="fade-left">
             <h3>就職活動に過去問題はありますが、 その問題に"模範解答"はありません。</h3>
             <p>既存の就活サービスを使えば選考で問われた過去の質問事項を知ることはできます。しかし、それが分かったとして、あなた１人でその対策ができるでしょうか？</p>
@@ -441,9 +493,10 @@
   <script src="{{ url_for('static', filename='assets/vendor/counterup/counterup.min.js') }}"></script>
   <script src="{{ url_for('static', filename='assets/vendor/owl.carousel/owl.carousel.min.js') }}"></script>
   <script src="{{ url_for('static', filename='assets/vendor/aos/aos.js') }}"></script>
-  <!-- Script for slide by koyo -->
+  <!-- Script for slide by koyo
   <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
-  <script src="{{ url_for('static', filename='assets/js/slide.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/js/slide.js') }}"></script>  -->
+  <script src="{{ url_for('static', filename='assets/js/simpleImageSlide.js') }}"></script>
 
   <!-- Template Main JS File -->
   <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
