@@ -135,7 +135,19 @@ def crop_max_square(pil_img):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    student = Student.query.count()
+    mentor = Mentor.query.count()
+    reservation = Reservation.query.count()
+    post = Post.query.count()
+
+    data = {
+            "student": student,
+            "mentor": mentor,
+            "reservation": reservation,
+            "post": post
+            }
+
+    return render_template("index.html", data = data)
 
 
 @app.route("/test", methods=["GET"])
