@@ -476,7 +476,8 @@ h1, h2, h3, h4, h5, h6 {
   #hero h2 {
     font-size: 18px;
     line-height: 24px;
-    margin-bottom: 30px;
+    margin-bottom: 50px;
+    margin-top: 2rem;
   }
 }
 
@@ -646,7 +647,7 @@ section {
   font-size: 28px;
   font-weight: 700;
   color: #FF514D;
-  margin-bottom: 15px;
+  margin-bottom: 2rem;
 }
 
 .about .icon-box {
@@ -1600,6 +1601,10 @@ section {
   padding-top: 10px;
   text-align: center;
   font-size: 13px;
+  color: #fff;
+}
+
+#footer .credits a{
   color: #fff;
 }
 
