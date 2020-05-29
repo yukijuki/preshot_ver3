@@ -9,7 +9,6 @@
 <body>
 
     <div class="card mb-2 mx-auto">
-
         <div class="card-body p-3" style="background-color: whitesmoke;">
             <div class="d-flex flex-row">
                 <div class="col-3 px-0 my-auto text-center">
@@ -23,41 +22,38 @@
                 </div>
             </div>
         </div>
-
     </div>
-
+    <div id="messages">
+        
+    </div>
     <form class="login_bottom" action="/chat/{{data.rid}}" method="post">
-        <input type="text" id="text" name="text" placeholder="入力.." required>
-        <button class="btn2" type="submit">送信</button>
+        <input type="text" id="chat" name="text" placeholder="入力.." required>
     </form>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
     <script type="text/javascript">
-        var socket = io.connect('http://' + document.domain + ':' + location.port);
-        socket.on('connect', function () {
-            socket.emit('my event', {
-                data: 'User Connected'
-            })
-            var form = $('form').on('submit', function (e) {
-                e.preventDefault()
-                let user_name = $('input.username').val()
-                let user_input = $('input.message').val()
-                socket.emit('my event', {
-                    user_name: user_name,
-                    message: user_input
-                })
-                $('input.message').val('').focus()
-            })
-        })
-        socket.on('my response', function (msg) {
-            console.log(msg)
-            if (typeof msg.user_name !== 'undefined') {
-                $('h3').remove()
-                $('div.message_holder').append('<div><b style="color: #000">' + msg.user_name + '</b> ' + msg
-                    .message +
-                    '</div>')
-            }
-        })
+        $(document).ready(function(){
+                socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
+                socket.on('connect', function() {
+                    socket.emit('joined', {});
+                });
+                socket.on('message', function(data) {
+                    //TODO: render new message, append at bottom
+                });
+                // press enter to send message. Can be changed to dedicated button
+                $('#text').keypress(function(e) {
+                    var code = e.keyCode || e.which;
+                    if (code == 13) {
+                        text = $('#text').val();
+                        $('#text').val('');
+                        socket.emit('messaged', {msg: text});
+                    }
+                //TODO: add infinite scrolling, socket.emit(loaded) -> append messages to top
+            });
+        
+        function renderMessage(m) {
+            //TODO: rendering of messages done here
+        }
     </script>
 
 </body>
