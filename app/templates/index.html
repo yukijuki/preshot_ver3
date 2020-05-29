@@ -27,7 +27,8 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/owl.carousel/assets/owl.carousel.min.css') }}">
   <!-- css and js for slide show-->
   <!-- <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/jquery.bxslider.css') }}"> -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/simpleImageSlide.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/swiper.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/swiper.min.css') }}">
 
   <!-- Template Main CSS File -->
   <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
@@ -49,7 +50,7 @@
       <div class="logo mr-auto">
         <!-- <h1 class="text-light"><a href="index.html"><span>Preshot</span></a></h1> -->
         <!-- Uncomment below if you prefer to use an image logo -->
-        <a href="index.html"><img src="/static/preshot_img/preshot_logo01.png" alt="" class="img-fluid"></a>
+        <a href="#header"><img src="/static/preshot_img/preshot_logo01.png" alt="" class="img-fluid"></a>
       </div>
 
       <nav class="nav-menu d-none d-lg-block">
@@ -73,7 +74,7 @@
         <div class="col-lg-7 pt-5 pt-lg-0 order-2 order-lg-1 d-flex align-items-center">
           <div data-aos="zoom-out">
             <h1>就活生のための<br>新しい選考対策<br><span>Preshot</span></h1>
-            <h2 style="margin-top: 1rem;">「選考で何を聞かれるのか分かった！」というそこのあなた。<br>その選考対策、一人で出来ますか？</h2>
+            <h2>「選考で何を聞かれるのか分かった！」というそこのあなた。<br>その選考対策、一人で出来ますか？</h2>
             <div class="text-center text-lg-left">
               <a href="/register" class="btn-get-started scrollto">就活生はこちら</a>
             </div>
@@ -111,80 +112,39 @@
     <!-- ======= About Section ======= -->
     <section id="about" class="about">
       <div class="container-fluid">
-
         <div class="row">
           <div class="col-xl-5 col-lg-6 video-box d-flex justify-content-center align-items-stretch" data-aos="fade-right">
-
             <!-- movie comment outed by koyo  ==================================================
             <a href="https://www.youtube.com/watch?v=JL27zVa6X8g" class="venobox play-btn mb-4" data-vbtype="video" data-autoplay="true"></a>
               =============================================================== -->
-              <div id="wrapper">
-                  <div id="slider-wrap">
-                      <ul id="slider">
-                          <li data-color="#1abc9c">
-                            <div>
-                                <h3>Slide #1</h3>
-                                <span>Sub-title #1</span>
-                            </div>
-                            <i class="fa fa-image"></i>
-                          </li>
-
-                          <li data-color="#3498db">
-                            <div>
-                                <h3>Slide #2</h3>
-                                <span>Sub-title #2</span>
-                            </div>
-                            <i class="fa fa-gears"></i>
-                          </li>
-
-                          <li data-color="#9b59b6">
-                            <div>
-                                <h3>Slide #3</h3>
-                                <span>Sub-title #3</span>
-                            </div>
-                            <i class="fa fa-sliders"></i>
-                          </li>
-
-                          <li data-color="#34495e">
-                            <div>
-                                <h3>Slide #4</h3>
-                                <span>Sub-title #4</span>
-                            </div>
-                            <i class="fa fa-code"></i>
-                          </li>
-
-                          <li data-color="#e74c3c">
-                            <div>
-                                <h3>Slide #5</h3>
-                                <span>Sub-title #5</span>
-                            </div>
-                            <i class="fa fa-microphone-slash"></i>
-                          </li>
-                      </ul>
-                        <!--controls-->
-                      <div class="btns" id="next"><i class="fa fa-arrow-right"></i></div>
-                      <div class="btns" id="previous"><i class="fa fa-arrow-left"></i></div>
-                      <div id="counter"></div>
-
-                      <div id="pagination-wrap">
-                        <ul>
-                        </ul>
-                      </div>
-                      <!--controls-->
-                  </div>
+              <!-- Swiper -->
+              <div class="swiper-container">
+                <div class="swiper-wrapper">
+                  <div class="swiper-slide"><img src="/static/assets/img/team/team-5.jpg" class="img-fluid" alt=""></div>
+                  <div class="swiper-slide"><img src="/static/assets/img/team/team-5.jpg" class="img-fluid" alt=""></div>
+                  <div class="swiper-slide"><img src="/static/assets/img/team/team-5.jpg" class="img-fluid" alt=""></div>
+                  <div class="swiper-slide"><img src="/static/assets/img/team/team-5.jpg" class="img-fluid" alt=""></div>
+                  <div class="swiper-slide"><img src="/static/assets/img/team/team-5.jpg" class="img-fluid" alt=""></div>
                 </div>
+                <!-- Add Arrows -->
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+              <!-- Add Pagination -->
+            <div class="swiper-pagination"></div>
+            </div>
           </div>
+        </div>
 
           <div class="col-xl-7 col-lg-6 icon-boxes d-flex flex-column align-items-stretch justify-content-center py-5 px-lg-5" data-aos="fade-left">
             <h3>就職活動に過去問題はありますが、 その問題に"模範解答"はありません。</h3>
-            <p>既存の就活サービスを使えば選考で問われた過去の質問事項を知ることはできます。しかし、それが分かったとして、あなた１人でその対策ができるでしょうか？</p>
-            <p>あなたの目指す企業、答えたい質問に精通した人から指導を受けられるとしたらどうでしょう。</p>
-            <p>Preshot であなたにピッタリの指導者＝メンターを見つけて、メンターと一緒に内定を目指しましょう!</p>
+            <p>既存の就活サービスを使えば選考で問われた過去の質問内容を知ることができます。しかし、その内容が分かったとして、あなた１人でその対策ができるでしょうか？</p>
+            <p>もしあなたが、あなたの目指す企業、答えたい質問に精通した人から指導を受けられるとしたらどうでしょう。</p>
+            <p>Preshot であなたにピッタリの指導者＝メンターを見つけて、メンターと一緒に志望企業の内定獲得を目指しましょう!</p>
 
             <div class="icon-box" data-aos="zoom-in" data-aos-delay="100">
               <div class="icon"><i class="bx bx-file"></i></div>
               <h4 class="title"><a href="">メンターを募集する</a></h4>
-              <p class="description">質問事項を知っていても一人で対策できない...質問を投稿し、その問題の解決方法を指導してくれるメンターを「募集」しましょう。</p>
+              <p class="description">質問を投稿し、その問題の解決方法を指導してくれるメンターを「募集」しましょう。</p>
             </div>
 
             <div class="icon-box" data-aos="zoom-in" data-aos-delay="200">
@@ -196,13 +156,11 @@
             <div class="icon-box" data-aos="zoom-in" data-aos-delay="300">
               <div class="icon"><i class="bx bx-bulb"></i></div>
               <h4 class="title"><a href="">指導してもらう</a></h4>
-              <p class="description">指導を受けるために、まずはメンターに「予約」しましょう。</p>
+              <p class="description">指導を受けるために、メンターのスケジュールの中から希望の日程を「予約」しましょう。</p>
             </div>
 
           </div>
         </div>
-
-      </div>
     </section><!-- End About Section -->
 
 
@@ -273,7 +231,7 @@
               <i class="bx bx-help-circle icon-help"></i> <a data-toggle="collapse" href="#faq-list-2" class="collapsed">登録する際に個人情報は必要ですか？ <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
               <div id="faq-list-2" class="collapse" data-parent=".faq-list">
                 <p>
-                  ---
+                  ご利用はメールアドレスとパスワードのみで始めることができます。
                 </p>
               </div>
             </li>
@@ -282,7 +240,7 @@
               <i class="bx bx-help-circle icon-help"></i> <a data-toggle="collapse" href="#faq-list-3" class="collapsed">エラーが起きた場合どうすればいいですか？ <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
               <div id="faq-list-3" class="collapse" data-parent=".faq-list">
                 <p>
-                  ---（こんな質問あるか？）
+                  お手数ですが、ページ下の連絡先よりエラーの旨をご報告ください。
                 </p>
               </div>
             </li>
@@ -292,7 +250,6 @@
               <div id="faq-list-4" class="collapse" data-parent=".faq-list">
                 <p>
                   開発は有志で行っており、現状ではPreshot運営による収益、開発者への給与はありません。
-                  （開発にご興味のある方は下記連絡先よりぜひご連絡ください。）
                 </p>
               </div>
             </li>
@@ -301,7 +258,7 @@
               <i class="bx bx-help-circle icon-help"></i> <a data-toggle="collapse" href="#faq-list-5" class="collapsed">チームに加わることはできますか？<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
               <div id="faq-list-5" class="collapse" data-parent=".faq-list">
                 <p>
-                  ---（こんな質問あるか？）
+                  preshotでは共に就活生の課題を解決していただける方を募集しております。ページ下の連絡先よりご連絡ください。
                 </p>
               </div>
             </li>
@@ -474,10 +431,24 @@
   <!-- Script for slide by koyo
   <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
   <script src="{{ url_for('static', filename='assets/js/slide.js') }}"></script>  -->
-  <script src="{{ url_for('static', filename='assets/js/simpleImageSlide.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/js/swiper.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/js/swiper.min.js') }}"></script>
 
   <!-- Template Main JS File -->
   <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+
+  <!-- swiper js-->
+  <script>
+  var swiper = new Swiper('.swiper-container', {
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+    pagination: {
+      el: '.swiper-pagination',
+    },
+  })
+</script>
 
 </body>
 

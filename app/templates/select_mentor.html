@@ -21,7 +21,7 @@
                     <p class="card-text" style="font-size: small; color:#778899;">{{ mentor.comment }}</p>
                 </div>
 
-                <div class="pb-3">
+                <div class="pb-4">
                     <p style="color:#1d1b1b; font-size: small;" >経歴</p>
                     <p class="card-text" style="font-size: small; color:#778899;">{{ mentor.history }}</p>
                 </div>
@@ -57,7 +57,7 @@
     
             <div class="card my-3 mx-auto shadow" id={{schedule.sid}}>
                 
-                <button type="button" onclick="location.href='/reservation/{{schedule.sid}}'" class="card-body p-3" data-toggle="modal" data-target="#staticBackdrop">
+                <button type="button" onclick="location.href='/reservation/{{schedule.sid}}'" class="card-body p-3 border-0 bg-white" data-toggle="modal" data-target="#staticBackdrop">
                     <div class="d-flex flex-row">
                         <div class="col-3 px-0 my-auto text-center">
                             <span class="text-dark ">{{ schedule.day }}</span>
