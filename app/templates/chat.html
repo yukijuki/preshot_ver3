@@ -104,7 +104,7 @@
             let m = JSON.parse(messageJSON);
             //TODO: Please figure out what HTML/CSS works to make the chat look the way we want!
             // this code should generally be adding together <div>, <p>, and <a> tags with data. 
-            return null;
+            return "<p>" + m.is_mentor ? "me" : "mentor" + ": " + m.message + "</p>";
         }
         
         // function that abstracts the sending of messages via Socket.IO
