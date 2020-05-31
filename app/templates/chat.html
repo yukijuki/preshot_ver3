@@ -102,7 +102,9 @@
         // pure function that generates the message text based on the Message object generated.
         function writeMessage (messageJSON) {
             let m = JSON.parse(messageJSON);
-            // TODO: IDK how to generate the HTML in the context of JQuery -Roman
+            //TODO: Please figure out what HTML/CSS works to make the chat look the way we want!
+            // this code should generally be adding together <div>, <p>, and <a> tags with data. 
+            return "<p>" + m.is_mentor ? "me" : "mentor" + ": " + m.message + "</p>";
         }
         
         // function that abstracts the sending of messages via Socket.IO
@@ -110,7 +112,7 @@
             text = $('#text').val();
             $('#text').val('');
             socket.emit('messaged', {
-                msg: text
+                message: text
             });
         }
     });
