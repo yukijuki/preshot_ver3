@@ -24,7 +24,7 @@
         </div>
     </div>
     <div id="messages">
-        
+
     </div>
     <form class="login_bottom" action="/chat/{{data.rid}}" method="post">
         <input type="text" id="chat" name="text" placeholder="入力.." required>
@@ -32,28 +32,45 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
     <script type="text/javascript">
-        $(document).ready(function(){
-                socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
-                socket.on('connect', function() {
-                    socket.emit('joined', {});
-                });
-                socket.on('message', function(data) {
-                    //TODO: render new message, append at bottom
-                });
-                // press enter to send message. Can be changed to dedicated button
-                $('#text').keypress(function(e) {
-                    var code = e.keyCode || e.which;
-                    if (code == 13) {
-                        text = $('#text').val();
-                        $('#text').val('');
-                        socket.emit('messaged', {msg: text});
-                    }
-                //TODO: add infinite scrolling, socket.emit(loaded) -> append messages to top
+        $(document).ready(function () {
+            
+            socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
+            socket.on('connect', function () {
+                socket.emit('joined', {});
             });
-        
-        function renderMessage(m) {
-            //TODO: rendering of messages done here
-        }
+
+            // receiving messages from server
+            socket.on('message', function (data) {
+                $('messages').append(writeMessage(data));
+            });
+
+            // press enter to send message. Can be changed to dedicated button
+            $('#text').keypress(function (e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) {
+                    text = $('#text').val();
+                    $('#text').val('');
+                    socket.emit('messaged', {
+                        msg: text
+                    });
+                }
+            });
+
+            // infinite scrolling messages
+            $('messages').bind('scroll', function(){
+                // checks if the messages div is scrolled nearly to the top
+                if ($(this).scrollTop() <= $(this)[0].scrollHeight + 400) {
+                    var new_div = '<div class="new_block"></div>';
+                    $('.main_content').append(new_div.load('/path/to/script.php'));
+                }
+            });
+
+            // pure function that generates the message text based on the Message object generated.
+            function writeMessage(message) {
+                let m = JSON.parse(message);
+                // TODO: IDK how to generate the HTML in the context of JQuery -Roman
+            }
+        });
     </script>
 
 </body>
