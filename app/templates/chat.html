@@ -28,49 +28,92 @@
     </div>
     <form class="login_bottom" action="/chat/{{data.rid}}" method="post">
         <input type="text" id="chat" name="text" placeholder="入力.." required>
+        <button id="send">send</button>
     </form>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            
-            socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
-            socket.on('connect', function () {
-                socket.emit('joined', {});
-            });
+    currentPage = 0;
+    $(document).ready(function () {
 
-            // receiving messages from server
-            socket.on('message', function (data) {
-                $('messages').append(writeMessage(data));
-            });
+        //////////////////////////
+        // Socket.IO client API //
+        //////////////////////////
 
-            // press enter to send message. Can be changed to dedicated button
-            $('#text').keypress(function (e) {
-                var code = e.keyCode || e.which;
-                if (code == 13) {
-                    text = $('#text').val();
-                    $('#text').val('');
-                    socket.emit('messaged', {
-                        msg: text
-                    });
+        socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
+
+        // Connect, then join room (should already be in session Flask-side)
+        socket.on('connect', function () {
+            socket.emit('joined', {});
+        });
+
+        // Once connected, do the first message load
+        socket.on('join', function () {
+            socket.emit('loaded', {page: curentPage});
+            currentPage++;
+        });
+
+        // receiving messages from server, then render
+        socket.on('message', function (data) {
+            var messageJSON = data['messages']
+            $('messages').append(writeMessage(messageJSON));
+        });
+
+        // receiving bulk message loads from server, then render
+        socket.on('load', function (data) {
+            messagesHTML = "", messages = data['messages'];
+                for (i = 0; i < messages.length; i++) {
+                    // needs to be done in reverse order, as chat is older at the top
+                    messagesHTML = writeMessage(messages[i]) + messagesHTML;
                 }
-            });
+                $(this).prepend(messagesHTML);
+        });
 
-            // infinite scrolling messages
-            $('messages').bind('scroll', function(){
-                // checks if the messages div is scrolled nearly to the top
-                if ($(this).scrollTop() <= $(this)[0].scrollHeight + 400) {
-                    var new_div = '<div class="new_block"></div>';
-                    $('.main_content').append(new_div.load('/path/to/script.php'));
-                }
-            });
+        ///////////////////////////
+        // JQuery input handling //
+        ///////////////////////////
 
-            // pure function that generates the message text based on the Message object generated.
-            function writeMessage(message) {
-                let m = JSON.parse(message);
-                // TODO: IDK how to generate the HTML in the context of JQuery -Roman
+        // press enter to send message
+        $('#text').keypress(function (e) {
+            var code = e.keyCode || e.which;
+            if (code == 13) {
+                sendMessage();
             }
         });
+
+        // press Send button to send message
+        $('#send').on('click', function () {
+            sendMessage();
+        });
+
+        // infinite scrolling messages
+        $('#messages').bind('scroll', function () {
+            // checks if the messages div is scrolled to top - 300 pixels
+            if ($(this).scrollTop() <= $(this)[0].scrollHeight + 300) {
+                socket.emit('loaded', {page: currentPage});
+                currentPage++;
+            }
+        });
+
+        //////////////////////
+        // helper functions //
+        //////////////////////
+
+        // pure function that generates the message text based on the Message object generated.
+        function writeMessage (messageJSON) {
+            let m = JSON.parse(messageJSON);
+            // TODO: IDK how to generate the HTML in the context of JQuery -Roman
+        }
+        
+        // function that abstracts the sending of messages via Socket.IO
+        function sendMessage () {
+            text = $('#text').val();
+            $('#text').val('');
+            socket.emit('messaged', {
+                msg: text
+            });
+        }
+    });
     </script>
 
 </body>
