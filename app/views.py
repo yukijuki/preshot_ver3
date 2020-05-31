@@ -446,9 +446,9 @@ def bulk_load_chat(page, room):
 
 @socketio.on('joined', namespace='/chat')
 def on_join(data):
-    id = session.get('uid') if not None else session.get('mid')
+    cid = session.get('uid') if not None else session.get('mid')
     room = session.get('room')
-    if id is None:
+    if cid is None:
         raise socketio.ConnectionRefusedError('unauthorized')
     if room is None:
         raise socketio.ConnectionRefusedError('no rid specified')
