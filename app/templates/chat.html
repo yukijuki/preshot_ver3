@@ -26,15 +26,13 @@
     <div id="messages">
 
     </div>
-
-    <form class="login_bottom" action="/chat/{{data.rid}}" method="post">
+    <form class="login_bottom" method="post">
         <input type="text" id="chat" name="text" placeholder="入力.." required>
         <button id="send">send</button>
     </form>
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
-    <script type="text/javascript">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>    <script type="text/javascript">
     currentPage = 0;
     $(document).ready(function () {
 
@@ -42,7 +40,7 @@
         // Socket.IO client API //
         //////////////////////////
 
-        socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
+        socket = io();
 
         // Connect, then join room (should already be in session Flask-side)
         socket.on('connect', function () {
