@@ -175,6 +175,7 @@ def register():
 
             uid = str(uuid.uuid4())
             session['uid'] = uid
+            session.pop('mid', None)
 
             newuser = Student(
                 email=data["email"],
@@ -191,6 +192,7 @@ def register():
         else:
             if student.password == data["password"]:
                 session['uid'] = student.uid
+                session.pop('mid', None)
 
                 flash("ログインしました")
                 return redirect(url_for('mypost'))
@@ -444,21 +446,35 @@ def bulk_load_chat(page, room):
         .paginate(page, 25, False)
 
 
+@socketio.on('connect')
+def test_connect():
+    room = session.get('room')
+    print(room + ' has connected')
+    emit('connect', room=room, callback=ack)
+   
+    
+def ack():
+    print('message was received!')
+
+
 @socketio.on('joined')
 def on_join(data):
+    print('!!JOINED!!')
     cid = session.get('uid') if not None else session.get('mid')
     room = session.get('room')
+    join_room(room)
     if cid is None:
         raise socketio.ConnectionRefusedError('unauthorized')
     if room is None:
         raise socketio.ConnectionRefusedError('no rid specified')
-    socketio.emit('join', room=room)
+    emit('join', room=room, callback=ack)
 
 
 @socketio.on('loaded')
 def load_messages(data):
     room = session['room']
     page = data.get('page')
+    print("page: " + str(page))
     message_list = bulk_load_chat(page, room).items
     messages = []
     for m in message_list:
@@ -466,23 +482,25 @@ def load_messages(data):
             'reservation_id': m.reservation_id,
             'is_mentor': m.is_mentor,
             'message': m.message,
-            'created_at': m.created_at
+            'created_at': m.created_at.isoformat()
         })
-    socketio.emit('load', {'messages': messages}, room=room)
+    emit('load', {'messages': messages}, room=room, callback=ack)
 
 
 @socketio.on('left')
 def on_leave(data):
-    room = session.pop('room')
+    room = session.pop('room', None)
     leave_room(room)
-    socketio.emit('leave', room=room)
+    emit('leave', room=room, callback=ack)
 
 
 @socketio.on('messaged')
 def message(data):
     room = session['room']
     is_mentor = True if session.get('mid') else False
+    print("is_mentor: "+ ("true" if is_mentor else "false"))
     message = data['message']
+    print("message: "+message)
     created_at = datetime.datetime.now()
     c = Chat(
         reservation_id=room,
@@ -490,12 +508,16 @@ def message(data):
         message=message,
         created_at=created_at,
     )
-    socketio.emit('message', {
-        'reservation_id': c.reservation_id,
-        'is_mentor': c.is_mentor,
-        'message': c.message,
-        'created_at': c.created_at
-    }, room=room)
+    db.session.add(c)
+    db.session.commit()
+    emit('message',{
+        'message': {
+            'reservation_id': c.reservation_id,
+            'is_mentor': c.is_mentor,
+            'message': c.message,
+            'created_at': c.created_at.isoformat()
+        }
+    }, room=room, callback=ack)
 
 
 @app.route("/chatlist", methods=["GET", "POST"])
@@ -557,6 +579,7 @@ def mentor_register():
             sid = str(uuid.uuid4())
 
             session['mid'] = mid
+            session.pop('uid', None)
 
             mentor = Mentor(
                 email=data["email"],
@@ -583,6 +606,7 @@ def mentor_register():
         else:
             if mentor.password == data["password"]:
                 session['mid'] = mentor.mid
+                session.pop('uid', None)
 
                 flash("ログインしました")
                 return redirect(url_for('mentor_home'))

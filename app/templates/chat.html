@@ -27,11 +27,12 @@
 
     </div>
     <div class="login_bottom">
-        <input type="text" id="chat" name="text" placeholder="入力.." required>
+        <input type="text" id="text" name="text" placeholder="入力.." required>
         <button id="send">send</button>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>    <script type="text/javascript">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
     currentPage = 0;
     $(document).ready(function () {
 
@@ -48,24 +49,25 @@
 
         // Once connected, do the first message load
         socket.on('join', function () {
-            socket.emit('loaded', {page: curentPage});
+            socket.emit('loaded', {page: currentPage});
             currentPage++;
         });
 
         // receiving messages from server, then render
         socket.on('message', function (data) {
-            var messageJSON = data['messages']
-            $('messages').append(writeMessage(messageJSON));
+            var messageJSON = data['message'];
+            $('#messages').append(writeMessage(messageJSON.message));
         });
 
         // receiving bulk message loads from server, then render
         socket.on('load', function (data) {
-            messagesHTML = "", messages = data['messages'];
+            messagesHTML = ""; 
+            messages = data['messages'];
                 for (i = 0; i < messages.length; i++) {
                     // needs to be done in reverse order, as chat is older at the top
                     messagesHTML = writeMessage(messages[i]) + messagesHTML;
                 }
-                $(this).prepend(messagesHTML);
+                $('#messages').prepend(messagesHTML);
         });
 
         ///////////////////////////
@@ -88,7 +90,7 @@
         // infinite scrolling messages
         $('#messages').bind('scroll', function () {
             // checks if the messages div is scrolled to top - 300 pixels
-            if ($(this).scrollTop() <= $(this)[0].scrollHeight + 300) {
+            if ($('#messages').scrollTop() <= $('#messages')[0].scrollHeight + 300) {
                 socket.emit('loaded', {page: currentPage});
                 currentPage++;
             }
@@ -99,11 +101,11 @@
         //////////////////////
 
         // pure function that generates the message text based on the Message object generated.
-        function writeMessage (messageJSON) {
-            let m = JSON.parse(messageJSON);
+        function writeMessage (m) {
             //TODO: Please figure out what HTML/CSS works to make the chat look the way we want!
             // this code should generally be adding together <div>, <p>, and <a> tags with data. 
-            return "<p>" + m.is_mentor ? "me" : "mentor" + ": " + m.message + "</p>";
+            let author = (m.is_mentor ? "mentor" : "me");
+            return ("<p>" + author + ": " + m.message + "</p>");
         }
         
         // function that abstracts the sending of messages via Socket.IO
