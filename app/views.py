@@ -444,7 +444,7 @@ def bulk_load_chat(page, room):
         .paginate(page, 25, False)
 
 
-@socketio.on('joined', namespace='/chat')
+@socketio.on('joined')
 def on_join(data):
     cid = session.get('uid') if not None else session.get('mid')
     room = session.get('room')
@@ -455,7 +455,7 @@ def on_join(data):
     socketio.emit('join', room=room)
 
 
-@socketio.on('loaded', namespace='/chat')
+@socketio.on('loaded')
 def load_messages(data):
     room = session['room']
     page = data.get('page')
@@ -471,14 +471,14 @@ def load_messages(data):
     socketio.emit('load', {'messages': messages}, room=room)
 
 
-@socketio.on('left', namespace='/chat')
+@socketio.on('left')
 def on_leave(data):
     room = session.pop('room')
     leave_room(room)
     socketio.emit('leave', room=room)
 
 
-@socketio.on('messaged', namespace='/chat')
+@socketio.on('messaged')
 def message(data):
     room = session['room']
     is_mentor = True if session.get('mid') else False
