@@ -450,11 +450,7 @@ def bulk_load_chat(page, room):
 def test_connect():
     room = session.get('room')
     print(room + ' has connected')
-    emit('connect', room=room, callback=ack)
-   
-    
-def ack():
-    print('message was received!')
+    emit('connect', room=room)
 
 
 @socketio.on('joined')
@@ -467,7 +463,7 @@ def on_join(data):
         raise socketio.ConnectionRefusedError('unauthorized')
     if room is None:
         raise socketio.ConnectionRefusedError('no rid specified')
-    emit('join', room=room, callback=ack)
+    emit('join', room=room)
 
 
 @socketio.on('loaded')
@@ -484,14 +480,14 @@ def load_messages(data):
             'message': m.message,
             'created_at': m.created_at.isoformat()
         })
-    emit('load', {'messages': messages}, room=room, callback=ack)
+    emit('load', {'messages': messages}, room=room)
 
 
 @socketio.on('left')
 def on_leave(data):
     room = session.pop('room', None)
     leave_room(room)
-    emit('leave', room=room, callback=ack)
+    emit('leave', room=room)
 
 
 @socketio.on('messaged')
@@ -517,7 +513,7 @@ def message(data):
             'message': c.message,
             'created_at': c.created_at.isoformat()
         }
-    }, room=room, callback=ack)
+    }, room=room)
 
 
 @app.route("/chatlist", methods=["GET", "POST"])
