@@ -490,6 +490,7 @@ def message(data):
         message=message,
         created_at=created_at,
     )
+    print("test")
     socketio.emit('message', {
         'reservation_id': c.reservation_id,
         'is_mentor': c.is_mentor,
