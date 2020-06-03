@@ -21,11 +21,101 @@
         </div>
         
     </div>
+    <div id="messages">
 
-    <form class="login_bottom" action="/chat/{{data.rid}}" method="post">
-        <input type="text" id="text" name="text" placeholder="入力.." required>    
-        <button class="btn2" type="submit">送信</button>
-    </form>
+    </div>
+    <div class="login_bottom">
+        <input type="text" id="text" name="text" placeholder="入力.." required>
+        <button id="send">送信</button>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+    currentPage = 0;
+    $(document).ready(function () {
+
+        //////////////////////////////////////////
+        // Socket.IO client API: Mentor Edition //
+        //////////////////////////////////////////
+
+        socket = io();
+
+        // Connect, then join room (should already be in session Flask-side)
+        socket.on('connect', function () {
+            socket.emit('joined', {});
+        });
+
+        // Once connected, do the first message load
+        socket.on('join', function () {
+            socket.emit('loaded', {page: currentPage});
+            currentPage++;
+        });
+
+        // receiving messages from server, then render
+        socket.on('message', function (data) {
+            var messageJSON = data['message'];
+            $('#messages').append(writeMessage(messageJSON.message));
+        });
+
+        // receiving bulk message loads from server, then render
+        socket.on('load', function (data) {
+            messagesHTML = ""; 
+            messages = data['messages'];
+                for (i = 0; i < messages.length; i++) {
+                    // needs to be done in reverse order, as chat is older at the top
+                    messagesHTML = writeMessage(messages[i]) + messagesHTML;
+                }
+                $('#messages').prepend(messagesHTML);
+        });
+
+        ///////////////////////////
+        // JQuery input handling //
+        ///////////////////////////
+
+        // press enter to send message
+        $('#text').keypress(function (e) {
+            var code = e.keyCode || e.which;
+            if (code == 13) {
+                sendMessage();
+            }
+        });
+
+        // press Send button to send message
+        $('#send').on('click', function () {
+            sendMessage();
+        });
+
+        // infinite scrolling messages
+        $('#messages').bind('scroll', function () {
+            // checks if the messages div is scrolled to top - 300 pixels
+            if ($('#messages').scrollTop() <= $('#messages')[0].scrollHeight + 300) {
+                socket.emit('loaded', {page: currentPage});
+                currentPage++;
+            }
+        });
+
+        //////////////////////
+        // helper functions //
+        //////////////////////
+
+        // pure function that generates the message text based on the Message object generated.
+        function writeMessage (m) {
+            //TODO: Please figure out what HTML/CSS works to make the chat look the way we want!
+            // this code should generally be adding together <div>, <p>, and <a> tags with data. 
+            let author = (m.is_mentor ? "me" : "client");
+            return ("<p>" + author + ": " + m.message + "</p>");
+        }
+        
+        // function that abstracts the sending of messages via Socket.IO
+        function sendMessage () {
+            text = $('#text').val();
+            $('#text').val('');
+            socket.emit('messaged', {
+                message: text
+            });
+        }
+    });
+    </script>
 
 </body>
 
