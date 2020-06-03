@@ -187,7 +187,7 @@ def register():
             db.session.add(newuser)
             db.session.commit()
             flash("アカウントが作成されました")
-            return redirect(url_for('mypost'))
+            return redirect(url_for('post'))
 
         else:
             if student.password == data["password"]:
@@ -866,10 +866,10 @@ def mentor_response(pid):
         db.session.add(response)
         db.session.commit()
 
-        flash("追加しました")
+        flash("声をかけました")
 
     else:
-        flash("すでに追加されています")
+        flash("すでに声をかけています")
 
     return redirect(url_for('mentor_home'))
 
@@ -916,17 +916,19 @@ def mentor_chatlist():
         schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
         student = Student.query.filter_by(uid=reservation.student_id).first()
         response = Response.query.filter_by(mentor_id = mid).first()
+        email = ""
         if student is not None:
             if schedule is not None:
-                post = Post.query.filter_by(pid = response.post_id).filter_by(student_id = reservation.student_id).first()
+                #student verify
+                if len(student.email) >= 5:
+                    email = student.email[:5]
 
                 chat_history = {
                     "date": schedule.date,
                     "day": schedule.day,
                     "place": schedule.place,
                     "rid": reservation.rid,
-                    "name": student.email[:5]+"さん",
-                    "title": post.title[:15]+"..",
+                    "name": email+"さん",
                     "created_at": reservation.created_at
                 }
 
