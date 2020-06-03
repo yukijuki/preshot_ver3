@@ -440,12 +440,6 @@ def chat(rid):
     return render_template("chat.html", data=data)
 
 
-def bulk_load_chat(page, room):
-    return Chat.query.filter_by(reservation_id=room) \
-        .order_by(Chat.created_at.desc()) \
-        .paginate(page, 25, False)
-
-
 @socketio.on('connect')
 def test_connect():
     room = session.get('room')
@@ -471,7 +465,9 @@ def load_messages(data):
     room = session['room']
     page = data.get('page')
     print("page: " + str(page))
-    message_list = bulk_load_chat(page, room).items
+    message_list = Chat.query.filter_by(reservation_id=room) \
+        .order_by(Chat.created_at.desc()) \
+        .paginate(page, 25, False).items
     messages = []
     for m in message_list:
         messages.append({
