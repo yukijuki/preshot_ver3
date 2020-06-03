@@ -55,8 +55,7 @@
 
         // receiving messages from server, then render
         socket.on('message', function (data) {
-            var messageJSON = data['message'];
-            $('#messages').append(writeMessage(messageJSON.message));
+            $('#messages').append(writeMessage(data.message));
         });
 
         // receiving bulk message loads from server, then render

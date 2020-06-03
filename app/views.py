@@ -450,7 +450,11 @@ def test_connect():
 @socketio.on('joined')
 def on_join(data):
     print('!!JOINED!!')
-    cid = session.get('uid') if not None else session.get('mid')
+    uid = session.get('uid')
+    mid = session.get('mid')
+    if uid is not None and mid is not None:
+        print('ERROR: Both Mentor and Student logged in')
+    cid = uid if uid is not None else mid
     room = session.get('room')
     join_room(room)
     if cid is None:
