@@ -432,7 +432,7 @@ def chat(rid):
         "day": schedule.day,
         "place": schedule.place,
         "rid": reservation.rid,
-        "name": mentor.name,
+        "name": mentor.name+"さん",
         "filename": 'static/img-get/' + mentor.filename
     }
 
@@ -889,13 +889,17 @@ def mentor_chat(rid):
     student = Student.query.filter_by(uid=uid).first()
     if student is not None:
         if schedule is not None:
-            data = {
-                "date": schedule.date,
-                "day": schedule.day,
-                "place": schedule.place,
-                "rid": reservation.rid,
-                "name": student.email[:5] + "さん"
-            }
+            #name produce
+            if student.email is not None:
+                name = student.email.split("@")
+                email = name[0]
+                data = {
+                    "date": schedule.date,
+                    "day": schedule.day,
+                    "place": schedule.place,
+                    "rid": reservation.rid,
+                    "name": email+"さん"
+                }
 
     session['room'] = rid  # Set room as Reservation ID
 
@@ -919,9 +923,10 @@ def mentor_chatlist():
         email = ""
         if student is not None:
             if schedule is not None:
-                #student verify
-                if len(student.email) >= 5:
-                    email = student.email[:5]
+                #name produce
+                if student.email is not None:
+                    name = student.email.split("@")
+                    email = name[0]
 
                 chat_history = {
                     "date": schedule.date,
