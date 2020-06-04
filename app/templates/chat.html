@@ -1,3 +1,4 @@
+
 <head>
 
 <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
@@ -24,6 +25,15 @@
 <title>Preshot/Register</title>
 
 </head>
+
+{% extends "layout2.html" %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+
 <body>
 
     <div class="card mb-2 mx-auto">
@@ -44,10 +54,9 @@
     <div id="messages">
 
     </div>
-    <div class="login_bottom">
-        <input type="text" id="text" name="text" placeholder="入力.." required>
-        <button id="send">送信</button>
-    </div>
+
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
     <script type="text/javascript" charset="utf-8">
@@ -137,3 +146,5 @@
     </script>
 
 </body>
+
+{% endblock content %}
