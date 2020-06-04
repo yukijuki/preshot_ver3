@@ -596,7 +596,7 @@ def mentor_register():
             db.session.add(mentor)
             db.session.add(schedule)
             db.session.commit()
-            flash("アカウントを作成しました")
+            flash("プロフィールを充実しましょう")
             return redirect(url_for('mentor_profile'))
 
         else:
@@ -620,7 +620,7 @@ def mentor_profile():
     mid = session.get('mid')
     if mid is None:
         flash("セッションが切れました。")
-        return redirect(url_for('register'))
+        return redirect(url_for('mentor_register'))
 
     mentor = Mentor.query.filter_by(mid=mid).first()
 
@@ -716,12 +716,53 @@ def mentor_profile():
     return render_template("mentor_profile.html", data = data)
 
 
+@app.route("/mentor_profile_view", methods=["GET", "POST"])
+def mentor_profile_view():
+    # need to call the Schedule too
+    mid = session.get('mid')
+    if mid is None:
+        flash("セッションが切れました")
+        return redirect(url_for('mentor_register'))
+
+    mentor = Mentor.query.filter_by(mid=mid).first()
+    schedules = Schedule.query.filter_by(mentor_id=mid).filter_by(is_active=True).all()
+
+    if mentor.filename is None:
+        mentor.filename = "default.jpg"
+
+    schedule_info = []
+
+    for schedule in schedules:
+        schedule_data = {
+            "sid": schedule.sid,
+            "day": schedule.day,
+            "date": schedule.date,
+            "place": schedule.place
+        }
+        schedule_info.append(schedule_data)
+
+    mentor_data = {
+        "mid": mentor.mid,
+        "name": mentor.name,
+        "filename": 'static/img-get/' + mentor.filename,
+        "university": mentor.university,
+        "faculty": mentor.faculty,
+        "firm": mentor.firm,
+        "position": mentor.position,
+        "history": mentor.history,
+        "schedule": schedule_info,
+        "comment": mentor.comment,
+        "graduation": mentor.graduation
+    }
+
+    return render_template("mentor_profile_view.html", mentor=mentor_data)
+
 @app.route("/mentor_schedule", methods=["GET", "POST"])
 def mentor_schedule():
     mid = session.get('mid')
     if mid is None:
         flash("セッションが切れました。")
-        return redirect(url_for('register'))
+        return redirect(url_for('mentor_register'))
 
     schedules = Schedule.query.filter_by(mentor_id=mid).filter_by(is_active=True).all()
 
@@ -764,7 +805,7 @@ def mentor_schedule_delete(sid):
     mid = session.get('mid')
     if mid is None:
         flash("セッションが切れました。")
-        return redirect(url_for('register'))
+        return redirect(url_for('mentor_register'))
 
     schedule = Schedule.query.filter_by(sid=sid).first()
     schedule.is_active = False
@@ -780,7 +821,7 @@ def mentor_setting():
     mid = session.get('mid')
     if mid is None:
         flash("セッションが切れました")
-        return redirect(url_for('register'))
+        return redirect(url_for('mentor_register'))
 
     mentor = Mentor.query.filter_by(mid=mid).first()
 
@@ -802,19 +843,20 @@ def mentor_home():
     mid = session.get('mid')
     if mid is None:
         flash("セッションが切れました")
-        return redirect(url_for('register'))
+        return redirect(url_for('mentor_register'))
 
     page = request.args.get('page', 1, type=int)
 
     posts = Post.query.order_by(Post.created_at.desc()).paginate(page, 10, False)
-    next_url = url_for('index', page=posts.next_num) if posts.has_next else None
-    prev_url = url_for('index', page=posts.prev_num) if posts.has_prev else None
+    next_url = url_for('mentor_home', page=posts.next_num) if posts.has_next else None
+    prev_url = url_for('mentor_home', page=posts.prev_num) if posts.has_prev else None
 
     response = []
     posts = posts.items
 
     for post in posts:
         post_data = {
+            "id":post.id,
             "pid": post.pid,
             "title": post.title[:18] + " ..",
             "text": post.text[:105] + "...",
@@ -830,7 +872,7 @@ def mentor_home_pid(pid):
     mid = session.get('mid')
     if mid is None:
         flash("セッションが切れました")
-        return redirect(url_for('register'))
+        return redirect(url_for('mentor_register'))
 
     post = Post.query.filter_by(pid=pid).first()
     response = Response.query.filter_by(post_id=pid).filter_by(mentor_id=mid).first()
@@ -851,7 +893,7 @@ def mentor_response(pid):
     mid = session.get('mid')
     if mid is None:
         flash("セッションが切れました")
-        return redirect(url_for('register'))
+        return redirect(url_for('mentor_register'))
 
     response = Response.query.filter_by(post_id=pid).filter_by(mentor_id=mid).first()
 
@@ -879,7 +921,7 @@ def mentor_chat(rid):
     mid = session.get('mid')
     if mid is None:
         flash("セッションが切れました")
-        return redirect(url_for('register'))
+        return redirect(url_for('mentor_register'))
 
     reservation = Reservation.query.filter_by(rid=rid).first()
 
@@ -911,7 +953,7 @@ def mentor_chatlist():
     mid = session.get('mid')
     if mid is None:
         flash("セッションが切れました")
-        return redirect(url_for('register'))
+        return redirect(url_for('mentor_register'))
 
     reservations = Reservation.query.filter_by(mentor_id=mid).all()
     chatlist = []
@@ -977,7 +1019,7 @@ def mentor_delete():
     mid = session.get('mid')
     if mid is None:
         flash("セッションが切れました")
-        return redirect(url_for('register'))
+        return redirect(url_for('mentor_register'))
 
     mentor = Mentor.query.filter_by(mid=mid).first()
     db.session.delete(mentor)
