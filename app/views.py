@@ -596,7 +596,7 @@ def mentor_register():
             db.session.add(mentor)
             db.session.add(schedule)
             db.session.commit()
-            flash("アカウントを作成しました")
+            flash("プロフィールを充実しましょう")
             return redirect(url_for('mentor_profile'))
 
         else:
@@ -716,6 +716,47 @@ def mentor_profile():
     return render_template("mentor_profile.html", data = data)
 
 
+@app.route("/mentor_profile_view", methods=["GET", "POST"])
+def mentor_profile_view():
+    # need to call the Schedule too
+    mid = session.get('mid')
+    if mid is None:
+        flash("セッションが切れました")
+        return redirect(url_for('mentor_register'))
+
+    mentor = Mentor.query.filter_by(mid=mid).first()
+    schedules = Schedule.query.filter_by(mentor_id=mid).filter_by(is_active=True).all()
+
+    if mentor.filename is None:
+        mentor.filename = "default.jpg"
+
+    schedule_info = []
+
+    for schedule in schedules:
+        schedule_data = {
+            "sid": schedule.sid,
+            "day": schedule.day,
+            "date": schedule.date,
+            "place": schedule.place
+        }
+        schedule_info.append(schedule_data)
+
+    mentor_data = {
+        "mid": mentor.mid,
+        "name": mentor.name,
+        "filename": 'static/img-get/' + mentor.filename,
+        "university": mentor.university,
+        "faculty": mentor.faculty,
+        "firm": mentor.firm,
+        "position": mentor.position,
+        "history": mentor.history,
+        "schedule": schedule_info,
+        "comment": mentor.comment,
+        "graduation": mentor.graduation
+    }
+
+    return render_template("mentor_profile_view.html", mentor=mentor_data)
+
 @app.route("/mentor_schedule", methods=["GET", "POST"])
 def mentor_schedule():
     mid = session.get('mid')
@@ -815,6 +856,7 @@ def mentor_home():
 
     for post in posts:
         post_data = {
+            "id":post.id,
             "pid": post.pid,
             "title": post.title[:18] + " ..",
             "text": post.text[:105] + "...",

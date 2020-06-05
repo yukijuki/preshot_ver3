@@ -1,4 +1,32 @@
-{% extends "layout.html" %}
+
+<head>
+
+<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<!-- Favicons -->
+<link rel="icon" href="{{ url_for('static', filename='preshot_img/preshot-logo03.png') }}">
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='preshot_img/preshot-logo03.png') }}">
+<style>
+    .bg-preshot{
+        background-color: #FF514D;
+    }
+    .text-preshot{
+        color: #FF514D;
+    }        
+    .form-control::placeholder{
+        color: #FF514D;
+    }
+    .btn{
+        font-size: 3em;
+        font-weight: 700;
+    }
+</style>
+
+<title>Preshot/Register</title>
+
+</head>
+
+{% extends "layout2.html" %}
 
 {% block css %}
 
@@ -8,28 +36,13 @@
 
 <body>
 
-    <div class="card mb-2 mx-auto">
-        <div class="card-body p-3" style="background-color: whitesmoke;">
-            <div class="d-flex flex-row">
-                <div class="col-2 px-0 my-auto text-center">
-                    <img src=/{{data.filename}} class="shadow-lg rounded-circle" style="height: 3.3rem;" alt="pic1">
-                </div>
-                <div class="col-6 my-auto text-dark">{{ data.name }}</div>
-                <div class="col-5 d-flex flex-column  my-auto" style="font-size: .7rem;">
-                    <span class="text-secondary pl-1">曜日：{{ data.day }}</span>
-                    <span class="text-secondary pl-1">時間：{{ data.date }}</span>
-                    <span class="text-secondary pl-1">場所：{{ data.place }}</span>
-                </div>
-            </div>
+    <div class="container pb-5">
+        <div id="messages">
+
         </div>
     </div>
-    <div id="messages">
 
-    </div>
-    <div class="login_bottom">
-        <input type="text" id="text" name="text" placeholder="入力.." required>
-        <button id="send">送信</button>
-    </div>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
     <script type="text/javascript" charset="utf-8">
