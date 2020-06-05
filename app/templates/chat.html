@@ -23,31 +23,44 @@
     .btn-light:hover {
         color: #FF514D !important;
     }
+    #messages{
+        width: 100%;
+    }
     .student_chatbox {
         display: block;
         text-align: right;
         width: 60%;
-        margin: 0 0 0 auto;
+        margin: 0 0 1rem auto;
     }
     .student{
-        padding: 0.3rem 1rem;
-        border-radius: 30px;
         display: inline-block;
         background-color: #FF514D;
+        border-radius: 30px;
+        padding: 0.3rem 1rem;
+    }
+    .student_text{
         color: white;
+        margin-bottom: 0;
+        word-break: break-all;
         text-align: left;
+        padding-left: 0.2rem;
     }
     .mentor_chatbox{
         display: block;
         width: 60%;
     }
     .mentor{
-        padding: 0.3rem 1rem;
-        border-radius: 30px;
         display: inline-block;
         background-color: #FF514D;
+        border-radius: 30px;
+        padding: 0.3rem 1rem;
+    }
+    .mentor_text{
         color: white;
-        text-align: center;
+        margin-bottom: 0;
+        word-break: break-all;
+        text-align: left;
+        padding-left: 0.2rem;
     }
 </style>
 
@@ -65,7 +78,7 @@
 
 <body>
 
-    <div class="container mt-4 py-5">
+    <div class="container mt-5 py-5">
         <div id="messages">
 
         </div>
