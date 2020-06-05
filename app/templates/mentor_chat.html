@@ -1,4 +1,4 @@
-{% extends "layout2.html" %} 
+{% extends "chat_layout.html" %} 
 
 {% block css %}
 <style>
@@ -40,6 +40,22 @@
         padding-left: 0.2rem;
     }
 </style>
+
+{% endblock %} 
+
+{% block content3 %}
+<div class="card mb-2 mx-auto">
+    <div class="card-body p-3" style="background-color: whitesmoke;">
+        <div class="d-flex flex-row">
+            <div class="col-8 my-auto text-dark">{{ data.name }}</div>
+            <div class="col-7 d-flex flex-column  my-auto" style="font-size: .7rem;">
+                <span class="text-secondary pl-1">曜日：{{ data.day }}</span>
+                <span class="text-secondary pl-1">時間：{{ data.date }}</span>
+                <span class="text-secondary pl-1">場所：{{ data.place }}</span>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %} 
 
 {% block content %}
@@ -49,8 +65,9 @@
         <div id="messages">
 
         </div>
+        <div id="chat-bottom"></div>
     </div>
-    <div id="chat-bottom"></div>
+    
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
@@ -148,6 +165,9 @@
             if (!(text)) {
                 return "" //nothing in text, don't try to send
             }
+            setTimeout(function(){
+                window.location.href = '#chat-bottom';
+            }, 100);
             $('#text').val('');
             socket.emit('messaged', {
                 message: text

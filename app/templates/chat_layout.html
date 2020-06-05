@@ -36,6 +36,9 @@
         #messages{
             width: 100%;
         }
+        .btn-light:hover {
+            color: #FF514D!important;
+        }
     </style>
 
     {% block css %}{% endblock %}
@@ -72,26 +75,12 @@
             </nav>
         </nav>
         
-
         {% for message in get_flashed_messages() %}
         <div class="alert-success text-center">{{ message }}</div>
         {% endfor %}
 
-        <div class="card mb-2 mx-auto">
-            <div class="card-body p-3" style="background-color: whitesmoke;">
-                <div class="d-flex flex-row">
-                    <div class="col-2 px-0 my-auto text-center">
-                        <img src=/{{data.filename}} class="shadow-lg rounded-circle" style="height: 3.3rem;" alt="pic1">
-                    </div>
-                    <div class="col-6 my-auto text-dark">{{ data.name }}</div>
-                    <div class="col-5 d-flex flex-column  my-auto" style="font-size: .7rem;">
-                        <span class="text-secondary pl-1">曜日：{{ data.day }}</span>
-                        <span class="text-secondary pl-1">時間：{{ data.date }}</span>
-                        <span class="text-secondary pl-1">場所：{{ data.place }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% block content3 %}
+        {% endblock %}
     </div>
     
 
@@ -121,6 +110,12 @@
 
         $('#sendicon').on('click', function() {
             $("html,body").animate({scrollTop:$('#chat-bottom').offset().top});
+        });
+
+        $(document).ready(function() {
+            setTimeout(function(){
+                window.location.href = '#chat-bottom';
+            }, 100);
         });
     </script>
 </body>
