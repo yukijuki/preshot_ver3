@@ -1,4 +1,4 @@
-{% extends "mentor_layout2.html" %} 
+{% extends "layout2.html" %} 
 
 {% block css %}
 
@@ -21,12 +21,10 @@
         </div>
         
     </div>
-    <div id="messages">
+    <div class="container pb-5">
+        <div id="messages">
 
-    </div>
-    <div class="login_bottom">
-        <input type="text" id="text" name="text" placeholder="入力.." required>
-        <button id="send">送信</button>
+        </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
@@ -101,6 +99,10 @@
         function writeMessage (m) {
             //TODO: Please figure out what HTML/CSS works to make the chat look the way we want!
             // this code should generally be adding together <div>, <p>, and <a> tags with data. 
+            let message = m.message;
+            if (!(message)) {
+                return "" //nothing in text, don't try to send
+            }
             let author = (m.is_mentor ? "mentor" : "student");
             html = [
                 '<div class="' + author + '_chatbox">',
@@ -115,6 +117,9 @@
         // function that abstracts the sending of messages via Socket.IO
         function sendMessage () {
             text = $('#text').val();
+            if (!(text)) {
+                return "" //nothing in text, don't try to send
+            }
             $('#text').val('');
             socket.emit('messaged', {
                 message: text
