@@ -101,8 +101,9 @@
         function writeMessage (m) {
             //TODO: Please figure out what HTML/CSS works to make the chat look the way we want!
             // this code should generally be adding together <div>, <p>, and <a> tags with data. 
-            if (!!m.message.trim()) {
-                return "" //nothing in msg, don't try to render
+            let message = m.message;
+            if (!(message)) {
+                return "" //nothing in text, don't try to send
             }
             let author = (m.is_mentor ? "mentor" : "student");
             html = [
@@ -118,7 +119,7 @@
         // function that abstracts the sending of messages via Socket.IO
         function sendMessage () {
             text = $('#text').val();
-            if (!!text.trim()) {
+            if (!(text)) {
                 return "" //nothing in text, don't try to send
             }
             $('#text').val('');
