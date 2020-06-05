@@ -1,31 +1,9 @@
 
-<head>
 
-<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-<!-- Favicons -->
-<link rel="icon" href="{{ url_for('static', filename='preshot_img/preshot-logo03.png') }}">
-<link rel="apple-touch-icon" href="{{ url_for('static', filename='preshot_img/preshot-logo03.png') }}">
+{% extends "layout2.html" %}
+
+{% block css %}
 <style>
-    .bg-preshot{
-        background-color: #FF514D;
-    }
-    .text-preshot{
-        color: #FF514D;
-    }        
-    .form-control::placeholder{
-        color: #FF514D;
-    }
-    .btn{
-        font-size: 3em;
-        font-weight: 700;
-    }
-    .btn-light:hover {
-        color: #FF514D !important;
-    }
-    #messages{
-        width: 100%;
-    }
     .student_chatbox {
         display: block;
         text-align: right;
@@ -35,7 +13,7 @@
     .student{
         display: inline-block;
         background-color: #FF514D;
-        border-radius: 30px;
+        border-radius: 25px;
         padding: 0.3rem 1rem;
     }
     .student_text{
@@ -48,11 +26,12 @@
     .mentor_chatbox{
         display: block;
         width: 60%;
+        margin-bottom: 1rem;
     }
     .mentor{
         display: inline-block;
         background-color: #FF514D;
-        border-radius: 30px;
+        border-radius: 25px;
         padding: 0.3rem 1rem;
     }
     .mentor_text{
@@ -63,15 +42,6 @@
         padding-left: 0.2rem;
     }
 </style>
-
-<title>Preshot/Register</title>
-
-</head>
-
-{% extends "layout2.html" %}
-
-{% block css %}
-
 {% endblock %}
 
 {% block content %}
