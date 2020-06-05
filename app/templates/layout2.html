@@ -24,7 +24,7 @@
         .text-preshot{
             color: #FF514D;
         }        
-        .form-control::placeholder{
+        .chat-message::placeholder{
             color: #FF514D;
         }
         body{ 
@@ -81,9 +81,15 @@
         {% endblock %}
     </div>
     
-    <div class="row fixed-bottom">
-        <input class="col-9" type="text" id="text" name="text" placeholder="入力.." required>
-        <button class="col-3" id="send">送信</button>
+    <div class="fixed-bottom bg-preshot">
+        <div class="p-2 row" style="height: 3.5rem;">
+            <div class="col-10 pr-0">
+                <input class="chat-message h-100 w-100 border-0" type="text" id="text" name="text" placeholder="　Type a message..." required>
+            </div>
+            <div class="col-2 pl-0">
+                <button class="btn-light h-100 w-100 border-0 text-preshot bg-white" id="send"><i class="fas fa-paper-plane"></i></button>
+            </div>   
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
