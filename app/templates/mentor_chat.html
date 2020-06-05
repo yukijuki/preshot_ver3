@@ -101,8 +101,15 @@
         function writeMessage (m) {
             //TODO: Please figure out what HTML/CSS works to make the chat look the way we want!
             // this code should generally be adding together <div>, <p>, and <a> tags with data. 
-            let author = (m.is_mentor ? "me" : "client");
-            return ("<p>" + author + ": " + m.message + "</p>");
+            let author = (m.is_mentor ? "mentor" : "student");
+            html = [
+                '<div class="' + author + '_chatbox">',
+                '<p class="' + author + '">',
+                m.message,
+                '</p>',
+                '/<div>'
+            ]
+            return html.join();
         }
         
         // function that abstracts the sending of messages via Socket.IO
