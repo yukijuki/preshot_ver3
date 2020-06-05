@@ -106,9 +106,11 @@
             let author = (m.is_mentor ? "mentor" : "student");
             html = [
                 '<div class="' + author + '_chatbox">',
-                '<p class="' + author + '">',
-                m.message,
+                '<div class="' + author +'">',
+                '<p class="' + author + '_text">',
+                message,
                 '</p>',
+                '</div>',
                 '</div>'
             ]
             return html.join("\n");
