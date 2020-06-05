@@ -23,6 +23,32 @@
     .btn-light:hover {
         color: #FF514D !important;
     }
+    .student_chatbox {
+        display: block;
+        text-align: right;
+        width: 60%;
+        margin: 0 0 0 auto;
+    }
+    .student{
+        padding: 0.3rem 1rem;
+        border-radius: 30px;
+        display: inline-block;
+        background-color: #FF514D;
+        color: white;
+        text-align: left;
+    }
+    .mentor_chatbox{
+        display: block;
+        width: 60%;
+    }
+    .mentor{
+        padding: 0.3rem 1rem;
+        border-radius: 30px;
+        display: inline-block;
+        background-color: #FF514D;
+        color: white;
+        text-align: center;
+    }
 </style>
 
 <title>Preshot/Register</title>
@@ -39,7 +65,7 @@
 
 <body>
 
-    <div class="container pb-5">
+    <div class="container mt-4 py-5">
         <div id="messages">
 
         </div>
@@ -120,8 +146,15 @@
         function writeMessage (m) {
             //TODO: Please figure out what HTML/CSS works to make the chat look the way we want!
             // this code should generally be adding together <div>, <p>, and <a> tags with data. 
-            let author = (m.is_mentor ? "mentor" : "me");
-            return ("<p>" + author + ": " + m.message + "</p>");
+            let author = (m.is_mentor ? "mentor" : "student");
+            html = [
+                '<div class="' + author + '_chatbox">',
+                '<p class="' + author + '">',
+                m.message,
+                '</p>',
+                '</div>'
+            ]
+            return html.join("\n");
         }
         
         // function that abstracts the sending of messages via Socket.IO
