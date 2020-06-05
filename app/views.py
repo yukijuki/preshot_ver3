@@ -181,7 +181,7 @@ def register():
                 email=data["email"],
                 uid=uid,
                 # Password now uses hashing, using sha256 + email as salt
-                password=hashlib.sha256(data["password"]+data["email"]).hexdigest(), 
+                password=hashlib.sha256((data["password"]+data["email"]).encode('utf-8')).hexdigest(), 
                 created_at=datetime.datetime.now()
             )
 
@@ -191,7 +191,7 @@ def register():
             return redirect(url_for('post'))
 
         else:
-            if student.password == hashlib.sha256(data["password"]+data["email"]).hexdigest():
+            if student.password == hashlib.sha256((data["password"]+data["email"]).encode('utf-8')).hexdigest():
                 session['uid'] = student.uid
                 session.pop('mid', None)
 
@@ -581,7 +581,7 @@ def mentor_register():
             mentor = Mentor(
                 email=data["email"],
                 mid=mid,
-                password=hashlib.sha256(data["password"]+data["email"]).hexdigest(),
+                password=hashlib.sha256((data["password"]+data["email"]).encode('utf-8')).hexdigest(),
                 created_at=datetime.datetime.now()
             )
 
@@ -601,7 +601,7 @@ def mentor_register():
             return redirect(url_for('mentor_profile'))
 
         else:
-            if mentor.password == hashlib.sha256(data["password"]+data["email"]).hexdigest():
+            if mentor.password == hashlib.sha256((data["password"]+data["email"]).encode('utf-8')).hexdigest():
                 session['mid'] = mentor.mid
                 session.pop('uid', None)
 
