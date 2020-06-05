@@ -36,6 +36,9 @@
         #messages{
             width: 100%;
         }
+        .btn-light:hover {
+            color: #FF514D!important;
+        }
     </style>
 
     {% block css %}{% endblock %}
@@ -121,6 +124,12 @@
 
         $('#sendicon').on('click', function() {
             $("html,body").animate({scrollTop:$('#chat-bottom').offset().top});
+        });
+
+        $(document).ready(function() {
+            setTimeout(function(){
+                window.location.href = '#chat-bottom';
+            }, 100);
         });
     </script>
 </body>
