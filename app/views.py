@@ -432,7 +432,7 @@ def chat(rid):
         "day": schedule.day,
         "place": schedule.place,
         "rid": reservation.rid,
-        "name": mentor.name+"さん",
+        "name": mentor.name,
         "filename": 'static/img-get/' + mentor.filename
     }
 
