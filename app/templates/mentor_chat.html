@@ -82,9 +82,7 @@
         socket = io();
 
         // Connect, then join room (should already be in session Flask-side)
-        socket.on('connect', function () {
-            socket.emit('joined', {});
-        });
+        socket.emit('joined', {});
 
         // Once connected, do the first message load
         socket.on('join', function () {
