@@ -445,7 +445,7 @@ def chat(rid):
 def test_connect():
     room = session.get('room')
     print(room + ' has connected')
-    emit('connect', room=room)
+    emit('connect')
 
 
 @socketio.on('joined')
@@ -462,7 +462,7 @@ def on_join(data):
         raise socketio.ConnectionRefusedError('unauthorized')
     if room is None:
         raise socketio.ConnectionRefusedError('no rid specified')
-    emit('join', room=room)
+    emit('join')
 
 
 @socketio.on('loaded')
@@ -481,14 +481,14 @@ def load_messages(data):
             'message': m.message,
             'created_at': m.created_at.isoformat()
         })
-    emit('load', {'messages': messages}, room=room)
+    emit('load', {'messages': messages})
 
 
 @socketio.on('left')
 def on_leave(data):
     room = session.pop('room', None)
     leave_room(room)
-    emit('leave', room=room)
+    emit('leave')
 
 
 @socketio.on('messaged')
