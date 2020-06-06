@@ -449,7 +449,7 @@ def test_connect():
 
 
 @socketio.on('joined')
-def on_join(data):
+def on_join():
     print('!!JOINED!!')
     uid = session.get('uid')
     mid = session.get('mid')
