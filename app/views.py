@@ -1,6 +1,7 @@
 import datetime
 import os
 import uuid
+import hashlib
 
 from PIL import Image
 from flask import request, redirect, session, jsonify, render_template, make_response, url_for, abort, flash
@@ -16,7 +17,7 @@ POSTS_PER_PAGE = 10
 
 # app.config.from_object("config.DevelopmentConfig")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
-app.config["SECRET_KEY"] = "superSecret"
+app.config["SECRET_KEY"] = "2a8d30bbe99b10fffc4287171a5389b577080d9a2dfc528380ec69329ea6accc"
 app.config["UPLOAD_FOLDER"] = PHYSICAL_ROOT + UPLOAD_FOLDER
 app.config["GET_FOLDER"] = PHYSICAL_ROOT + GET_FOLDER
 app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["PNG", "JPG", "JPEG"]
@@ -176,11 +177,11 @@ def register():
             uid = str(uuid.uuid4())
             session['uid'] = uid
             session.pop('mid', None)
-
             newuser = Student(
                 email=data["email"],
                 uid=uid,
-                password=data["password"],
+                # Password now uses hashing, using sha256 + email as salt
+                password=hashlib.sha256((data["password"]+data["email"]).encode('utf-8')).hexdigest(), 
                 created_at=datetime.datetime.now()
             )
 
@@ -190,7 +191,7 @@ def register():
             return redirect(url_for('post'))
 
         else:
-            if student.password == data["password"]:
+            if student.password == hashlib.sha256((data["password"]+data["email"]).encode('utf-8')).hexdigest():
                 session['uid'] = student.uid
                 session.pop('mid', None)
 
@@ -580,7 +581,7 @@ def mentor_register():
             mentor = Mentor(
                 email=data["email"],
                 mid=mid,
-                password=data["password"],
+                password=hashlib.sha256((data["password"]+data["email"]).encode('utf-8')).hexdigest(),
                 created_at=datetime.datetime.now()
             )
 
@@ -600,7 +601,7 @@ def mentor_register():
             return redirect(url_for('mentor_profile'))
 
         else:
-            if mentor.password == data["password"]:
+            if mentor.password == hashlib.sha256((data["password"]+data["email"]).encode('utf-8')).hexdigest():
                 session['mid'] = mentor.mid
                 session.pop('uid', None)
 
