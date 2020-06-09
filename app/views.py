@@ -157,6 +157,29 @@ def test():
 
     return render_template("test.html", mentors=mentors)
 
+@app.route("/emailcheck", methods=["GET"])
+def emailcheck():
+    mentor_emails = []
+    mentors = Mentor.query.all()
+    for mentor in mentors:
+        mentor_email = mentor.email
+        mentor_emails.append(mentor_email)
+
+    student_emails = []
+    students = Student.query.all()
+    for student in students:
+        student_email = student.email
+        student_emails.append(student_email)
+    
+    emails = {
+        "student": student_emails,
+        "mentor": mentor_emails
+    }
+
+    return render_template("emailcheck.html", data = emails)
+
+
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
