@@ -59,7 +59,9 @@
             </nav>
         
             <nav class="navbar preshot-color">
-                <a class="navbar-text text-white lead align-middle" href="/mypost">Preshot</a>
+                <a class="align-middle" href="/mypost">
+                    <img src="{{ url_for('static', filename='preshot_img/preshot-logo05.png') }}" class="img-fluid" style="height: 2rem;" alt="preshot_logo">
+                </a>
             </nav>
         
             <nav class="navbar preshot-color">
@@ -110,7 +112,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function() {
-            $('.alert-success').delay(1000).slideUp(2000);
+            $('.alert-success').delay(1000).slideUp(500);
         });
     </script>
 </body>

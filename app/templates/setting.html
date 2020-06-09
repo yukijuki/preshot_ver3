@@ -19,12 +19,12 @@
                 {{ data["email"] }}
             </div>
         </div>
+        
         <div class="panel panel-primary mt-3">
             <div class="panel-heading text-secondary">現在のパスワード</div>
-            <div class="panel-body mt-2 border-bottom">
-                {{ data["password"] }}
-            </div>
+            <div class="panel-body mt-2 border-bottom">安全のため表示されません</div>
         </div>
+        
         <div class="d-flex justify-content-center login_container mt-5">
             <button type="submit" class="border-0 shadow btn-group-lg text-white bg-preshot btn-block" style="height: 40px;" data-toggle="modal" data-target="#mentorstaticBackdrop">このアカウントを削除する</button>
         </div>
@@ -40,8 +40,8 @@
                 <p class="modal-title pl-2" id="mentorstaticBackdropLabel">本当に削除しますか？</p>
                 
                 <div class="mt-4 p-2 float-right">
-                    <button type="button" class="pr-3" style="font-size: .9rem;" onclick="location.href='./delete'">はい</button>
-                    <button type="button" class="pr-2 text-dark" data-dismiss="modal" style="font-size: .9rem;">いいえ</button>
+                    <button type="button" class="pr-3 border-0 bg-white" style="font-size: .9rem;" onclick="location.href='./delete'">はい</button>
+                    <button type="button" class="pr-2 border-0 bg-white" data-dismiss="modal" style="font-size: .9rem;">いいえ</button>
                 </div>
             </div>
         </div>

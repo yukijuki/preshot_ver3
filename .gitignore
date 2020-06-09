@@ -143,3 +143,6 @@ cython_debug/
 
 # MacOS temp files
 .DS_Store
+
+# Nohup output files for server deployments
+nohup.out

@@ -1,31 +1,178 @@
-{% extends "mentor_layout.html" %} 
+{% extends "chat_layout.html" %} 
 
 {% block css %}
+<style>
+    .mentor_chatbox {
+        display: block;
+        text-align: right;
+        width: 60%;
+        margin: 0 0 1rem auto;
+    }
+    .mentor{
+        display: inline-block;
+        background-color: #FF514D;
+        border-radius: 25px;
+        padding: 0.3rem 1rem;
+    }
+    .mentor_text{
+        color: white;
+        margin-bottom: 0;
+        word-break: break-all;
+        text-align: left;
+        padding-left: 0.2rem;
+    }
+    .student_chatbox{
+        display: block;
+        width: 60%;
+        margin-bottom: 1rem;
+    }
+    .student{
+        display: inline-block;
+        background-color: #FF514D;
+        border-radius: 25px;
+        padding: 0.3rem 1rem;
+    }
+    .student_text{
+        color: white;
+        margin-bottom: 0;
+        word-break: break-all;
+        text-align: left;
+        padding-left: 0.2rem;
+    }
+</style>
 
+{% endblock %} 
+
+{% block content3 %}
+<div class="card mb-2 mx-auto">
+    <div class="card-body p-3" style="background-color: whitesmoke;">
+        <div class="d-flex flex-row">
+            <div class="col-8 my-auto text-dark">{{ data.name }}</div>
+            <div class="col-7 d-flex flex-column  my-auto" style="font-size: .7rem;">
+                <span class="text-secondary pl-1">曜日：{{ data.day }}</span>
+                <span class="text-secondary pl-1">時間：{{ data.date }}</span>
+                <span class="text-secondary pl-1">場所：{{ data.place }}</span>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %} 
 
 {% block content %}
 <body>
 
-    <div class="card mb-2 mx-auto">
-                
-        <div class="card-body p-3" style="background-color: whitesmoke;">
-            <div class="d-flex flex-row">
-                <div class="col-4 my-auto text-dark">{{ data.name }}</div>
-                <div class="col-5 d-flex flex-column  my-auto" style="font-size: .7rem;">
-                    <span class="text-secondary pl-1">曜日：{{ data.day }}</span>
-                    <span class="text-secondary pl-1">時間：{{ data.date }}</span>
-                    <span class="text-secondary pl-1">場所：{{ data.place }}</span>
-                </div>
-            </div>
-        </div>
-        
-    </div>
+    <div class="container mt-5 mb-3 py-5">
+        <div id="messages">
 
-    <form class="login_bottom" action="/chat/{{data.rid}}" method="post">
-        <input type="text" id="text" name="text" placeholder="入力.." required>    
-        <button class="btn2" type="submit">送信</button>
-    </form>
+        </div>
+        <div id="chat-bottom"></div>
+    </div>
+    
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+    currentPage = 0;
+    $(document).ready(function () {
+
+        //////////////////////////////////////////
+        // Socket.IO client API: Mentor Edition //
+        //////////////////////////////////////////
+
+        socket = io();
+
+        // Connect, then join room (should already be in session Flask-side)
+        socket.emit('joined');
+
+        // Once connected, do the first message load
+        socket.on('join', function () {
+            socket.emit('loaded', {page: currentPage});
+            currentPage++;
+        });
+
+        // receiving messages from server, then render
+        socket.on('message', function (data) {
+            $('#messages').append(writeMessage(data.message));
+        });
+
+        // receiving bulk message loads from server, then render
+        socket.on('load', function (data) {
+            messagesHTML = ""; 
+            messages = data['messages'];
+                for (i = 0; i < messages.length; i++) {
+                    // needs to be done in reverse order, as chat is older at the top
+                    messagesHTML = writeMessage(messages[i]) + messagesHTML;
+                }
+                $('#messages').prepend(messagesHTML);
+        });
+
+        ///////////////////////////
+        // JQuery input handling //
+        ///////////////////////////
+
+        // press enter to send message
+        $('#text').keypress(function (e) {
+            var code = e.keyCode || e.which;
+            if (code == 13) {
+                sendMessage();
+            }
+        });
+
+        // press Send button to send message
+        $('#send').on('click', function () {
+            sendMessage();
+        });
+
+        // infinite scrolling messages
+        $('#messages').bind('scroll', function () {
+            // checks if the messages div is scrolled to top - 300 pixels
+            if ($('#messages').scrollTop() <= $('#messages')[0].scrollHeight + 300) {
+                socket.emit('loaded', {page: currentPage});
+                currentPage++;
+            }
+        });
+
+        //////////////////////
+        // helper functions //
+        //////////////////////
+
+        // pure function that generates the message text based on the Message object generated.
+        function writeMessage (m) {
+            //TODO: Please figure out what HTML/CSS works to make the chat look the way we want!
+            // this code should generally be adding together <div>, <p>, and <a> tags with data. 
+            let message = m.message;
+            if (!(message)) {
+                return "" //nothing in text, don't try to send
+            }
+            let author = (m.is_mentor ? "mentor" : "student");
+            html = [
+                '<div class="' + author + '_chatbox">',
+                '<div class="' + author +'">',
+                '<p class="' + author + '_text">',
+                message,
+                '</p>',
+                '</div>',
+                '</div>'
+            ]
+            return html.join("\n");
+        }
+        
+        // function that abstracts the sending of messages via Socket.IO
+        function sendMessage () {
+            text = $('#text').val();
+            if (!(text)) {
+                return "" //nothing in text, don't try to send
+            }
+            setTimeout(function(){
+                window.location.href = '#chat-bottom';
+            }, 100);
+            $('#text').val('');
+            socket.emit('messaged', {
+                message: text
+            });
+        }
+    });
+    </script>
 
 </body>
 

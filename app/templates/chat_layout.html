@@ -5,17 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-wdith, initial-scale=1.0,　user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
     <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <title>preshot</title>
     <style>
         .navbar{
             padding: .24rem .5rem;
         }
         .nav-bottom-container{
-            padding: .2rem .5rem;
+            padding: .2rem 1rem;
         }
         .navbar-brand{
             margin-right: .5rem;
@@ -27,7 +24,7 @@
         .text-preshot{
             color: #FF514D;
         }        
-        .form-control::placeholder{
+        .chat-message::placeholder{
             color: #FF514D;
         }
         body{ 
@@ -36,20 +33,29 @@
         .fas{
             font-size: 30px;
         }
-        
+        #messages{
+            width: 100%;
+        }
+        .btn-light:hover {
+            color: #FF514D!important;
+        }
     </style>
-    <!-- Favicons -->
-    <link rel="icon" href="{{ url_for('static', filename='preshot_img/preshot-logo03.png') }}">
-    <link rel="apple-touch-icon" href="{{ url_for('static', filename='preshot_img/preshot-logo03.png') }}">
-    
 
     {% block css %}{% endblock %}
     {% block title %}{% endblock %}
+
+    <!-- Favicons -->
+    <link rel="icon" href="{{ url_for('static', filename='preshot_img/preshot-logo03.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='preshot_img/preshot-logo03.png') }}">
+
+
 </head>
 
 <body>
-
+    <!--header-nav-->
+    
     <div class="fixed-top">
+
         <nav class="navbar bg-preshot">
 
             <nav class="navbar preshot-color">
@@ -59,71 +65,57 @@
             </nav>
         
             <nav class="navbar preshot-color">
-                <a class="align-middle" href="/mypost">
-                    <img src="{{ url_for('static', filename='preshot_img/preshot-logo06.png') }}" class="img-fluid" style="height: 2rem;" alt="preshot_logo">
-                </a>
+                <a class="navbar-text text-white lead align-middle" href="/mypost">Preshot</a>
             </nav>
         
             <nav class="navbar preshot-color">
-                <a class="navbar-brand nav-top-item" href="/mentor_setting">
+                <a class="navbar-brand nav-top-item" href="/setting">
                     <i class="fas fa-cog text-white align-middle"></i>
                 </a>
             </nav>
-            
         </nav>
-    
+        
         {% for message in get_flashed_messages() %}
         <div class="alert-success text-center">{{ message }}</div>
         {% endfor %}
 
+        {% block content3 %}
+        {% endblock %}
     </div>
-
-
+    
 
     <div>
         {% block content %}
         {% endblock %}
     </div>
-
-    <nav class="navbar nav-bottom-container bg-preshot fixed-bottom">
-
-        <nav class="navbar nav-bottom-container preshot-color">
-            <a class="navbar-brand nav-item" href="/mentor_home">
-                <i class="fas fa-home text-white"></i>
-            </a>
-        </nav>
     
-        <nav class="navbar nav-bottom-container preshot-color">
-            <a class="navbar-brand nav-item" href="/mentor_profile">
-                <i class="fas fa-user-circle text-white"></i>
-            </a>
-        </nav>
+    <div class="fixed-bottom bg-preshot">
+        <div class="p-2 row" style="height: 3.5rem;">
+            <div class="col-10 pr-0">
+                <input class="chat-message h-100 w-100 border-0" type="text" id="text" name="text" placeholder="　Type a message..." required>
+            </div>
+            <div class="col-2 pl-0 border-left">
+                <button class="btn-light h-100 w-100 border-0 text-white bg-preshot" id="send"><i class="fas fa-paper-plane" id="sendicon"></i></button>
+            </div>   
+        </div>
+    </div>
 
-        <nav class="navbar nav-bottom-container preshot-color">
-            <a class="navbar-brand nav-item" href="/mentor_schedule">
-                <i class="fas fa-calendar-alt text-white"></i>
-            </a>
-        </nav>
-
-        <nav class="navbar nav-bottom-container preshot-color">
-            <a class="navbar-brand nav-item" href="/mentor_chatlist">
-                <i class="fas fa-comments text-white"></i>
-            </a>
-        </nav>
-        
-    </nav>
-    
     <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function() {
-            $('.alert-success').delay(1000).slideUp(2000);
+            $('.alert-success').delay(1000).slideUp(500);
         });
-        $(function(){
-            $('select').on('change',function(){
-                $(this).css('color',$(this).find('option:selected').get(0).style.color);
-            }).trigger('change');
+
+        // $('#sendicon').on('click', function() {
+        //     $("html,body").animate({scrollTop:$('#chat-bottom').offset().top});
+        // });
+
+        $(document).ready(function() {
+            setTimeout(function(){
+                window.location.href = '#chat-bottom';
+            }, 100);
         });
     </script>
 </body>
