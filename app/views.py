@@ -16,7 +16,11 @@ GET_FOLDER = '/static/img-get'
 PHYSICAL_ROOT = os.path.dirname(os.path.abspath(__file__))
 POSTS_PER_PAGE = 10
 
-# app.config.from_object("config.DevelopmentConfig")
+# NOTE: hard-coding the configuration for postgresql to prevent weird issues.
+# Migrate(app,db) can be activated by calling 'flask db __' for the appropriate command.
+# This now requires Postgresql, feel free to use a GUI app like Postgres.app (I'm using that).
+# Don't worry, Postgresql doesn't really do anything when you aren't querying it,
+# So feel free to leave it on.
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:postgres@localhost:5432/preshot"
 app.config["SECRET_KEY"] = hashlib.sha256(b"wepreshot").hexdigest()
 app.config["UPLOAD_FOLDER"] = PHYSICAL_ROOT + UPLOAD_FOLDER
@@ -102,9 +106,7 @@ class Chat(db.Model):
     created_at = db.Column(db.DateTime(), nullable=False)
 
 
-# ----------------------------------------------------------------
-# db.drop_all()
-# db.create_all()
+
 # ----------------------------------------------------------------
 # Functions for images
 
