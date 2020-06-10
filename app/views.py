@@ -266,6 +266,8 @@ def mypost():
             }
             response.append(post_data)
 
+            print(post.text)
+
     except FileNotFoundError:
         abort(404)
 
@@ -1057,3 +1059,16 @@ def mentor_delete():
     session.pop('mid', None)
 
     return redirect(url_for('mentor_register'))
+
+
+
+@app.route("/post_delete/<id>", methods=["GET", "DELETE"])
+def post_delete(id):
+
+    post = Post.query.filter_by(id=id).first()
+    db.session.delete(post)
+    db.session.commit()
+
+    flash("投稿を削除しました")
+
+    return redirect(url_for('register'))
