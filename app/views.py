@@ -6,6 +6,7 @@ import hashlib
 from PIL import Image
 from flask import request, redirect, session, jsonify, render_template, make_response, url_for, abort, flash
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
 from flask_socketio import join_room, leave_room, emit
 from app import app, socketio
@@ -15,9 +16,13 @@ GET_FOLDER = '/static/img-get'
 PHYSICAL_ROOT = os.path.dirname(os.path.abspath(__file__))
 POSTS_PER_PAGE = 10
 
-# app.config.from_object("config.DevelopmentConfig")
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
-app.config["SECRET_KEY"] = "2a8d30bbe99b10fffc4287171a5389b577080d9a2dfc528380ec69329ea6accc"
+# NOTE: hard-coding the configuration for postgresql to prevent weird issues.
+# Migrate(app,db) can be activated by calling 'flask db __' for the appropriate command.
+# This now requires Postgresql, feel free to use a GUI app like Postgres.app (I'm using that).
+# Don't worry, Postgresql doesn't really do anything when you aren't querying it,
+# So feel free to leave it on.
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:postgres@localhost:5432/preshot"
+app.config["SECRET_KEY"] = hashlib.sha256(b"wepreshot").hexdigest()
 app.config["UPLOAD_FOLDER"] = PHYSICAL_ROOT + UPLOAD_FOLDER
 app.config["GET_FOLDER"] = PHYSICAL_ROOT + GET_FOLDER
 app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["PNG", "JPG", "JPEG"]
@@ -27,6 +32,7 @@ app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["PNG", "JPG", "JPEG"]
 
 app.debug = True
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 
 # Define Models
@@ -100,9 +106,7 @@ class Chat(db.Model):
     created_at = db.Column(db.DateTime(), nullable=False)
 
 
-# ----------------------------------------------------------------
-# db.drop_all()
-# db.create_all()
+
 # ----------------------------------------------------------------
 # Functions for images
 
@@ -261,6 +265,8 @@ def mypost():
                 "created_at": post.created_at
             }
             response.append(post_data)
+
+            print(post.text)
 
     except FileNotFoundError:
         abort(404)
@@ -1053,3 +1059,16 @@ def mentor_delete():
     session.pop('mid', None)
 
     return redirect(url_for('mentor_register'))
+
+
+
+@app.route("/post_delete/<id>", methods=["GET", "DELETE"])
+def post_delete(id):
+
+    post = Post.query.filter_by(id=id).first()
+    db.session.delete(post)
+    db.session.commit()
+
+    flash("投稿を削除しました")
+
+    return redirect(url_for('register'))
