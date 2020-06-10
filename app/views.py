@@ -146,9 +146,9 @@ def index():
     post = Post.query.count()
 
     data = {
-            "student": student,
-            "mentor": mentor,
-            "reservation": reservation,
+            "student": student-1,
+            "mentor": mentor-1,
+            "reservation": reservation-1,
             "post": post
             }
 
