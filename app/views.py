@@ -106,6 +106,7 @@ class Chat(db.Model):
     message = db.Column(db.UnicodeText(), nullable=False)
     created_at = db.Column(db.DateTime(), nullable=False)
 
+# db.create_all()
 
 
 # ----------------------------------------------------------------
