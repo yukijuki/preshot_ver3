@@ -21,8 +21,7 @@ POSTS_PER_PAGE = 10
 # This now requires Postgresql, feel free to use a GUI app like Postgres.app (I'm using that).
 # Don't worry, Postgresql doesn't really do anything when you aren't querying it,
 # So feel free to leave it on.
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://localhost/preshot"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://preshot:wepreshot@localhost:5432/preshot"
 app.config["SECRET_KEY"] = hashlib.sha256(b"wepreshot").hexdigest()
 app.config["UPLOAD_FOLDER"] = PHYSICAL_ROOT + UPLOAD_FOLDER
 app.config["GET_FOLDER"] = PHYSICAL_ROOT + GET_FOLDER
@@ -31,7 +30,7 @@ app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["PNG", "JPG", "JPEG"]
 # see the img folder
 # file_list = os.listdir( app.config['UPLOAD_FOLDER'] )
 
-app.debug = True
+app.debug = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
@@ -176,7 +175,7 @@ def emailcheck():
     for student in students:
         student_email = student.email
         student_emails.append(student_email)
-    
+
     emails = {
         "student": student_emails,
         "mentor": mentor_emails
@@ -210,7 +209,7 @@ def register():
                 email=data["email"],
                 uid=uid,
                 # Password now uses hashing, using sha256 + email as salt
-                password=hashlib.sha256((data["password"]+data["email"]).encode('utf-8')).hexdigest(), 
+                password=hashlib.sha256((data["password"]+data["email"]).encode('utf-8')).hexdigest(),
                 created_at=datetime.datetime.now()
             )
 
