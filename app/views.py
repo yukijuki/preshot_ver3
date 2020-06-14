@@ -21,7 +21,8 @@ POSTS_PER_PAGE = 10
 # This now requires Postgresql, feel free to use a GUI app like Postgres.app (I'm using that).
 # Don't worry, Postgresql doesn't really do anything when you aren't querying it,
 # So feel free to leave it on.
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:postgres@localhost:5432/preshot"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://localhost/preshot"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = hashlib.sha256(b"wepreshot").hexdigest()
 app.config["UPLOAD_FOLDER"] = PHYSICAL_ROOT + UPLOAD_FOLDER
 app.config["GET_FOLDER"] = PHYSICAL_ROOT + GET_FOLDER
@@ -105,6 +106,7 @@ class Chat(db.Model):
     message = db.Column(db.UnicodeText(), nullable=False)
     created_at = db.Column(db.DateTime(), nullable=False)
 
+# db.create_all()
 
 
 # ----------------------------------------------------------------
