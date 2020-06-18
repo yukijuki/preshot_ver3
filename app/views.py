@@ -22,6 +22,8 @@ POSTS_PER_PAGE = 10
 # Don't worry, Postgresql doesn't really do anything when you aren't querying it,
 # So feel free to leave it on.
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://preshot:wepreshot@localhost:5432/preshot"
+#app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = hashlib.sha256(b"wepreshot").hexdigest()
 app.config["UPLOAD_FOLDER"] = PHYSICAL_ROOT + UPLOAD_FOLDER
 app.config["GET_FOLDER"] = PHYSICAL_ROOT + GET_FOLDER
@@ -147,9 +149,9 @@ def index():
     post = Post.query.count()
 
     data = {
-            "student": student-1,
-            "mentor": mentor-1,
-            "reservation": reservation-1,
+            "student": student,
+            "mentor": mentor,
+            "reservation": reservation,
             "post": post
             }
 
@@ -216,7 +218,7 @@ def register():
             db.session.add(newuser)
             db.session.commit()
             flash("アカウントが作成されました")
-            return redirect(url_for('post'))
+            return redirect(url_for('mypost'))
 
         else:
             if student.password == hashlib.sha256((data["password"]+data["email"]).encode('utf-8')).hexdigest():
@@ -254,15 +256,16 @@ def mypost():
         return redirect(url_for('register'))
 
     try:
-        posts = Post.query.filter_by(student_id=uid).order_by(Post.created_at.desc()).all()
+        posts = Post.query.order_by(Post.created_at.desc()).all()
 
         response = []
 
         for post in posts:
             post_data = {
+                "id":post.id,
                 "pid": post.pid,
-                "title": post.title,
-                "text": post.text,
+                "title": post.title[:18] + " ..",
+                "text": post.text[:105] + "...",
                 "created_at": post.created_at
             }
             response.append(post_data)
