@@ -149,14 +149,18 @@ def index():
     post = Post.query.count()
 
     data = {
-            "student": student,
-            "mentor": mentor,
-            "reservation": reservation,
-            "post": post
+            "student": student-1,
+            "mentor": mentor-1,
+            "reservation": reservation-1,
+            "post": post-1
             }
 
     return render_template("index.html", data = data)
 
+@app.route("/tutorial")
+def tutorial():
+
+    return render_template("tutorial.html")
 
 @app.route("/test", methods=["GET"])
 def test():
