@@ -255,15 +255,16 @@ def mypost():
         return redirect(url_for('register'))
 
     try:
-        posts = Post.query.filter_by(student_id=uid).order_by(Post.created_at.desc()).all()
+        posts = Post.query.order_by(Post.created_at.desc()).all()
 
         response = []
 
         for post in posts:
             post_data = {
+                "id":post.id,
                 "pid": post.pid,
-                "title": post.title,
-                "text": post.text,
+                "title": post.title[:18] + " ..",
+                "text": post.text[:105] + "...",
                 "created_at": post.created_at
             }
             response.append(post_data)
