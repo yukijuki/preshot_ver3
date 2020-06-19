@@ -222,7 +222,7 @@ def register():
             db.session.add(newuser)
             db.session.commit()
             flash("アカウントが作成されました")
-            return redirect(url_for('mypost'))
+            return redirect(url_for('tutorial'))
 
         else:
             if student.password == hashlib.sha256((data["password"]+data["email"]).encode('utf-8')).hexdigest():
