@@ -21,8 +21,8 @@ POSTS_PER_PAGE = 10
 # This now requires Postgresql, feel free to use a GUI app like Postgres.app (I'm using that).
 # Don't worry, Postgresql doesn't really do anything when you aren't querying it,
 # So feel free to leave it on.
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://preshot:wepreshot@localhost:5432/preshot"
-#app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
+#app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://preshot:wepreshot@localhost:5432/preshot"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = hashlib.sha256(b"wepreshot").hexdigest()
 app.config["UPLOAD_FOLDER"] = PHYSICAL_ROOT + UPLOAD_FOLDER
@@ -107,7 +107,7 @@ class Chat(db.Model):
     message = db.Column(db.UnicodeText(), nullable=False)
     created_at = db.Column(db.DateTime(), nullable=False)
 
-# db.create_all()
+#db.create_all()
 
 
 # ----------------------------------------------------------------
@@ -149,14 +149,18 @@ def index():
     post = Post.query.count()
 
     data = {
-            "student": student,
-            "mentor": mentor,
-            "reservation": reservation,
-            "post": post
+            "student": student-1,
+            "mentor": mentor-1,
+            "reservation": reservation-1,
+            "post": post-1
             }
 
     return render_template("index.html", data = data)
 
+@app.route("/tutorial")
+def tutorial():
+
+    return render_template("tutorial.html")
 
 @app.route("/test", methods=["GET"])
 def test():
@@ -218,7 +222,7 @@ def register():
             db.session.add(newuser)
             db.session.commit()
             flash("アカウントが作成されました")
-            return redirect(url_for('mypost'))
+            return redirect(url_for('tutorial'))
 
         else:
             if student.password == hashlib.sha256((data["password"]+data["email"]).encode('utf-8')).hexdigest():
