@@ -1,9 +1,115 @@
-<img src="/static/assets/img/tutorial/tutorial1.png" alt="">
-<img src="/static/assets/img/tutorial/tutorial2.png" alt="">
-<img src="/static/assets/img/tutorial/tutorial3.png" alt="">
-<img src="/static/assets/img/tutorial/tutorial4.png" alt="">
-<img src="/static/assets/img/tutorial/tutorial5.png" alt="">
-<img src="/static/assets/img/tutorial/tutorial6.png" alt="">
-<img src="/static/assets/img/tutorial/tutorial7.png" alt="">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-wdith, initial-scale=1.0,　user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/swiper.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/swiper.min.css') }}">
+    <style>
+        body{
+            background-color: white;
+        }
+        .bg-preshot{
+            background-color: #FF514D;
+        }
+        .text-preshot{
+            color: #FF514D;
+        }
+        .swiper-slide {
+            text-align: center;
+        }
+        .swiper-slide img{
+            height: 80%;
+        }
+        .tutorial-container{
+            height: 100vh;
+        }
+        .swiper-container{
+            height: 85%;
+            padding-top: 2rem;
+        }
+        .button-container{
+            height: 15%;
+        }
+        .navbar-text {
+            font-size: 1.2rem;
+        }
+        .tutorial-button{
+            font-size: 1.2rem;
+        }
+    </style>
 
+    {% block css %}{% endblock %}
+    {% block title %}{% endblock %}
+
+    <!-- Favicons -->
+    <link rel="icon" href="{{ url_for('static', filename='preshot_img/preshot-logo03.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='preshot_img/preshot-logo03.png') }}">
+
+    <title>チュートリアル</title>
+
+</head>
+<body>
+
+    <div class="tutorial-container">
+
+        <div class="fixed-top">
+            <nav class="navbar bg-preshot">
+                <nav class="navbar-text mx-auto text-white">使い方</nav>
+            </nav>
+        </div>
+
+        <!-- Slider main container -->
+        <div class="swiper-container">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+                <div class="swiper-slide"><img src="/static/assets/img/tutorial/tutorial1.png" alt=""></div>
+                <div class="swiper-slide"><img src="/static/assets/img/tutorial/tutorial2.png" alt=""></div>
+                <div class="swiper-slide"><img src="/static/assets/img/tutorial/tutorial3.png" alt=""></div>
+                <div class="swiper-slide"><img src="/static/assets/img/tutorial/tutorial4.png" alt=""></div>
+                <div class="swiper-slide"><img src="/static/assets/img/tutorial/tutorial5.png" alt=""></div>
+                <div class="swiper-slide"><img src="/static/assets/img/tutorial/tutorial6.png" alt=""></div>
+                <div class="swiper-slide"><img src="/static/assets/img/tutorial/tutorial7.png" alt=""></div>
+            </div>
+            <!-- If we need pagination -->
+            <div class="swiper-pagination"></div>
+            
+            <!-- If we need navigation buttons -->
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        </div>
+
+        <div class="button-container d-flex align-items-center">
+            <div class="text-center mx-auto">
+                <a class="tutorial-button btn bg-preshot text-white shadow p-2" href="/mypost">チュートリアルを終了</a>
+            </div>
+        </div>
+
+    </div>
+    <!--JS-->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.4.1/js/swiper.min.js"></script>
+    <script>
+        var mySwiper = new Swiper ('.swiper-container', {
+            loop: true,
+            slidesPerView: 2,
+            spaceBetween: 10,
+            centeredSlides : true,
+            pagination: '.swiper-pagination',
+            nextButton: '.swiper-button-next',
+            prevButton: '.swiper-button-prev',
+            breakpoints: {
+                767: {
+                slidesPerView: 1,
+                spaceBetween: 0
+                }
+            }
+        })
+    </script>
+</body>
+</html>
 
