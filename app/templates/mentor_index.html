@@ -35,9 +35,15 @@
   <style>
     .text-preshot{
       color: #FF514D;
-  }        
+    }
+    .bg-preshot{
+      background-color: #FF514D;
+    }        
     .btn-hero{
       width: 238px;
+    }
+    .bg-white{
+      background-color: white;
     }
   </style>
   <!-- =======================================================
@@ -59,13 +65,9 @@
         <!-- Uncomment below if you prefer to use an image logo -->
         <a href="#header"><img src="/static/preshot_img/preshot_logo01.png" alt="" class="img-fluid"></a>
       </div>
-
-      <nav class="nav-menu d-none d-lg-block">
-        <ul>
-          <li class="active"><a href="#header">ホーム</a></li>
-          <li><a href="#about">サービス</a></li>
-        </ul>
-      </nav><!-- .nav-menu -->
+      <div class="logo ml-auto">
+        <a href="/mentor_register" class="btn text-white border-white">新規登録/ログイン</a>
+      </div>
 
     </div>
   </header><!-- End Header -->
@@ -75,21 +77,20 @@
 
     <div class="container">
       <div class="row">
-        <div class="col-lg-7 pt-5 pt-lg-0 order-2 order-lg-1 d-flex align-items-center">
+        <div class="col-lg-12 pt-3 pt-lg-0 order-2 order-lg-1 d-flex align-items-center">
           <div data-aos="zoom-out">
-            <h1>社会人が就活生を<br>助けるサービス<br><span>Preshot</span><br><h5 style="color: white">(現在モバイル対応のみ)</h6><br></h1>
-            <h2><strong>「選考で何を聞かれるのか分かった！」というそこのあなた！その選考対策、一人で出来ますか？</strong></h2>
+            <h1>あなたの就活の<br>経験を活かす<br>就活マッチングサービス<br><h5 style="color: white">(現在モバイル対応のみ)</h6><br></h1>
+            <div class="py-3 order-1 order-lg-2 hero-img" data-aos="zoom-out" data-aos-delay="300">
+              <img src="/static/assets/img/hero-img2.png" class="img-fluid animated" alt="">
+            </div>
+            <h2><strong>Preshotは、社会人や内定者の方が就活生の疑問や質問に答える新しい形の選考対策アプリです。
+              <br><br>指導者としてPreshotに参加し、就活生の疑問に答え、指導を始めましょう。
+            </strong></h2>
             <div class="text-center text-lg-left">
-              <a href="/mentor_register" class="btn-get-started scrollto btn-hero">内定者/社会人はこちら</a>
+              <a href="/mentor_register" class="btn-get-started scrollto btn-hero">無料で新規登録</a>
             </div>
             <br>
-            <div class="text-center text-lg-left">
-                <a href="/register" class="btn-get-started scrollto btn-hero">就活生はこちら</a>
-            </div>
           </div>
-        </div>
-        <div class="col-lg-5 order-1 order-lg-2 hero-img" data-aos="zoom-out" data-aos-delay="300">
-          <img src="/static/assets/img/hero-img2.png" class="img-fluid animated" alt="">
         </div>
       </div>
     </div>
@@ -117,52 +118,48 @@
     <section id="about" class="about">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-xl-6 col-lg-6 video-box d-flex justify-content-center align-items-stretch" data-aos="fade-right">
-            <!-- movie comment outed by koyo  ==================================================
-            <a href="https://www.youtube.com/watch?v=JL27zVa6X8g" class="venobox play-btn mb-4" data-vbtype="video" data-autoplay="true"></a>
-              =============================================================== -->
-            <!-- Swiper -->
-            <div class="swiper-container">
-              <div class="swiper-wrapper">
-                <div class="swiper-slide"><img src="/static/assets/img/slide/1.png" class="img-fluid" alt=""></div>
-                <div class="swiper-slide"><img src="/static/assets/img/slide/2.png" class="img-fluid" alt=""></div>
-                <div class="swiper-slide"><img src="/static/assets/img/slide/3.png" class="img-fluid" alt=""></div>
-                <div class="swiper-slide"><img src="/static/assets/img/slide/4.png" class="img-fluid" alt=""></div>
-              </div>
-              <!-- Add Arrows -->
-              <div class="swiper-button-next"></div>
-              <div class="swiper-button-prev"></div>
-              <!-- Add Pagination -->
-              <div class="swiper-pagination"></div>
-            </div>
-          </div>
 
-
-          <div class="col-xl-5 col-lg-5 icon-boxes d-flex flex-column align-items-stretch justify-content-center py-5 px-lg-5" data-aos="fade-left">
-            <h3>面接対策を一人で対策できない就活生を支援する！</h3>
+          <div class="col-xl-12 col-lg-12 icon-boxes d-flex flex-column align-items-stretch justify-content-center py-4 px-lg-5" data-aos="fade-left">
+            <h3>選考対策で困っている就活生を支援するまでの流れ</h3>
             <p>就活生は困っています。</p>
 
             <div class="icon-box" data-aos="zoom-in" data-aos-delay="100">
-              <div class="icon"><i class="bx bx-comment-dots"></i></div>
-              <h4 class="title"><a href="">プロフィールを作成</a></h4>
-              <p class="description">質問を投稿し、その問題の解決方法を指導してくれるメンターを「募集」しましょう。</p>
+              <div class="icon"><i class="bx bx-detail"></i></div>
+              <h4 class="title"><a href="">プロフィールを作成する</a></h4>
+              <p class="description">自身のプロフィールを就活生にわかりやすいようにカスタマイズしましょう</p>
+            </div>
+
+            <div class="icon-box" data-aos="zoom-in" data-aos-delay="100">
+              <div class="icon"><i class="bx bx-calendar"></i></div>
+              <h4 class="title"><a href="">スケジュールを選択する</a></h4>
+              <p class="description">就活生に指導することのできる日程や場所などを選択しましょう</p>
             </div>
 
             <div class="icon-box" data-aos="zoom-in" data-aos-delay="200">
               <div class="icon"><i class="bx bx-search-alt-2"></i></div>
-              <h4 class="title"><a href="">声をかける</a></h4>
-              <p class="description">投稿に反応したメンターの中から、あなたが指導を希望するメンターを選択します。</p>
+              <h4 class="title"><a href="">質問を選ぶ</a></h4>
+              <p class="description">投稿されている就活生の質問の中から、自身が答えることのできる投稿を選びましょう</p>
             </div>
 
             <div class="icon-box" data-aos="zoom-in" data-aos-delay="300">
               <div class="icon"><i class="bx bx-conversation"></i></div>
-              <h4 class="title"><a href="">指導する</a></h4>
-              <p class="description">指導を受けるために、メンターのスケジュールの中から希望の日程を予約しましょう。</p>
+              <h4 class="title"><a href="">指導を始める</a></h4>
+              <p class="description">マッチングした就活生とチャットで連絡を取り、指導を始めましょう</p>
             </div>
 
           </div>
         </div>
     </section><!-- End About Section -->
+
+    <div class="py-5 bg-white">
+      <div class="text-center pb-3">
+        <a href="/mentor_register" class="btn btn-hero text-white bg-preshot rounded-0 shadow-sm">無料で新規登録</a>
+      </div>
+      <div class="text-center">
+        <a href="/index" class="btn btn-hero text-white bg-preshot rounded-0 shadow-sm">就活生の方はこちら</a>
+      </div>
+    </div>
+    
   </main><!-- End #main -->
 
   <!-- ======= Footer ======= -->
