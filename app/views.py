@@ -157,6 +157,11 @@ def index():
 
     return render_template("index.html", data = data)
 
+@app.route("/mentor_index")
+def mentor_index():
+
+    return render_template("mentor_index.html")
+
 @app.route("/tutorial")
 def tutorial():
 
