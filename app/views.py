@@ -639,7 +639,7 @@ def mentor_register():
             db.session.add(mentor)
             db.session.add(schedule)
             db.session.commit()
-            flash("プロフィールを充実しましょう")
+            flash("プロフィールを充実させましょう")
             return redirect(url_for('mentor_profile'))
 
         else:
@@ -951,7 +951,7 @@ def mentor_response(pid):
         db.session.add(response)
         db.session.commit()
 
-        flash("声をかけました")
+        flash("就活生に声をかけました！")
 
     else:
         flash("すでに声をかけています")
