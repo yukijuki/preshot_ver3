@@ -10,6 +10,7 @@ from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
 from flask_socketio import join_room, leave_room, emit
 from app import app, socketio
+from flask_mail import Mail, Message
 
 UPLOAD_FOLDER = '/static/img'
 GET_FOLDER = '/static/img-get'
@@ -21,13 +22,26 @@ POSTS_PER_PAGE = 10
 # This now requires Postgresql, feel free to use a GUI app like Postgres.app (I'm using that).
 # Don't worry, Postgresql doesn't really do anything when you aren't querying it,
 # So feel free to leave it on.
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://preshot:wepreshot@localhost:5432/preshot"
-#app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
+#app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://preshot:wepreshot@localhost:5432/preshot"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = hashlib.sha256(b"wepreshot").hexdigest()
 app.config["UPLOAD_FOLDER"] = PHYSICAL_ROOT + UPLOAD_FOLDER
 app.config["GET_FOLDER"] = PHYSICAL_ROOT + GET_FOLDER
 app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["PNG", "JPG", "JPEG"]
+
+#flaskemail
+app.config['DEBUG'] = True
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+#app.config['MAIL_PORT'] = 587 if ur using TLS
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USERNAME'] = 'preshot.info@gmail.com'
+app.config['MAIL_PASSWORD'] = 'vwxyvzweofqhlono'
+app.config['MAIL_DEFAULT_SENDER'] = ('Preshotの通知','preshot.info@gmail.com')
+app.config['MAIL_MAX_EMAILS'] = False
+app.config['MAIL_ASCII_ATTACHMENTS'] = False
 
 # see the img folder
 # file_list = os.listdir( app.config['UPLOAD_FOLDER'] )
@@ -35,7 +49,7 @@ app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["PNG", "JPG", "JPEG"]
 app.debug = True
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-
+mail = Mail(app)
 
 # Define Models
 
@@ -951,10 +965,26 @@ def mentor_response(pid):
         db.session.add(response)
         db.session.commit()
 
+        #userのIDが必要です。
+        post = Post.query.filter_by(pid=pid).first()
+        student = Student.query.filter_by(uid=post.student_id).first()
+        mentor = Mentor.query.filter_by(mid=mid).first()
+        
+        if mentor.name is None:
+            mentor.name = "指導者"
+
+        #mentorの名前　ユーザーのemail
+        msg = Message(mentor.name+'さんとマッチングしました。', recipients=[student.email])
+        msg.html = post.title+'の投稿に対して' + mentor.name + 'さんからアプローチが来ました。ログインして確認しましょう！ https://preshot.app/register'
+        mail.send(msg)
+
         flash("就活生に声をかけました！")
 
     else:
         flash("すでに声をかけています")
+
+    #flaskmailを呼ぶ
+
 
     return redirect(url_for('mentor_home'))
 
