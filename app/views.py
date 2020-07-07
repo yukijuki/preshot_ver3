@@ -168,8 +168,24 @@ def test():
 
     return render_template("test.html", mentors=mentors)
 
+@app.route("/admin/<password>", methods=["GET"])
+def admin(password):
+    code = "1234"
+    if password == code:
+        #セッションをいれる
+        session['adminkey'] = "1234"
+        return redirect(url_for('emailcheck'))
+    else:
+        return redirect(request.url)
+        
+
 @app.route("/emailcheck", methods=["GET"])
 def emailcheck():
+    #verification
+    # adminkey = session.get('adminkey')
+    # if adminkey is not "1234":
+    #     return redirect(url_for('admin/1234'))
+
     mentor_emails = []
     mentors = Mentor.query.all()
     for mentor in mentors:
