@@ -18,28 +18,25 @@
         .text-preshot{
             color: #FF514D;
         }
-        .swiper-slide {
-            text-align: center;
-        }
-        .swiper-slide img{
-            height: 80%;
+        .navbar-text {
+            font-size: 1.2rem;
         }
         .tutorial-container{
             height: 100vh;
         }
         .swiper-container{
+            height: 80%;
+        }
+        .swiper-slide {
+            text-align: center;
+        }
+        .swiper-slide img{
             height: 85%;
-            padding-top: 2rem;
-        }
-        .button-container{
-            height: 15%;
-        }
-        .navbar-text {
-            font-size: 1.2rem;
         }
         .tutorial-button{
             font-size: 1.2rem;
         }
+
     </style>
 
     {% block css %}{% endblock %}
@@ -56,7 +53,7 @@
 
     <div class="tutorial-container">
 
-        <div class="fixed-top">
+        <div class="header-nav">
             <nav class="navbar bg-preshot">
                 <nav class="navbar-text mx-auto text-white">使い方</nav>
             </nav>
@@ -83,7 +80,7 @@
             <div class="swiper-button-next"></div>
         </div>
 
-        <div class="button-container d-flex align-items-center">
+        <div class="button-container py-2">
             <div class="text-center mx-auto">
                 <a class="tutorial-button btn bg-preshot text-white shadow p-2" href="/mypost">チュートリアルを終了</a>
             </div>
