@@ -327,6 +327,9 @@ def eachpost(pid):
     post = Post.query.filter_by(pid=pid).first()
     responses = Response.query.filter_by(post_id=pid).all()
 
+    # Need it for reservation route
+    session['pid'] = pid
+
     mentor_info = []
 
     for response in responses:
@@ -433,7 +436,7 @@ def select_mentor(mid):
 def reservation(sid):
     uid = session.get('uid')
     mid = session.get('mentor_id')
-
+    pid = session.get('pid')
 
     if uid is None:
         return redirect(url_for('register'))
@@ -441,13 +444,19 @@ def reservation(sid):
     if mid is None:
         return redirect(url_for('register'))
         flash("セッションが切れました")
+    if pid is None:
+        return redirect(url_for('register'))
+        flash("セッションが切れました")
 
+    #-------Hey roman here is what I need you to do! 1 and 2----------
 
-    # check if the reservation had been made before
+    #1. I need this data to be get the data with the sid and pid condition but pid missing in Reservation schema.
     reservation = Reservation.query.filter_by(schedule_id=sid).first()
+    #reservation = Reservation.query.filter_by(schedule_id=sid).filter_by(pid=pid).first()
+
     if reservation is not None:
-        flash("予約済みです")
-        return redirect(url_for('chatlist', rid = reservation.rid))
+        flash("既に予約済みです")
+        return redirect(url_for('chat', rid = reservation.rid))
 
     rid = str(uuid.uuid4())
 
@@ -461,16 +470,18 @@ def reservation(sid):
     db.session.add(mentor)
     db.session.commit()
 
+    #2. I need those reservation_info(post.title, post.text) to be sent in the chat
+
     #flask_mail
     schedule = Schedule.query.filter_by(sid=sid).first()
     schedule_info = schedule.day + schedule.date + '時に' + schedule.place
     student = Student.query.filter_by(uid=uid).first()
-    #mentorの名前　ユーザーのemail
-    msg = Message(student.name+'さんから予約が入りました。', recipients=[mentor.email])
-    #msg.html = post.title+'の投稿に対して' + mentor.name + 'さんからアプローチが来ました。ログインして確認しましょう！ https://preshot.app/register'
-    msg.html =  schedule_info + 'で' + student.name + 'から予約が入りました'
-    mail.send(msg)
 
+    mentor = Mentor.query.filter_by(mid=mid).first()
+
+    msg = Message('就活生から予約が入りました。', recipients=[mentor.email])
+    msg.html =  schedule_info + 'で予約が入りました. ログインして確認しましょう！ https://preshot.app/mentor_register'
+    mail.send(msg)
 
     flash("予約しました")
 
