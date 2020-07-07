@@ -434,7 +434,6 @@ def reservation(sid):
     uid = session.get('uid')
     mid = session.get('mentor_id')
 
-    print(sid)
 
     if uid is None:
         return redirect(url_for('register'))
@@ -461,6 +460,17 @@ def reservation(sid):
     )
     db.session.add(mentor)
     db.session.commit()
+
+    #flask_mail
+    schedule = Schedule.query.filter_by(sid=sid).first()
+    schedule_info = schedule.day + schedule.date + '時に' + schedule.place
+    student = Student.query.filter_by(uid=uid).first()
+    #mentorの名前　ユーザーのemail
+    msg = Message(student.name+'さんから予約が入りました。', recipients=[mentor.email])
+    #msg.html = post.title+'の投稿に対して' + mentor.name + 'さんからアプローチが来ました。ログインして確認しましょう！ https://preshot.app/register'
+    msg.html =  schedule_info + 'で' + student.name + 'から予約が入りました'
+    mail.send(msg)
+
 
     flash("予約しました")
 
