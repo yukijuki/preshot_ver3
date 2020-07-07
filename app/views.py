@@ -485,8 +485,6 @@ def reservation(sid):
 
     flash("予約しました")
 
-    # return redirect(url_for('mypost'))
-
     mentor = Mentor.query.filter_by(mid=mid).first()
     schedule = Schedule.query.filter_by(sid=sid).first()
 
