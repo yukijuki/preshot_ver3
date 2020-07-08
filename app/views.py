@@ -450,7 +450,7 @@ def reservation(sid):
 
     #-------Hey roman here is what I need you to do! 1 and 2----------
 
-    #1. I need this data to be get the data with the sid and pid condition but pid missing in Reservation schema.
+    #1. I need this data to be get the data with the sid and pid and uid condition but pid missing in Reservation schema.
     reservation = Reservation.query.filter_by(schedule_id=sid).first()
     #reservation = Reservation.query.filter_by(schedule_id=sid).filter_by(pid=pid).first()
 
