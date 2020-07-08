@@ -10,6 +10,7 @@ from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
 from flask_socketio import join_room, leave_room, emit
 from app import app, socketio
+from flask_mail import Mail, Message
 
 UPLOAD_FOLDER = '/static/img'
 GET_FOLDER = '/static/img-get'
@@ -29,13 +30,26 @@ app.config["UPLOAD_FOLDER"] = PHYSICAL_ROOT + UPLOAD_FOLDER
 app.config["GET_FOLDER"] = PHYSICAL_ROOT + GET_FOLDER
 app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["PNG", "JPG", "JPEG"]
 
+#flaskemail
+app.config['DEBUG'] = True
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+#app.config['MAIL_PORT'] = 587 if ur using TLS
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USERNAME'] = 'preshot.info@gmail.com'
+app.config['MAIL_PASSWORD'] = 'vwxyvzweofqhlono'
+app.config['MAIL_DEFAULT_SENDER'] = ('Preshotの通知','preshot.info@gmail.com')
+app.config['MAIL_MAX_EMAILS'] = False
+app.config['MAIL_ASCII_ATTACHMENTS'] = False
+
 # see the img folder
 # file_list = os.listdir( app.config['UPLOAD_FOLDER'] )
 
 app.debug = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-
+mail = Mail(app)
 
 # Define Models
 
@@ -173,8 +187,24 @@ def test():
 
     return render_template("test.html", mentors=mentors)
 
+@app.route("/admin/<password>", methods=["GET"])
+def admin(password):
+    code = "1234"
+    if password == code:
+        #セッションをいれる
+        session['adminkey'] = "1234"
+        return redirect(url_for('emailcheck'))
+    else:
+        return redirect(request.url)
+        
+
 @app.route("/emailcheck", methods=["GET"])
 def emailcheck():
+    #verification
+    # adminkey = session.get('adminkey')
+    # if adminkey is not "1234":
+    #     return redirect(url_for('admin/1234'))
+
     mentor_emails = []
     mentors = Mentor.query.all()
     for mentor in mentors:
@@ -297,6 +327,9 @@ def eachpost(pid):
     post = Post.query.filter_by(pid=pid).first()
     responses = Response.query.filter_by(post_id=pid).all()
 
+    # Need it for reservation route
+    session['pid'] = pid
+
     mentor_info = []
 
     for response in responses:
@@ -403,8 +436,7 @@ def select_mentor(mid):
 def reservation(sid):
     uid = session.get('uid')
     mid = session.get('mentor_id')
-
-    print(sid)
+    pid = session.get('pid')
 
     if uid is None:
         return redirect(url_for('register'))
@@ -412,13 +444,19 @@ def reservation(sid):
     if mid is None:
         return redirect(url_for('register'))
         flash("セッションが切れました")
+    if pid is None:
+        return redirect(url_for('register'))
+        flash("セッションが切れました")
 
+    #-------Hey roman here is what I need you to do! 1 and 2----------
 
-    # check if the reservation had been made before
+    #1. I need this data to be get the data with the sid and pid condition but pid missing in Reservation schema.
     reservation = Reservation.query.filter_by(schedule_id=sid).first()
+    #reservation = Reservation.query.filter_by(schedule_id=sid).filter_by(pid=pid).first()
+
     if reservation is not None:
-        flash("予約済みです")
-        return redirect(url_for('chatlist', rid = reservation.rid))
+        flash("既に予約済みです")
+        return redirect(url_for('chat', rid = reservation.rid))
 
     rid = str(uuid.uuid4())
 
@@ -432,9 +470,20 @@ def reservation(sid):
     db.session.add(mentor)
     db.session.commit()
 
-    flash("予約しました")
+    #2. I need those reservation_info(post.title, post.text) to be sent in the chat
 
-    # return redirect(url_for('mypost'))
+    #flask_mail
+    schedule = Schedule.query.filter_by(sid=sid).first()
+    schedule_info = schedule.day + schedule.date + '時に' + schedule.place
+    student = Student.query.filter_by(uid=uid).first()
+
+    mentor = Mentor.query.filter_by(mid=mid).first()
+
+    msg = Message('就活生から予約が入りました。', recipients=[mentor.email])
+    msg.html =  schedule_info + 'で予約が入りました. ログインして確認しましょう！ https://preshot.app/mentor_register'
+    mail.send(msg)
+
+    flash("予約しました")
 
     mentor = Mentor.query.filter_by(mid=mid).first()
     schedule = Schedule.query.filter_by(sid=sid).first()
@@ -951,10 +1000,26 @@ def mentor_response(pid):
         db.session.add(response)
         db.session.commit()
 
+        #userのIDが必要です。
+        post = Post.query.filter_by(pid=pid).first()
+        student = Student.query.filter_by(uid=post.student_id).first()
+        mentor = Mentor.query.filter_by(mid=mid).first()
+        
+        if mentor.name is None:
+            mentor.name = "指導者"
+
+        #mentorの名前　ユーザーのemail
+        msg = Message(mentor.name+'さんとマッチングしました。', recipients=[student.email])
+        msg.html = post.title+'の投稿に対して' + mentor.name + 'さんからアプローチが来ました。ログインして確認しましょう！ https://preshot.app/register'
+        mail.send(msg)
+
         flash("就活生に声をかけました！")
 
     else:
         flash("すでに声をかけています")
+
+    #flaskmailを呼ぶ
+
 
     return redirect(url_for('mentor_home'))
 
