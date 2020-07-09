@@ -217,8 +217,11 @@
   <!-- Template Main JS File -->
   <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
 
-  <!-- swiper js-->
+  <!-- Infinite Scroll -->
+  <script src="https://unpkg.com/infinite-scroll@3/dist/infinite-scroll.pkgd.js"></script>
+
   <script>
+    
   var swiper = new Swiper('.swiper-container', {
     navigation: {
       nextEl: '.swiper-button-next',
@@ -228,7 +231,18 @@
       el: '.swiper-pagination',
     },
   })
-</script>
+
+  $('.contents_block').infinitescroll({
+    navSelector : '.navigation',
+    nextSelector : '.navigation a',
+    itemSelector :'.index_contents_area',
+    loading: {
+        msg: null,
+        msgText: "<strong>次のページを読み込んでいます。</strong>"
+      },
+  });
+
+  </script>
 
 </body>
 
