@@ -42,12 +42,20 @@
     @media screen and (min-width: 650px){	
       .br-pc { display:block; }
       .br-sp { display:none; }
+      .br-wd { display:none; }
       .px-pc { padding-left: 3rem; padding-right: 3rem;}
-      .main-details{ font-size: 1.1rem; }
+      .about-p{ font-size: 1.1rem; }
+    }
+    @media screen and (min-width: 1500px){	
+      .about-column{ padding-left: 7rem; padding-right: 7rem;}
+      #about-h3{text-align: center;}
+      .br-wd { display:block; }
+      .about-p {padding-top: 2rem;}
     }
     @media screen and (max-width: 650px){	
       .br-pc { display:none; }
       .br-sp { display:block; }
+      .br-wd { display:none; }
       .flex-column-sp{
         -ms-flex-direction: column!important;
         flex-direction: column!important;
@@ -166,11 +174,11 @@
 
 
           <div class="flex-column-sp col-xl-12 col-lg-12 icon-boxes d-flex align-items-stretch justify-content-center py-5 px-lg-5" data-aos="fade-left">
-            <div class="col-xl-6 col-lg-6 mt-5 px-pc">
-              <h3>就職活動に過去問題はありますが、その問題に"模範解答"はありません。</h3>
-              <p class="main-details">既存の就活サービスを使えば選考で問われた過去の質問内容を知ることができます。しかし、その内容が分かったとして、あなた１人でその対策ができるでしょうか？<br><br>もしあなたが、あなたの目指す企業、答えたい質問に精通した人から指導を受けられるとしたらどうでしょう。<br><br>Preshot であなたにピッタリの指導者＝メンターを見つけて、メンターと一緒に志望企業の内定獲得を目指しましょう!</p>
+            <div class="about-column col-xl-6 col-lg-6 mt-5 px-pc">
+              <h3 id="about-h3">就職活動に過去問題はありますが、<br class="br-wd">その問題に"模範解答"はありません。</h3>
+              <p class="about-p">既存の就活サービスを使えば選考で問われた過去の質問内容を知ることができます。しかし、その内容が分かったとして、あなた１人でその対策ができるでしょうか？<br><br><br class="br-wd">もしあなたが、あなたの目指す企業、答えたい質問に精通した人から指導を受けられるとしたらどうでしょう。<br><br><br class="br-wd">Preshot であなたにピッタリの指導者＝メンターを見つけて、メンターと一緒に志望企業の内定獲得を目指しましょう!</p>
             </div>
-            <div class="col-xl-6 col-lg-6 mt-5">
+            <div class="about-column col-xl-6 col-lg-6 mt-5">
               <h3 class="text-center">Preshotの使い方</h3>
               <div class="icon-box my-5 pt-3" data-aos="zoom-in" data-aos-delay="100">
                 <div class="icon"><i class="bx bx-comment-dots"></i></div>
