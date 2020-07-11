@@ -20,10 +20,10 @@
 
         {% endfor %}
         {% if prev_url %}
-            <div class="text-secondary text-center mt-2"><a href="{{ prev_url }}">もっと投稿を見る</a></div>
+            <div class="text-secondary text-center my-4"><a href="{{ prev_url }}" class="text-white bg-preshot rounded-pill shadow px-3 py-2">次のページ</a></div>
         {% endif %}
         {% if next_url %}
-            <div class="text-secondary text-center mt-2"><a href="{{ next_url }}">もっと投稿を見る</a></div>
+            <div class="text-secondary text-center my-4"><a href="{{ next_url }}" class="text-white bg-preshot rounded-pill shadow px-3 py-2">次のページ</a></div>
         {% endif %}
 
     {% else %}

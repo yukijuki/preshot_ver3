@@ -39,19 +39,6 @@
     .btn-hero{
       width: 238px;
     }
-    @media screen and (min-width: 650px){	
-      .br-pc { display:block; }
-      .br-sp { display:none; }
-      .br-wd { display:none; }
-      .px-pc { padding-left: 3rem; padding-right: 3rem;}
-      .about-p{ font-size: 1.1rem; }
-    }
-    @media screen and (min-width: 1500px){	
-      .about-column{ padding-left: 7rem; padding-right: 7rem;}
-      #about-h3{text-align: center;}
-      .br-wd { display:block; }
-      .about-p {padding-top: 2rem;}
-    }
     @media screen and (max-width: 650px){	
       .br-pc { display:none; }
       .br-sp { display:block; }
@@ -61,7 +48,24 @@
         flex-direction: column!important;
       }
     }
-    
+    @media screen and (min-width: 650px) and ( max-width:1500px){	
+      .br-pc { display:block; }
+      .br-sp { display:none; }
+      .br-wd { display:none; }
+      .px-pc { padding-left: 3rem; padding-right: 3rem;}
+      .about-p{ font-size: 1.1rem; }
+    }
+    @media screen and (min-width: 1250px){
+      .about-p{ line-height: 2em;}
+    }
+    @media screen and (min-width: 1500px){	
+      .about-column{ padding-left: 5rem; padding-right: 5rem;}
+      #about-h3{text-align: center;}
+      .br-wd { display:block; }
+      .about-p {font-size: 1.15rem; padding-top: 1rem; line-height: 1.5em;}
+    }
+
+
   </style>
   <!-- =======================================================
   * Template Name: Bootslander - v2.1.0
