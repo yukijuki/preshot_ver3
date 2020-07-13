@@ -80,7 +80,7 @@
             <h1>あなたの就活の<br>経験を活かす<br><span>就活マッチングサービス</span><br><h5 style="color: white">(現在モバイル対応のみ)</h6><br></h1>
             <h2><strong>Preshotは、社会人や内定者の方が就活生の疑問や質問に答える新しい形の選考対策アプリです。</strong></h2>
             <div class="text-center text-lg-left">
-              <a href="/mentor_register" class="btn-get-started scrollto btn-hero">無料で新規登録</a>
+              <a href="/mentor_register" class="btn-get-started scrollto btn-hero text-center">無料で新規登録</a>
             </div>
           </div>
         </div>
@@ -217,8 +217,11 @@
   <!-- Template Main JS File -->
   <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
 
-  <!-- swiper js-->
+  <!-- Infinite Scroll -->
+  <script src="https://unpkg.com/infinite-scroll@3/dist/infinite-scroll.pkgd.js"></script>
+
   <script>
+    
   var swiper = new Swiper('.swiper-container', {
     navigation: {
       nextEl: '.swiper-button-next',
@@ -228,7 +231,18 @@
       el: '.swiper-pagination',
     },
   })
-</script>
+
+  $('.contents_block').infinitescroll({
+    navSelector : '.navigation',
+    nextSelector : '.navigation a',
+    itemSelector :'.index_contents_area',
+    loading: {
+        msg: null,
+        msgText: "<strong>次のページを読み込んでいます。</strong>"
+      },
+  });
+
+  </script>
 
 </body>
 

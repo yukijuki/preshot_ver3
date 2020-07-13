@@ -39,6 +39,33 @@
     .btn-hero{
       width: 238px;
     }
+    @media screen and (max-width: 650px){	
+      .br-pc { display:none; }
+      .br-sp { display:block; }
+      .br-wd { display:none; }
+      .flex-column-sp{
+        -ms-flex-direction: column!important;
+        flex-direction: column!important;
+      }
+    }
+    @media screen and (min-width: 650px) and ( max-width:1500px){	
+      .br-pc { display:block; }
+      .br-sp { display:none; }
+      .br-wd { display:none; }
+      .px-pc { padding-left: 3rem; padding-right: 3rem;}
+      .about-p{ font-size: 1.1rem; }
+    }
+    @media screen and (min-width: 1250px){
+      .about-p{ line-height: 2em;}
+    }
+    @media screen and (min-width: 1500px){	
+      .about-column{ padding-left: 5rem; padding-right: 5rem;}
+      #about-h3{text-align: center;}
+      .br-wd { display:block; }
+      .about-p {font-size: 1.15rem; padding-top: 1rem; line-height: 1.5em;}
+    }
+
+
   </style>
   <!-- =======================================================
   * Template Name: Bootslander - v2.1.0
@@ -76,7 +103,6 @@
           <li><a href="#faq">よくある質問</a></li>
           <li><a href="#team">開発チーム</a></li>
           <li><a href="#contact">連絡先</a></li>
-          <li><a href="/mentor_index" class="text-white border-white">内定者/社会人はこちら</a></li>
         </ul>
       </nav><!-- .nav-menu -->
 
@@ -93,7 +119,7 @@
             <h1>就活生のための<br>新しい選考対策<br><span>Preshot</span><br><h5 style="color: white">(現在モバイル対応のみ)</h6><br></h1>
             <h2><strong>「選考で何を聞かれるのか分かった！」というそこのあなた！その選考対策、一人で出来ますか？</strong></h2>
             <div class="text-center text-lg-left mb-3">
-              <a href="/register" class="btn-get-started scrollto btn-hero">就活生はこちら</a>
+              <a href="/register" class="btn-get-started scrollto btn-hero text-center">就活生はこちら</a>
             </div>
             <div class="text-center text-lg-left">
               <a href="/mentor_index" class="btn-get-started scrollto btn-hero">内定者/社会人はこちら</a>
@@ -130,7 +156,7 @@
     <section id="about" class="about">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-xl-6 col-lg-6 video-box d-flex justify-content-center align-items-stretch" data-aos="fade-right">
+          <div class="col-xl-12 col-lg-12 video-box d-flex justify-content-center align-items-stretch" data-aos="fade-right">
             <!-- movie comment outed by koyo  ==================================================
             <a href="https://www.youtube.com/watch?v=JL27zVa6X8g" class="venobox play-btn mb-4" data-vbtype="video" data-autoplay="true"></a>
               =============================================================== -->
@@ -151,30 +177,31 @@
           </div>
 
 
-          <div class="col-xl-5 col-lg-5 icon-boxes d-flex flex-column align-items-stretch justify-content-center py-5 px-lg-5" data-aos="fade-left">
-            <h3>就職活動に過去問題はありますが、 その問題に"模範解答"はありません。</h3>
-            <p>既存の就活サービスを使えば選考で問われた過去の質問内容を知ることができます。しかし、その内容が分かったとして、あなた１人でその対策ができるでしょうか？</p>
-            <p>もしあなたが、あなたの目指す企業、答えたい質問に精通した人から指導を受けられるとしたらどうでしょう。</p>
-            <p>Preshot であなたにピッタリの指導者＝メンターを見つけて、メンターと一緒に志望企業の内定獲得を目指しましょう!</p>
-
-            <div class="icon-box" data-aos="zoom-in" data-aos-delay="100">
-              <div class="icon"><i class="bx bx-comment-dots"></i></div>
-              <h4 class="title"><a href="">メンターを募集する</a></h4>
-              <p class="description">質問を投稿し、その問題の解決方法を指導してくれるメンターを「募集」しましょう。</p>
+          <div class="flex-column-sp col-xl-12 col-lg-12 icon-boxes d-flex align-items-stretch justify-content-center py-5 px-lg-5" data-aos="fade-left">
+            <div class="about-column col-xl-6 col-lg-6 mt-5 px-pc">
+              <h3 id="about-h3">就職活動に過去問題はありますが、<br class="br-wd">その問題に"模範解答"はありません。</h3>
+              <p class="about-p">既存の就活サービスを使えば選考で問われた過去の質問内容を知ることができます。しかし、その内容が分かったとして、あなた１人でその対策ができるでしょうか？<br><br><br class="br-wd">もしあなたが、あなたの目指す企業、答えたい質問に精通した人から指導を受けられるとしたらどうでしょう。<br><br><br class="br-wd">Preshot であなたにピッタリの指導者＝メンターを見つけて、メンターと一緒に志望企業の内定獲得を目指しましょう!</p>
             </div>
+            <div class="about-column col-xl-6 col-lg-6 mt-5">
+              <h3 class="text-center">Preshotの使い方</h3>
+              <div class="icon-box my-5 pt-3" data-aos="zoom-in" data-aos-delay="100">
+                <div class="icon"><i class="bx bx-comment-dots"></i></div>
+                <h4 class="title"><a href="">メンターを募集する</a></h4>
+                <p class="description">質問を投稿し、その問題の解決方法を指導してくれるメンターを「募集」しましょう。</p>
+              </div>
 
-            <div class="icon-box" data-aos="zoom-in" data-aos-delay="200">
-              <div class="icon"><i class="bx bx-search-alt-2"></i></div>
-              <h4 class="title"><a href="">メンターを選ぶ</a></h4>
-              <p class="description">投稿に反応したメンターの中から、あなたが指導を希望するメンターを選択します。</p>
+              <div class="icon-box my-5" data-aos="zoom-in" data-aos-delay="200">
+                <div class="icon"><i class="bx bx-search-alt-2"></i></div>
+                <h4 class="title"><a href="">メンターを選ぶ</a></h4>
+                <p class="description">投稿に反応したメンターの中から、あなたが指導を希望するメンターを選択します。</p>
+              </div>
+
+              <div class="icon-box my-5" data-aos="zoom-in" data-aos-delay="300">
+                <div class="icon"><i class="bx bx-conversation"></i></div>
+                <h4 class="title"><a href="">指導してもらう</a></h4>
+                <p class="description">指導を受けるために、メンターのスケジュールの中から希望の日程を予約しましょう。</p>
+              </div>
             </div>
-
-            <div class="icon-box" data-aos="zoom-in" data-aos-delay="300">
-              <div class="icon"><i class="bx bx-conversation"></i></div>
-              <h4 class="title"><a href="">指導してもらう</a></h4>
-              <p class="description">指導を受けるために、メンターのスケジュールの中から希望の日程を予約しましょう。</p>
-            </div>
-
           </div>
         </div>
     </section><!-- End About Section -->

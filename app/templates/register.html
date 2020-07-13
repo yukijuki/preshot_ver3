@@ -4,6 +4,7 @@
 <!-- Favicons -->
 <link rel="icon" href="{{ url_for('static', filename='preshot_img/preshot-logo03.png') }}">
 <link rel="apple-touch-icon" href="{{ url_for('static', filename='preshot_img/preshot-logo03.png') }}">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
     .bg-preshot{
         background-color: #FF514D;
@@ -15,9 +16,52 @@
         color: #FF514D;
     }
     .btn{
-        font-size: 3em;
         font-weight: 700;
     }
+    .form-control{
+        font-size: .3rem;
+        border-left: solid whitesmoke 0.1px;
+        border-right: 0;
+        border-bottom: 0;
+        border-top: 0;
+        padding-top: 2.5em !important;
+    }
+
+    @media screen and (max-width: 768px){
+        .btn{
+            font-size: 1em;
+        }
+        .form-control::placeholder{
+            font-size: 3em;
+        }
+        .fas{
+            font-size: 1.3em;
+        }
+        .input-group{
+            height: 9%;
+        }
+    }
+    @media screen and (min-width: 768px){
+        .btn{
+            font-size: 2em;
+        }
+        .form-control::placeholder{
+            font-size: 5em;
+        }
+        .fas{
+            font-size: 2em;
+        }
+        .input-group{
+            height: 13%;
+        }
+        .h6{
+            font-size: 2rem;
+        }
+        .mb-4{
+            margin-bottom: 2rem !important;
+        }
+    }
+
 </style>
 
 <title>メンティーの登録画面</title>
@@ -35,27 +79,27 @@
     <div class="container">
         
         <div class="row align-items-center h-50">    
-            <div class="col logo text-center">
+            <div class="col-10 col-lg-6 col-xl-6 logo text-center mx-auto">
                 <img src="{{ url_for('static', filename='preshot_img/preshot_logo01.png') }}" class="w-75" alt="preshot_logo">
             </div>
         </div>
         <div class="d-flex justify-content-center form_container h-50">
-            <form class="w-100 my-auto" action="/register" method="post" enctype="multipart/form-data">
-                <div class="text-center text-white h1 mb-5" style="font-weight: 600;">-就活生ログイン-</div>
-                <div class="input-group mb-5 rounded-pill bg-white" style="height: 10%;">
+            <form class="col-10 col-lg-6 col-xl-6 my-auto" action="/register" method="post" enctype="multipart/form-data">
+                <div class="text-center text-white h6 mb-4" style="font-weight: 600;">-就活生ログイン-</div>
+                <div class="input-group mb-4 rounded-pill bg-white">
                     <div class="input-group-append" style="width: 15%;">
-                        <span class="input-group-text border-0 w-100 bg-transparent"><i class="fas fa-envelope mx-auto text-preshot" style="font-size:3em"></i></span>
+                        <span class="input-group-text border-0 w-100 bg-transparent"><i class="fas fa-envelope mx-auto text-preshot"></i></span>
                     </div>
-                    <input type="email" name="email" class="form-control input_user h-100 bg-transparent" id="email" style="font-size: 3em;" placeholder="メールアドレス"　required>
+                    <input type="email" name="email" class="form-control input_user h-100 bg-transparent" id="email" placeholder="メールアドレス"　required>
                 </div>
-                <div class="input-group mb-5 rounded-pill bg-white" style="height: 10%;">
+                <div class="input-group mb-3 rounded-pill bg-white">
                     <div class="input-group-append" style="width: 15%;">
-                        <span class="input-group-text border-0 w-100 bg-transparent"><i class="fas fa-key mx-auto text-preshot" style="font-size:3em"></i></span>
+                        <span class="input-group-text border-0 w-100 bg-transparent"><i class="fas fa-key mx-auto text-preshot"></i></span>
                     </div>
-                    <input type="password"  class="form-control input_user h-100 bg-transparent" id="password" style="font-size: 3em;" name ="password" placeholder="パスワード"　required>
+                    <input type="password"  class="form-control input_user h-100 bg-transparent" id="password" name ="password" placeholder="パスワード"　required>
                 </div>
                 
-                <div class="d-flex justify-content-center mt-5 pt-5 login_container">
+                <div class="d-flex justify-content-center mt-4 pt-4 login_container">
                     <button type="submit" class="btn btn-group-lg text-preshot bg-white btn-block rounded-pill w-75 shadow-lg">登録/ログイン</button>
                 </div>
             </form>
@@ -64,6 +108,8 @@
     </div>
 
 </div>
+
+
 <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
