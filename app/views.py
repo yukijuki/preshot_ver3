@@ -455,7 +455,7 @@ def reservation(sid):
     #reservation = Reservation.query.filter_by(schedule_id=sid).filter_by(pid=pid).first()
 
     if reservation is not None:
-        flash("既に予約済みです")
+        flash("この指導者はすでに予約済みです")
         return redirect(url_for('chat', rid = reservation.rid))
 
     rid = str(uuid.uuid4())
