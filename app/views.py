@@ -474,13 +474,16 @@ def reservation(sid):
 
     #flask_mail
     schedule = Schedule.query.filter_by(sid=sid).first()
-    schedule_info = schedule.day + schedule.date + '時に' + schedule.place
+    #schedule_info = schedule.day + schedule.date + '時に' + schedule.place
     student = Student.query.filter_by(uid=uid).first()
 
     mentor = Mentor.query.filter_by(mid=mid).first()
 
-    msg = Message('就活生から予約が入りました。', recipients=[mentor.email])
-    msg.html =  schedule_info + 'で予約が入りました. ログインして確認しましょう！ https://preshot.app/mentor_register'
+    msg = Message('就活生から指導の予約が入りました！', recipients=[mentor.email])
+    msg.html = "就活生から以下の内容で指導の予約が入りました。<br><br>"\
+        "曜日：{0}<br>時間：{1}<br>場所：{2}<br><br>"\
+        "今すぐPreshotにログインして指導を開始しましょう！<br>https://preshot.app/mentor_register<br>（＊モバイル端末のみ対応）<br><br>"\
+        "----------------------------<br>運営：team preshot<br>Email：preshot.info@gmail.com<br>HP：https://preshot.app/<br>----------------------------".format(schedule.day, schedule.date, schedule.place)
     mail.send(msg)
 
     flash("予約しました")
@@ -1009,8 +1012,12 @@ def mentor_response(pid):
             mentor.name = "指導者"
 
         #mentorの名前　ユーザーのemail
-        msg = Message(mentor.name+'さんとマッチングしました。', recipients=[student.email])
-        msg.html = post.title+'の投稿に対して' + mentor.name + 'さんからアプローチが来ました。ログインして確認しましょう！ https://preshot.app/register'
+        msg = Message('{}さんから声をかけられました！'.format(mentor.name), recipients=[student.email])
+        msg.html = "指導者からあなたの以下の投稿に対して声をかけられました。<br><br>"\
+            "タイトル：{0}<br>本文：{1}<br><br>"\
+            "今すぐPreshotにログインして指導の予約をしましょう！<br>https://preshot.app/register<br>(＊モバイル端末のみ対応)<br><br><br>"\
+            "----------------------------<br>運営：team preshot<br>Email：preshot.info@gmail.com<br>HP：https://preshot.app/<br>----------------------------".format(post.title, post.text)
+        #msg.html = msg_body + msg_invite + msg_info
         mail.send(msg)
 
         flash("就活生に声をかけました！")
