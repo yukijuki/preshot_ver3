@@ -3,6 +3,7 @@ import os
 import uuid
 import hashlib
 
+from threading import Thread
 from PIL import Image
 from flask import request, redirect, session, jsonify, render_template, make_response, url_for, abort, flash
 from flask_sqlalchemy import SQLAlchemy
@@ -150,6 +151,9 @@ def crop_center(pil_img, crop_width, crop_height):
 def crop_max_square(pil_img):
     return crop_center(pil_img, min(pil_img.size), min(pil_img.size))
 
+def send_email_thread(msg):
+    with app.app_context():
+        mail.send(msg)
 
 # ----------------------------------------------------------------
 # Student API
@@ -601,6 +605,37 @@ def message(data):
     )
     db.session.add(c)
     db.session.commit()
+
+    websiteurl = "https://preshot.app/mentor_register"
+    email = ""
+    if is_mentor == True:
+        mentor = Mentor.query.filter_by(mid = session.get('mid')).first()
+        email = mentor.email
+        #Check if 
+        #chat = Chat.query.filter_by(reservation_id=room).filter_by(is_mentor=True).order_by(Chat.created_at.desc()).first()
+        #chat.created_at
+        #created_at
+    else:
+        uid = session.get('uid')
+        student = Student.query.filter_by(uid = session.get('uid')).first()
+        email = student.email
+        websiteurl = "https://preshot.app/register"
+        #Check if 
+        #chat = Chat.query.filter_by(reservation_id=room).filter_by(is_mentor=True).order_by(Chat.created_at.desc()).first()
+        #chat.created_at
+        #created_at
+
+    #Multithread process
+    with app.app_context():
+        msg = Message('メールの通知', recipients=[email])
+        msg.html = "以下の内容でメールが届きました。<br><br>"\
+        "メッセージ：{0}<br><br>"\
+        "今すぐPreshotにログインして指導を開始しましょう！<br>{1}<br>（＊モバイル端末のみ対応）<br><br>"\
+        "----------------------------<br>運営：team preshot<br>Email：preshot.info@gmail.com<br>HP：https://preshot.app/<br>----------------------------".format(message, websiteurl)
+        mail.send(msg)
+        thr = Thread(target=send_email_thread, args=[msg])
+        thr.start()
+
     emit('message',{
         'message': {
             'reservation_id': c.reservation_id,
@@ -1049,7 +1084,7 @@ def mentor_chat(rid):
             #name produce
             if student.email is not None:
                 name = student.email.split("@")
-                email = name[0]
+                email = name[0][:-1]
                 data = {
                     "date": schedule.date,
                     "day": schedule.day,
@@ -1083,7 +1118,7 @@ def mentor_chatlist():
                 #name produce
                 if student.email is not None:
                     name = student.email.split("@")
-                    email = name[0]
+                    email = name[0][:-1]
 
                 chat_history = {
                     "date": schedule.date,
