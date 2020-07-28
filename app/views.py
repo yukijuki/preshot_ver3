@@ -662,7 +662,6 @@ def message(data):
             "メッセージ：{0}<br><br>"\
             "今すぐPreshotにログインして指導を開始しましょう！<br>{1}<br>（＊モバイル端末のみ対応）<br><br>"\
             "----------------------------<br>運営：team preshot<br>Email：preshot.info@gmail.com<br>HP：https://preshot.app/<br>----------------------------".format(message, websiteurl)
-            mail.send(msg)
             thr = Thread(target=send_email_thread, args=[msg])
             thr.start()
 
