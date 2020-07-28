@@ -23,8 +23,8 @@ POSTS_PER_PAGE = 10
 # This now requires Postgresql, feel free to use a GUI app like Postgres.app (I'm using that).
 # Don't worry, Postgresql doesn't really do anything when you aren't querying it,
 # So feel free to leave it on.
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://preshot:wepreshot@localhost:5432/preshot"
-#app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
+#app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://preshot:wepreshot@localhost:5432/preshot"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = hashlib.sha256(b"wepreshot").hexdigest()
 app.config["UPLOAD_FOLDER"] = PHYSICAL_ROOT + UPLOAD_FOLDER
@@ -474,6 +474,26 @@ def reservation(sid):
     db.session.add(mentor)
     db.session.commit()
 
+    post = Post.query.filter_by(pid=pid).first()
+
+    c = Chat(
+        reservation_id=rid,
+        is_mentor=False,
+        message=post.title,
+        created_at=datetime.datetime.now()
+    )
+    db.session.add(c)
+    db.session.commit()
+
+    c = Chat(
+        reservation_id=rid,
+        is_mentor=False,
+        message=post.text,
+        created_at=datetime.datetime.now()
+    )
+    db.session.add(c)
+    db.session.commit()
+
     #2. I need those reservation_info(post.title, post.text) to be sent in the chat
 
     #flask_mail
@@ -619,7 +639,7 @@ def message(data):
     veri = True
     websiteurl = "https://preshot.app/register"
     email = ""
-    
+
     if c.is_mentor == True:
         email = session['student_email']
         # chat = Chat.query.filter_by(reservation_id=room).order_by(Chat.created_at.desc()).first()
