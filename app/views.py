@@ -23,8 +23,8 @@ POSTS_PER_PAGE = 10
 # This now requires Postgresql, feel free to use a GUI app like Postgres.app (I'm using that).
 # Don't worry, Postgresql doesn't really do anything when you aren't querying it,
 # So feel free to leave it on.
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://preshot:wepreshot@localhost:5432/preshot"
-#app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
+#app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://preshot:wepreshot@localhost:5432/preshot"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = hashlib.sha256(b"wepreshot").hexdigest()
 app.config["UPLOAD_FOLDER"] = PHYSICAL_ROOT + UPLOAD_FOLDER
@@ -523,6 +523,7 @@ def chat(rid):
 
     schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
     mentor = Mentor.query.filter_by(mid=mid).first()
+    session['mentor_email'] = mentor.email
     if mentor.filename is None:
         mentor.filename = "default.jpg"
 
@@ -615,35 +616,34 @@ def message(data):
         }
     }, room=room)
 
-    websiteurl = "https://preshot.app/mentor_register"
+    veri = False
+    websiteurl = "https://preshot.app/register"
     email = ""
     if is_mentor == True:
-        mentor = Mentor.query.filter_by(mid = session.get('mid')).first()
-        email = mentor.email
-        #Check if 
-        #chat = Chat.query.filter_by(reservation_id=room).filter_by(is_mentor=True).order_by(Chat.created_at.desc()).first()
-        #chat.created_at
-        #created_at
+        email = session['student_email']
+        chat = Chat.query.filter_by(reservation_id=room).order_by(Chat.created_at.desc()).first()
+        if chat.is_mentor == False:
+            veri=True
+            flash("就活生にEメールが送られました。")
     else:
-        uid = session.get('uid')
-        student = Student.query.filter_by(uid = session.get('uid')).first()
-        email = student.email
-        websiteurl = "https://preshot.app/register"
-        #Check if 
-        #chat = Chat.query.filter_by(reservation_id=room).filter_by(is_mentor=True).order_by(Chat.created_at.desc()).first()
-        #chat.created_at
-        #created_at
+        email = session['mentor_email']
+        websiteurl = "https://preshot.app/mentor_register"
+        chat = Chat.query.filter_by(reservation_id=room).order_by(Chat.created_at.desc()).first()
+        if chat.is_mentor == True:
+            veri=True
+            flash("指導者にEメールが送られました。")
 
     #Multithread process
-    with app.app_context():
-        msg = Message('メールの通知', recipients=[email])
-        msg.html = "以下の内容でメールが届きました。<br><br>"\
-        "メッセージ：{0}<br><br>"\
-        "今すぐPreshotにログインして指導を開始しましょう！<br>{1}<br>（＊モバイル端末のみ対応）<br><br>"\
-        "----------------------------<br>運営：team preshot<br>Email：preshot.info@gmail.com<br>HP：https://preshot.app/<br>----------------------------".format(message, websiteurl)
-        mail.send(msg)
-        thr = Thread(target=send_email_thread, args=[msg])
-        thr.start()
+    if veri == True:
+        with app.app_context():
+            msg = Message('メールの通知', recipients=[email])
+            msg.html = "以下の内容でメールが届きました。<br><br>"\
+            "メッセージ：{0}<br><br>"\
+            "今すぐPreshotにログインして指導を開始しましょう！<br>{1}<br>（＊モバイル端末のみ対応）<br><br>"\
+            "----------------------------<br>運営：team preshot<br>Email：preshot.info@gmail.com<br>HP：https://preshot.app/<br>----------------------------".format(message, websiteurl)
+            mail.send(msg)
+            thr = Thread(target=send_email_thread, args=[msg])
+            thr.start()
 
 
 @app.route("/chatlist", methods=["GET", "POST"])
@@ -1080,6 +1080,7 @@ def mentor_chat(rid):
     schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
     student = Student.query.filter_by(uid=uid).first()
     if student is not None:
+        session['student_email'] = student.email
         if schedule is not None:
             #name produce
             if student.email is not None:
