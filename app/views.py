@@ -523,6 +523,7 @@ def chat(rid):
 
     schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
     mentor = Mentor.query.filter_by(mid=mid).first()
+    session['mentor_email'] = mentor.email
     if mentor.filename is None:
         mentor.filename = "default.jpg"
 
@@ -615,20 +616,17 @@ def message(data):
         }
     }, room=room)
 
-    websiteurl = "https://preshot.app/mentor_register"
+    veri = False
+    websiteurl = "https://preshot.app/register"
     email = ""
     if is_mentor == True:
-        mentor = Mentor.query.filter_by(mid = session.get('mid')).first()
-        email = mentor.email
-        #Check if 
+        email = session['student_email']
         #chat = Chat.query.filter_by(reservation_id=room).filter_by(is_mentor=True).order_by(Chat.created_at.desc()).first()
         #chat.created_at
         #created_at
     else:
-        uid = session.get('uid')
-        student = Student.query.filter_by(uid = session.get('uid')).first()
-        email = student.email
-        websiteurl = "https://preshot.app/register"
+        email = session['mentor_email']
+        websiteurl = "https://preshot.app/mentor_register"
         #Check if 
         #chat = Chat.query.filter_by(reservation_id=room).filter_by(is_mentor=True).order_by(Chat.created_at.desc()).first()
         #chat.created_at
@@ -1080,6 +1078,7 @@ def mentor_chat(rid):
     schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
     student = Student.query.filter_by(uid=uid).first()
     if student is not None:
+        session['student_email'] = student.email
         if schedule is not None:
             #name produce
             if student.email is not None:
