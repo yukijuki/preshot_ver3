@@ -606,6 +606,15 @@ def message(data):
     db.session.add(c)
     db.session.commit()
 
+    emit('message',{
+        'message': {
+            'reservation_id': c.reservation_id,
+            'is_mentor': c.is_mentor,
+            'message': c.message,
+            'created_at': c.created_at.isoformat()
+        }
+    }, room=room)
+
     websiteurl = "https://preshot.app/mentor_register"
     email = ""
     if is_mentor == True:
@@ -635,15 +644,6 @@ def message(data):
         mail.send(msg)
         thr = Thread(target=send_email_thread, args=[msg])
         thr.start()
-
-    emit('message',{
-        'message': {
-            'reservation_id': c.reservation_id,
-            'is_mentor': c.is_mentor,
-            'message': c.message,
-            'created_at': c.created_at.isoformat()
-        }
-    }, room=room)
 
 
 @app.route("/chatlist", methods=["GET", "POST"])
