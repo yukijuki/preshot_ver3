@@ -23,8 +23,8 @@ POSTS_PER_PAGE = 10
 # This now requires Postgresql, feel free to use a GUI app like Postgres.app (I'm using that).
 # Don't worry, Postgresql doesn't really do anything when you aren't querying it,
 # So feel free to leave it on.
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://preshot:wepreshot@localhost:5432/preshot"
-#app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
+#app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://preshot:wepreshot@localhost:5432/preshot"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = hashlib.sha256(b"wepreshot").hexdigest()
 app.config["UPLOAD_FOLDER"] = PHYSICAL_ROOT + UPLOAD_FOLDER
@@ -621,27 +621,29 @@ def message(data):
     email = ""
     if is_mentor == True:
         email = session['student_email']
-        #chat = Chat.query.filter_by(reservation_id=room).filter_by(is_mentor=True).order_by(Chat.created_at.desc()).first()
-        #chat.created_at
-        #created_at
+        chat = Chat.query.filter_by(reservation_id=room).order_by(Chat.created_at.desc()).first()
+        if chat.is_mentor == False:
+            veri=True
+            flash("就活生にEメールが送られました。")
     else:
         email = session['mentor_email']
         websiteurl = "https://preshot.app/mentor_register"
-        #Check if 
-        #chat = Chat.query.filter_by(reservation_id=room).filter_by(is_mentor=True).order_by(Chat.created_at.desc()).first()
-        #chat.created_at
-        #created_at
+        chat = Chat.query.filter_by(reservation_id=room).order_by(Chat.created_at.desc()).first()
+        if chat.is_mentor == True:
+            veri=True
+            flash("指導者にEメールが送られました。")
 
     #Multithread process
-    with app.app_context():
-        msg = Message('メールの通知', recipients=[email])
-        msg.html = "以下の内容でメールが届きました。<br><br>"\
-        "メッセージ：{0}<br><br>"\
-        "今すぐPreshotにログインして指導を開始しましょう！<br>{1}<br>（＊モバイル端末のみ対応）<br><br>"\
-        "----------------------------<br>運営：team preshot<br>Email：preshot.info@gmail.com<br>HP：https://preshot.app/<br>----------------------------".format(message, websiteurl)
-        mail.send(msg)
-        thr = Thread(target=send_email_thread, args=[msg])
-        thr.start()
+    if veri == True:
+        with app.app_context():
+            msg = Message('メールの通知', recipients=[email])
+            msg.html = "以下の内容でメールが届きました。<br><br>"\
+            "メッセージ：{0}<br><br>"\
+            "今すぐPreshotにログインして指導を開始しましょう！<br>{1}<br>（＊モバイル端末のみ対応）<br><br>"\
+            "----------------------------<br>運営：team preshot<br>Email：preshot.info@gmail.com<br>HP：https://preshot.app/<br>----------------------------".format(message, websiteurl)
+            mail.send(msg)
+            thr = Thread(target=send_email_thread, args=[msg])
+            thr.start()
 
 
 @app.route("/chatlist", methods=["GET", "POST"])
