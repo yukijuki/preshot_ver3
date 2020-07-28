@@ -616,24 +616,22 @@ def message(data):
         }
     }, room=room)
 
-    #usually false
-    veri = True
+    veri = False
     websiteurl = "https://preshot.app/register"
     email = ""
-    
-    if c.is_mentor == True:
+    if is_mentor == True:
         email = session['student_email']
-        # chat = Chat.query.filter_by(reservation_id=room).order_by(Chat.created_at.desc()).first()
-        # if chat.is_mentor == False:
-        #     veri=True
-        #     flash("就活生にEメールが送られました。")
+        chat = Chat.query.filter_by(reservation_id=room).order_by(Chat.created_at.desc()).first()
+        if chat.is_mentor == False:
+            veri=True
+            flash("就活生にEメールが送られました。")
     else:
         email = session['mentor_email']
         websiteurl = "https://preshot.app/mentor_register"
-        # chat = Chat.query.filter_by(reservation_id=room).order_by(Chat.created_at.desc()).first()
-        # if chat.is_mentor == True:
-        #     veri=True
-        #     flash("指導者にEメールが送られました。")
+        chat = Chat.query.filter_by(reservation_id=room).order_by(Chat.created_at.desc()).first()
+        if chat.is_mentor == True:
+            veri=True
+            flash("指導者にEメールが送られました。")
 
     #Multithread process
     if veri == True:
