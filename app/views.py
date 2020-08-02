@@ -644,21 +644,22 @@ def message(data):
     sender = ""
 
     if c.is_mentor == True:
+        email = session['student_email']
         mid = session['mid']
         mentor = Mentor.query.filter_by(mid=mid).first
         if mentor.name == "":
-            mentor.name = mentor.email[:-1]
-        sender = mentor.name
-        email = session['student_email']
+            sender = mentor.email[:-1]
+        else:
+            sender = mentor.name
         # chat = Chat.query.filter_by(reservation_id=room).order_by(Chat.created_at.desc()).first()
         # if chat.is_mentor == False:
         #     veri=True
         #     flash("就活生にEメールが送られました。")
     else:
+        email = session['mentor_email']
         sid = session["sid"]
         student = Student.query.filter_by(sid=sid).first
         sender = student.email[:-1]
-        email = session['mentor_email']
         websiteurl = "https://preshot.app/mentor_register"
         # chat = Chat.query.filter_by(reservation_id=room).order_by(Chat.created_at.desc()).first()
         # if chat.is_mentor == True:
@@ -669,6 +670,7 @@ def message(data):
     if veri == True:
         with app.app_context():
             msg = Message('Preshotからの通知', recipients=[email])
+            flash("メールが送られました。")
             msg.html = "{0}さんからチャットの返信が来ています。<br><br>"\
             "今すぐPreshotにログインして指導を開始しましょう！<br>{1}<br>（＊モバイル端末のみ対応）<br><br>"\
             "----------------------------<br>運営：team preshot<br>Email：preshot.info@gmail.com<br>HP：https://preshot.app/<br>----------------------------".format(sender, websiteurl)
