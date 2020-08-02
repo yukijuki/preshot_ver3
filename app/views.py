@@ -475,20 +475,12 @@ def reservation(sid):
     db.session.commit()
 
     post = Post.query.filter_by(pid=pid).first()
+    post_data = "タイトル:" + post.title + "\n\n" + "質問内容:" + post.text
 
     c = Chat(
         reservation_id=rid,
         is_mentor=False,
-        message=post.title,
-        created_at=datetime.datetime.now()
-    )
-    db.session.add(c)
-    db.session.commit()
-
-    c = Chat(
-        reservation_id=rid,
-        is_mentor=False,
-        message=post.text,
+        message=post_data,
         created_at=datetime.datetime.now()
     )
     db.session.add(c)
@@ -639,14 +631,23 @@ def message(data):
     veri = True
     websiteurl = "https://preshot.app/register"
     email = ""
+    sender = ""
 
     if c.is_mentor == True:
+        mid = session['mid']
+        mentor = Mentor.query.filter_by(mid=mid).first
+        if mentor.name == "":
+            mentor.name = mentor.email[:-1]
+        sender = mentor.name
         email = session['student_email']
         # chat = Chat.query.filter_by(reservation_id=room).order_by(Chat.created_at.desc()).first()
         # if chat.is_mentor == False:
         #     veri=True
         #     flash("就活生にEメールが送られました。")
     else:
+        sid = session["sid"]
+        student = Student.query.filter_by(sid=sid).first
+        sender = student.email[:-1]
         email = session['mentor_email']
         websiteurl = "https://preshot.app/mentor_register"
         # chat = Chat.query.filter_by(reservation_id=room).order_by(Chat.created_at.desc()).first()
@@ -657,9 +658,8 @@ def message(data):
     #Multithread process
     if veri == True:
         with app.app_context():
-            msg = Message('メールの通知', recipients=[email])
-            msg.html = "以下の内容でメールが届きました。<br><br>"\
-            "メッセージ：{0}<br><br>"\
+            msg = Message('Preshotからの通知', recipients=[email])
+            msg.html = sender + "さんからチャットの返信が来ています。<br><br>"\
             "今すぐPreshotにログインして指導を開始しましょう！<br>{1}<br>（＊モバイル端末のみ対応）<br><br>"\
             "----------------------------<br>運営：team preshot<br>Email：preshot.info@gmail.com<br>HP：https://preshot.app/<br>----------------------------".format(message, websiteurl)
             thr = Thread(target=send_email_thread, args=[msg])
@@ -676,6 +676,7 @@ def chatlist():
 
     reservations = Reservation.query.filter_by(student_id=uid).all()
     chatlist = []
+    filename = ""
 
     for reservation in reservations:
         schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
@@ -683,14 +684,16 @@ def chatlist():
         if mentor is not None:
             if schedule is not None:
                 if mentor.filename is None:
-                    mentor.filename = "default.jpg"
+                    filename = "default.jpg"
+                else:
+                    filename = mentor.filename
 
                 chat_history = {
                     "date": schedule.date,
                     "day": schedule.day,
                     "place": schedule.place,
                     "rid": reservation.rid,
-                    "filename": 'static/img-get/' + mentor.filename,
+                    "filename": 'static/img-get/' + filename,
                     "name": mentor.name,
                     "created_at": reservation.created_at
                 }
