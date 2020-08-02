@@ -673,7 +673,7 @@ def message(data):
             msg = Message('Preshotからの通知', recipients=[email])
             flash("メールが送られました。")
             msg.html = "チャットの返信が来ています。<br><br>"\
-            "今すぐPreshotにログインして指導を開始しましょう！<br>{0}<br>（＊モバイル端末のみ対応）<br><br>"\
+            "今すぐPreshotにログインして会話を開始しましょう！<br>{0}<br>（＊モバイル端末のみ対応）<br><br>"\
             "----------------------------<br>運営：team preshot<br>Email：preshot.info@gmail.com<br>HP：https://preshot.app/<br>----------------------------".format(websiteurl)
             thr = Thread(target=send_email_thread, args=[msg])
             thr.start()
