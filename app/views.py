@@ -506,7 +506,7 @@ def reservation(sid):
     mentor = Mentor.query.filter_by(mid=mid).first()
 
     msg = Message('就活生から指導の予約が入りました！', recipients=[mentor.email])
-    msg.html = "就活生から以下の内容で指導の予約が入りました。<br><br>"\
+    html = "就活生から以下の内容で指導の予約が入りました。<br><br>"\
         "曜日：{0}<br>時間：{1}<br>場所：{2}<br><br>"\
         "今すぐPreshotにログインして指導を開始しましょう！<br>https://preshot.app/mentor_register<br>（＊モバイル端末のみ対応）<br><br>"\
         "----------------------------<br>運営：team preshot<br>Email：preshot.info@gmail.com<br>HP：https://preshot.app/<br>----------------------------".format(schedule.day, schedule.date, schedule.place)
@@ -645,21 +645,22 @@ def message(data):
 
     if c.is_mentor == True:
         email = session['student_email']
-        mid = session['mid']
-        mentor = Mentor.query.filter_by(mid=mid).first
-        if mentor.name == "":
-            sender = mentor.email[:-1]
-        else:
-            sender = mentor.name
+        # mid = session['mid']
+        # mentor = Mentor.query.filter_by(mid=mid).first
+        # if mentor.name == "":
+        #     sender = mentor.email[:-1]
+        # else:
+        #     sender = mentor.name
+
         # chat = Chat.query.filter_by(reservation_id=room).order_by(Chat.created_at.desc()).first()
         # if chat.is_mentor == False:
         #     veri=True
         #     flash("就活生にEメールが送られました。")
     else:
         email = session['mentor_email']
-        sid = session["sid"]
-        student = Student.query.filter_by(sid=sid).first
-        sender = student.email[:-1]
+        # sid = session["sid"]
+        # student = Student.query.filter_by(sid=sid).first
+        # sender = student.email[:-1]
         websiteurl = "https://preshot.app/mentor_register"
         # chat = Chat.query.filter_by(reservation_id=room).order_by(Chat.created_at.desc()).first()
         # if chat.is_mentor == True:
@@ -671,9 +672,9 @@ def message(data):
         with app.app_context():
             msg = Message('Preshotからの通知', recipients=[email])
             flash("メールが送られました。")
-            msg.html = "{0}さんからチャットの返信が来ています。<br><br>"\
-            "今すぐPreshotにログインして指導を開始しましょう！<br>{1}<br>（＊モバイル端末のみ対応）<br><br>"\
-            "----------------------------<br>運営：team preshot<br>Email：preshot.info@gmail.com<br>HP：https://preshot.app/<br>----------------------------".format(sender, websiteurl)
+            msg.html = "チャットの返信が来ています。<br><br>"\
+            "今すぐPreshotにログインして指導を開始しましょう！<br>{0}<br>（＊モバイル端末のみ対応）<br><br>"\
+            "----------------------------<br>運営：team preshot<br>Email：preshot.info@gmail.com<br>HP：https://preshot.app/<br>----------------------------".format(websiteurl)
             thr = Thread(target=send_email_thread, args=[msg])
             thr.start()
 
