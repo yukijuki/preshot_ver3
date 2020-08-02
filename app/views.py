@@ -669,9 +669,9 @@ def message(data):
     if veri == True:
         with app.app_context():
             msg = Message('Preshotからの通知', recipients=[email])
-            msg.html = sender + "さんからチャットの返信が来ています。<br><br>"\
+            msg.html = "{0}さんからチャットの返信が来ています。<br><br>"\
             "今すぐPreshotにログインして指導を開始しましょう！<br>{1}<br>（＊モバイル端末のみ対応）<br><br>"\
-            "----------------------------<br>運営：team preshot<br>Email：preshot.info@gmail.com<br>HP：https://preshot.app/<br>----------------------------".format(message, websiteurl)
+            "----------------------------<br>運営：team preshot<br>Email：preshot.info@gmail.com<br>HP：https://preshot.app/<br>----------------------------".format(sender, websiteurl)
             thr = Thread(target=send_email_thread, args=[msg])
             thr.start()
 
