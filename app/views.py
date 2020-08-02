@@ -475,12 +475,22 @@ def reservation(sid):
     db.session.commit()
 
     post = Post.query.filter_by(pid=pid).first()
-    post_data = "タイトル:" + post.title + "\n\n" + "質問内容:" + post.text
+    post_data = "タイトル:\n" + post.title 
+    post_data2 = "質問内容:\n" + post.text
 
     c = Chat(
         reservation_id=rid,
         is_mentor=False,
         message=post_data,
+        created_at=datetime.datetime.now()
+    )
+    db.session.add(c)
+    db.session.commit()
+
+    c = Chat(
+        reservation_id=rid,
+        is_mentor=False,
+        message=post_data2,
         created_at=datetime.datetime.now()
     )
     db.session.add(c)
