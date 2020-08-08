@@ -55,6 +55,20 @@
       .px-pc { padding-left: 3rem; padding-right: 3rem;}
       .about-p{ font-size: 1.1rem; }
     }
+    @media screen and (max-width: 992px){	
+      .title-box{text-align: center;}
+      .br-1 { display:block; }
+    }
+    @media screen and (min-width: 992px){	
+      .title-box{padding-right: 7rem;}
+      .br-1 { display:none; }
+    }
+    @media screen and (max-width: 450.1px){	
+      .br-2 { display:block; }
+    }
+    @media screen and (min-width: 450.1px){	
+      .br-2 { display:none; }
+    }
     @media screen and (min-width: 1250px){
       .about-p{ line-height: 2em;}
     }
@@ -114,9 +128,9 @@
 
     <div class="container">
       <div class="row">
-        <div class="col-lg-7 pt-5 pt-lg-0 order-2 order-lg-1 d-flex align-items-center">
+        <div class="title-box col-lg-7 pt-5 pt-lg-0 order-2 order-lg-1 d-flex align-items-center">
           <div data-aos="zoom-out">
-            <h1>就活生のための<br>新しい選考対策<br><span>Preshot</span><br><h5 style="color: white">(現在モバイル対応のみ)</h6><br></h1>
+            <h1>選考の壁打ちをする<br class="br-2">メンターが見つかる<br class="br-1">就活マッチングアプリ<br><span>Preshot</span><br></h1>
             <h2><strong>「選考で何を聞かれるのか分かった！」というそこのあなた！その選考対策、一人で出来ますか？</strong></h2>
             <div class="text-center text-lg-left mb-3">
               <a href="/register" class="btn-get-started scrollto btn-hero text-center">就活生はこちら</a>
