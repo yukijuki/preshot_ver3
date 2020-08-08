@@ -3,6 +3,7 @@ import os
 import uuid
 import hashlib
 
+from threading import Thread
 from PIL import Image
 from flask import request, redirect, session, jsonify, render_template, make_response, url_for, abort, flash
 from flask_sqlalchemy import SQLAlchemy
@@ -22,8 +23,8 @@ POSTS_PER_PAGE = 10
 # This now requires Postgresql, feel free to use a GUI app like Postgres.app (I'm using that).
 # Don't worry, Postgresql doesn't really do anything when you aren't querying it,
 # So feel free to leave it on.
-#app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://preshot:wepreshot@localhost:5432/preshot"
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://preshot:wepreshot@localhost:5432/preshot"
+#app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = hashlib.sha256(b"wepreshot").hexdigest()
 app.config["UPLOAD_FOLDER"] = PHYSICAL_ROOT + UPLOAD_FOLDER
@@ -46,7 +47,7 @@ app.config['MAIL_ASCII_ATTACHMENTS'] = False
 # see the img folder
 # file_list = os.listdir( app.config['UPLOAD_FOLDER'] )
 
-app.debug = True
+app.debug = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 mail = Mail(app)
@@ -150,6 +151,9 @@ def crop_center(pil_img, crop_width, crop_height):
 def crop_max_square(pil_img):
     return crop_center(pil_img, min(pil_img.size), min(pil_img.size))
 
+def send_email_thread(msg):
+    with app.app_context():
+        mail.send(msg)
 
 # ----------------------------------------------------------------
 # Student API
@@ -216,7 +220,7 @@ def emailcheck():
     for student in students:
         student_email = student.email
         student_emails.append(student_email)
-    
+
     emails = {
         "student": student_emails,
         "mentor": mentor_emails
@@ -250,7 +254,7 @@ def register():
                 email=data["email"],
                 uid=uid,
                 # Password now uses hashing, using sha256 + email as salt
-                password=hashlib.sha256((data["password"]+data["email"]).encode('utf-8')).hexdigest(), 
+                password=hashlib.sha256((data["password"]+data["email"]).encode('utf-8')).hexdigest(),
                 created_at=datetime.datetime.now()
             )
 
@@ -470,6 +474,28 @@ def reservation(sid):
     db.session.add(mentor)
     db.session.commit()
 
+    post = Post.query.filter_by(pid=pid).first()
+    post_data = "タイトル:\n" + post.title 
+    post_data2 = "質問内容:\n" + post.text
+
+    c = Chat(
+        reservation_id=rid,
+        is_mentor=False,
+        message=post_data,
+        created_at=datetime.datetime.now()
+    )
+    db.session.add(c)
+    db.session.commit()
+
+    c = Chat(
+        reservation_id=rid,
+        is_mentor=False,
+        message=post_data2,
+        created_at=datetime.datetime.now()
+    )
+    db.session.add(c)
+    db.session.commit()
+
     #2. I need those reservation_info(post.title, post.text) to be sent in the chat
 
     #flask_mail
@@ -480,7 +506,7 @@ def reservation(sid):
     mentor = Mentor.query.filter_by(mid=mid).first()
 
     msg = Message('就活生から指導の予約が入りました！', recipients=[mentor.email])
-    msg.html = "就活生から以下の内容で指導の予約が入りました。<br><br>"\
+    html = "就活生から以下の内容で指導の予約が入りました。<br><br>"\
         "曜日：{0}<br>時間：{1}<br>場所：{2}<br><br>"\
         "今すぐPreshotにログインして指導を開始しましょう！<br>https://preshot.app/mentor_register<br>（＊モバイル端末のみ対応）<br><br>"\
         "----------------------------<br>運営：team preshot<br>Email：preshot.info@gmail.com<br>HP：https://preshot.app/<br>----------------------------".format(schedule.day, schedule.date, schedule.place)
@@ -519,6 +545,7 @@ def chat(rid):
 
     schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
     mentor = Mentor.query.filter_by(mid=mid).first()
+    session['mentor_email'] = mentor.email
     if mentor.filename is None:
         mentor.filename = "default.jpg"
 
@@ -601,6 +628,7 @@ def message(data):
     )
     db.session.add(c)
     db.session.commit()
+
     emit('message',{
         'message': {
             'reservation_id': c.reservation_id,
@@ -609,6 +637,46 @@ def message(data):
             'created_at': c.created_at.isoformat()
         }
     }, room=room)
+
+    veri = True
+    websiteurl = "https://preshot.app/register"
+    email = ""
+    sender = ""
+
+    if c.is_mentor == True:
+        email = session['student_email']
+        # mid = session['mid']
+        # mentor = Mentor.query.filter_by(mid=mid).first
+        # if mentor.name == "":
+        #     sender = mentor.email[:-1]
+        # else:
+        #     sender = mentor.name
+
+        # chat = Chat.query.filter_by(reservation_id=room).order_by(Chat.created_at.desc()).first()
+        # if chat.is_mentor == False:
+        #     veri=True
+        #     flash("就活生にEメールが送られました。")
+    else:
+        email = session['mentor_email']
+        # sid = session["sid"]
+        # student = Student.query.filter_by(sid=sid).first
+        # sender = student.email[:-1]
+        websiteurl = "https://preshot.app/mentor_register"
+        # chat = Chat.query.filter_by(reservation_id=room).order_by(Chat.created_at.desc()).first()
+        # if chat.is_mentor == True:
+        #     veri=True
+        #     flash("指導者にEメールが送られました。")
+
+    #Multithread process
+    if veri == True:
+        with app.app_context():
+            msg = Message('Preshotからの通知', recipients=[email])
+            flash("メールが送られました。")
+            msg.html = "チャットの返信が来ています。<br><br>"\
+            "今すぐPreshotにログインして会話を開始しましょう！<br>{0}<br>（＊モバイル端末のみ対応）<br><br>"\
+            "----------------------------<br>運営：team preshot<br>Email：preshot.info@gmail.com<br>HP：https://preshot.app/<br>----------------------------".format(websiteurl)
+            thr = Thread(target=send_email_thread, args=[msg])
+            thr.start()
 
 
 @app.route("/chatlist", methods=["GET", "POST"])
@@ -621,6 +689,7 @@ def chatlist():
 
     reservations = Reservation.query.filter_by(student_id=uid).all()
     chatlist = []
+    filename = ""
 
     for reservation in reservations:
         schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
@@ -628,14 +697,16 @@ def chatlist():
         if mentor is not None:
             if schedule is not None:
                 if mentor.filename is None:
-                    mentor.filename = "default.jpg"
+                    filename = "default.jpg"
+                else:
+                    filename = mentor.filename
 
                 chat_history = {
                     "date": schedule.date,
                     "day": schedule.day,
                     "place": schedule.place,
                     "rid": reservation.rid,
-                    "filename": 'static/img-get/' + mentor.filename,
+                    "filename": 'static/img-get/' + filename,
                     "name": mentor.name,
                     "created_at": reservation.created_at
                 }
@@ -1045,11 +1116,12 @@ def mentor_chat(rid):
     schedule = Schedule.query.filter_by(sid=reservation.schedule_id).first()
     student = Student.query.filter_by(uid=uid).first()
     if student is not None:
+        session['student_email'] = student.email
         if schedule is not None:
             #name produce
             if student.email is not None:
                 name = student.email.split("@")
-                email = name[0]
+                email = name[0][:-1]
                 data = {
                     "date": schedule.date,
                     "day": schedule.day,
@@ -1083,7 +1155,7 @@ def mentor_chatlist():
                 #name produce
                 if student.email is not None:
                     name = student.email.split("@")
-                    email = name[0]
+                    email = name[0][:-1]
 
                 chat_history = {
                     "date": schedule.date,
